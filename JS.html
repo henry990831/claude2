@@ -1817,8 +1817,8 @@ function showScreen(id) {
   if (screen) screen.classList.add('active');
 }
 
-// 初始化
-document.addEventListener('DOMContentLoaded', () => {
+// 初始化函数
+function initGame() {
   applySkin();
   applyBackground();
   applyEyeProtection();
@@ -1827,34 +1827,52 @@ document.addEventListener('DOMContentLoaded', () => {
   updatePlayerCard();  // 初始化玩家信息卡片
   
   // 事件监听器
-  $('#btn-back')?.addEventListener('click', () => {
-    if (G) stopTimer();
-    showScreen('screen-home');
-  });
+  const btnBack = $('#btn-back');
+  if (btnBack) {
+    btnBack.addEventListener('click', () => {
+      if (G) stopTimer();
+      showScreen('screen-home');
+    });
+  }
   
-  $('#btn-restart')?.addEventListener('click', () => {
-    if (!G) return;
-    stopTimer();
-    startGame(G.diffKey, null, G.isZen, G.isSurvival, G.isSpecial);
-  });
+  const btnRestart = $('#btn-restart');
+  if (btnRestart) {
+    btnRestart.addEventListener('click', () => {
+      if (!G) return;
+      stopTimer();
+      startGame(G.diffKey, null, G.isZen, G.isSurvival, G.isSpecial);
+    });
+  }
   
-  $('#btn-flag-mode')?.addEventListener('click', (e) => {
-    if (!G) return;
-    G.flagMode = !G.flagMode;
-    e.currentTarget.classList.toggle('active-mode', G.flagMode);
-  });
+  const btnFlagMode = $('#btn-flag-mode');
+  if (btnFlagMode) {
+    btnFlagMode.addEventListener('click', (e) => {
+      if (!G) return;
+      G.flagMode = !G.flagMode;
+      e.currentTarget.classList.toggle('active-mode', G.flagMode);
+    });
+  }
   
-  $('#btn-play-again')?.addEventListener('click', () => {
-    $('#modal-result').classList.add('hidden');
-    startGame(G.diffKey, null, G.isZen, G.isSurvival, G.isSpecial);
-  });
+  const btnPlayAgain = $('#btn-play-again');
+  if (btnPlayAgain) {
+    btnPlayAgain.addEventListener('click', () => {
+      $('#modal-result').classList.add('hidden');
+      startGame(G.diffKey, null, G.isZen, G.isSurvival, G.isSpecial);
+    });
+  }
   
-  $('#btn-to-home')?.addEventListener('click', () => {
-    $('#modal-result').classList.add('hidden');
-    showScreen('screen-home');
-  });
+  const btnToHome = $('#btn-to-home');
+  if (btnToHome) {
+    btnToHome.addEventListener('click', () => {
+      $('#modal-result').classList.add('hidden');
+      showScreen('screen-home');
+    });
+  }
   
-  $('#btn-dev-mode')?.addEventListener('click', toggleDevMode);
+  const btnDevMode = $('#btn-dev-mode');
+  if (btnDevMode) {
+    btnDevMode.addEventListener('click', toggleDevMode);
+  }
   
   // 难度卡片点击事件
   $all('.diff-card').forEach(card => {
@@ -1905,12 +1923,18 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   
   // 商城按钮
-  $('#btn-shop-open')?.addEventListener('click', () => {
-    showScreen('screen-shop');
-    setTimeout(() => renderShop(), 0);
-  });
+  const btnShopOpen = $('#btn-shop-open');
+  if (btnShopOpen) {
+    btnShopOpen.addEventListener('click', () => {
+      showScreen('screen-shop');
+      setTimeout(() => renderShop(), 0);
+    });
+  }
   
-  $('#btn-shop-back')?.addEventListener('click', () => showScreen('screen-home'));
+  const btnShopBack = $('#btn-shop-back');
+  if (btnShopBack) {
+    btnShopBack.addEventListener('click', () => showScreen('screen-home'));
+  }
   
   // 商城标签切换
   $all('.shop-tab').forEach(tab => {
@@ -1919,68 +1943,168 @@ document.addEventListener('DOMContentLoaded', () => {
       tab.classList.add('active');
       const which = tab.dataset.tab;
       
-      $('#shop-items')?.classList.toggle('hidden', which !== 'items');
-      $('#shop-skins')?.classList.toggle('hidden', which !== 'skins');
-      $('#shop-backgrounds')?.classList.toggle('hidden', which !== 'backgrounds');
-      $('#shop-sounds')?.classList.toggle('hidden', which !== 'sounds');
-      $('#shop-effects')?.classList.toggle('hidden', which !== 'effects');
+      const shopItems = $('#shop-items');
+      const shopSkins = $('#shop-skins');
+      const shopBg = $('#shop-backgrounds');
+      const shopSounds = $('#shop-sounds');
+      const shopEffects = $('#shop-effects');
+      
+      if (shopItems) shopItems.classList.toggle('hidden', which !== 'items');
+      if (shopSkins) shopSkins.classList.toggle('hidden', which !== 'skins');
+      if (shopBg) shopBg.classList.toggle('hidden', which !== 'backgrounds');
+      if (shopSounds) shopSounds.classList.toggle('hidden', which !== 'sounds');
+      if (shopEffects) shopEffects.classList.toggle('hidden', which !== 'effects');
     });
   });
   
   // 其他屏幕导航
-  $('#btn-stats')?.addEventListener('click', () => {
-    renderStats();
-    showScreen('screen-stats');
-  });
+  const btnStats = $('#btn-stats');
+  if (btnStats) {
+    btnStats.addEventListener('click', () => {
+      renderStats();
+      showScreen('screen-stats');
+    });
+  }
   
-  $('#btn-stats-back')?.addEventListener('click', () => showScreen('screen-home'));
+  const btnStatsBack = $('#btn-stats-back');
+  if (btnStatsBack) {
+    btnStatsBack.addEventListener('click', () => showScreen('screen-home'));
+  }
   
-  $('#btn-music')?.addEventListener('click', () => {
-    showScreen('screen-music');
-    // 延迟一帧执行，确保DOM已经显示
-    setTimeout(() => renderMusicPlayer(), 0);
-  });
+  const btnMusic = $('#btn-music');
+  if (btnMusic) {
+    btnMusic.addEventListener('click', () => {
+      showScreen('screen-music');
+      setTimeout(() => renderMusicPlayer(), 0);
+    });
+  }
   
-  $('#btn-music-back')?.addEventListener('click', () => showScreen('screen-home'));
+  const btnMusicBack = $('#btn-music-back');
+  if (btnMusicBack) {
+    btnMusicBack.addEventListener('click', () => showScreen('screen-home'));
+  }
   
-  $('#btn-settings')?.addEventListener('click', () => showScreen('screen-settings'));
-  $('#btn-settings-back')?.addEventListener('click', () => showScreen('screen-home'));
+  const btnSettings = $('#btn-settings');
+  if (btnSettings) {
+    btnSettings.addEventListener('click', () => showScreen('screen-settings'));
+  }
   
-  $('#btn-rank')?.addEventListener('click', () => {
-    renderRank();
-    showScreen('screen-rank');
-  });
+  const btnSettingsBack = $('#btn-settings-back');
+  if (btnSettingsBack) {
+    btnSettingsBack.addEventListener('click', () => showScreen('screen-home'));
+  }
   
-  $('#btn-rank-back')?.addEventListener('click', () => showScreen('screen-home'));
+  const btnRank = $('#btn-rank');
+  if (btnRank) {
+    btnRank.addEventListener('click', () => {
+      renderRank();
+      showScreen('screen-rank');
+    });
+  }
   
-  $('#btn-achievements')?.addEventListener('click', () => {
-    showScreen('screen-achievements');
-    setTimeout(() => renderAchievements(), 0);
-  });
+  const btnRankBack = $('#btn-rank-back');
+  if (btnRankBack) {
+    btnRankBack.addEventListener('click', () => showScreen('screen-home'));
+  }
   
-  $('#btn-achievements-back')?.addEventListener('click', () => showScreen('screen-home'));
+  const btnAchievements = $('#btn-achievements');
+  if (btnAchievements) {
+    btnAchievements.addEventListener('click', () => {
+      showScreen('screen-achievements');
+      setTimeout(() => renderAchievements(), 0);
+    });
+  }
   
-  $('#btn-daily-checkin')?.addEventListener('click', () => {
-    renderDailyCheckin();
-    showScreen('screen-daily-checkin');
-  });
+  const btnAchievementsBack = $('#btn-achievements-back');
+  if (btnAchievementsBack) {
+    btnAchievementsBack.addEventListener('click', () => showScreen('screen-home'));
+  }
   
-  $('#btn-checkin-back')?.addEventListener('click', () => showScreen('screen-home'));
+  const btnDailyCheckin = $('#btn-daily-checkin');
+  if (btnDailyCheckin) {
+    btnDailyCheckin.addEventListener('click', () => {
+      renderDailyCheckin();
+      showScreen('screen-daily-checkin');
+    });
+  }
+  
+  const btnCheckinBack = $('#btn-checkin-back');
+  if (btnCheckinBack) {
+    btnCheckinBack.addEventListener('click', () => showScreen('screen-home'));
+  }
   
   // 语言切换按钮
-  $('#btn-language')?.addEventListener('click', () => {
-    const currentLang = SAVE.language || 'zh';
-    const newLang = currentLang === 'zh' ? 'en' : 'zh';
-    if (confirm(currentLang === 'zh' ? '切换到英文？\nSwitch to English?' : 'Switch to Chinese?\n切换到中文？')) {
-      switchLanguage(newLang);
-    }
-  });
+  const btnLanguage = $('#btn-language');
+  if (btnLanguage) {
+    btnLanguage.addEventListener('click', () => {
+      const currentLang = SAVE.language || 'zh';
+      const newLang = currentLang === 'zh' ? 'en' : 'zh';
+      if (confirm(currentLang === 'zh' ? '切换到英文？\nSwitch to English?' : 'Switch to Chinese?\n切换到中文？')) {
+        switchLanguage(newLang);
+      }
+    });
+  }
+  
+  // 自定义难度滑块
+  const btnCustomStart = $('#btn-custom-start');
+  if (btnCustomStart) {
+    btnCustomStart.addEventListener('click', () => {
+      const rows = +$('#slider-rows').value;
+      const cols = +$('#slider-cols').value;
+      const mines = +$('#slider-mines').value;
+      startGame('custom', { rows, cols, mines });
+    });
+  }
+  
+  // 自定义滑块监听
+  const sliderRows = $('#slider-rows');
+  const sliderCols = $('#slider-cols');
+  const sliderMines = $('#slider-mines');
+  if (sliderRows) sliderRows.addEventListener('input', updateDensityTag);
+  if (sliderCols) sliderCols.addEventListener('input', updateDensityTag);
+  if (sliderMines) sliderMines.addEventListener('input', updateDensityTag);
   
   // 设置相关事件
   setupSettings();
   
   console.log('💎 Minesweeper Pro Complete Edition loaded');
-});
+}
+
+// 自定义难度密度更新
+function updateDensityTag(){
+  const rows = +$('#slider-rows').value;
+  const cols = +$('#slider-cols').value;
+  let mineSlider = $('#slider-mines');
+  const maxMines = Math.max(1, (rows-1)*(cols-1));
+  mineSlider.max = maxMines;
+  if (+mineSlider.value > maxMines) mineSlider.value = maxMines;
+  const mines = +mineSlider.value;
+
+  $('#val-rows').textContent = rows;
+  $('#val-cols').textContent = cols;
+  $('#val-mines').textContent = mines;
+
+  const info = densityInfo(rows, cols, mines);
+  $('#density-tag').textContent = `密度 ${info.pct}% · ${info.label}`;
+}
+
+// 渲染首页记录
+function renderRecordsBox(){
+  const box = $('#records-box');
+  if (!box) return;
+  const rows = ['easy','medium','hard'].map(k=>{
+    const b = SAVE.best[k];
+    return `<div style="display:flex;justify-content:space-between;padding:4px 0;"><span style="color:var(--text-dim);">${DIFF_LABEL[k]}最佳</span><b>${b.time!==null? fmtTime(b.time) : '--'} · ${b.score}分</b></div>`;
+  }).join('');
+  box.innerHTML = '<div style="margin-bottom:6px;font-weight:700;">🏆 个人记录</div>' + rows;
+}
+
+// 页面加载完成后初始化
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initGame);
+} else {
+  initGame();
+}
 
 function applySkin() {
   document.body.className = 'skin-' + SAVE.activeSkin;
