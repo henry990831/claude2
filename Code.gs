@@ -1,7 +1,6 @@
 /**
- * 扫雷 Minesweeper WebApp - Enhanced Edition
- * 存档方式：方案B，浏览器 localStorage（认设备）
- * 新增功能：生存模式、每日签到、成就系统、现代化UI
+ * 扫雷 Minesweeper Pro - Complete Edition
+ * 包含：段位系统、特殊地雷模式、统计中心、音乐播放器、护眼模式
  */
 function doGet() {
   return HtmlService.createTemplateFromFile('Index')
@@ -11,7 +10,6 @@ function doGet() {
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
-// 用于在 Index.html 里插入 CSS.html / JS.html 的内容
 function include(filename) {
   return HtmlService.createHtmlOutputFromFile(filename).getContent();
 }
