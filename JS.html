@@ -729,33 +729,41 @@ function updatePlayerCard() {
 }
 
 /* =========================================================
-   背景特效系统（实时渲染）
+   背景特效系统（实时渲染 - 增强版）
 ========================================================= */
 function applyBackground() {
   const bg = $('#particles-bg');
   if (!bg) return;
   bg.innerHTML = '';
+  bg.style.cssText = ''; // 清除之前的样式
   
-  if (SAVE.activeBackground === 'particles') {
+  const activeBg = SAVE.activeBackground || 'none';
+  
+  if (activeBg === 'particles') {
     createParticles(bg);
-  } else if (SAVE.activeBackground === 'gradient') {
+  } else if (activeBg === 'gradient') {
     createGradientAnimation(bg);
-  } else if (SAVE.activeBackground === 'matrix') {
+  } else if (activeBg === 'matrix') {
     createMatrixRain(bg);
-  } else if (SAVE.activeBackground === 'firefly') {
+  } else if (activeBg === 'firefly') {
     createFireflies(bg);
   }
 }
 
 function createParticles(container) {
-  for (let i = 0; i < 30; i++) {
+  // 增加数量和可见度
+  for (let i = 0; i < 50; i++) {
     const particle = document.createElement('div');
-    const size = Math.random() * 4 + 2;
+    const size = Math.random() * 6 + 3;
+    const duration = Math.random() * 15 + 10;
     particle.style.cssText = `
       position:absolute;width:${size}px;height:${size}px;
-      background:rgba(255,255,255,${Math.random()*0.8+0.2});border-radius:50%;
-      left:${Math.random()*100}%;top:${Math.random()*100}%;
-      animation:float ${Math.random()*10+10}s infinite ease-in-out;
+      background:rgba(255,255,255,${Math.random()*0.6+0.4});
+      border-radius:50%;
+      left:${Math.random()*100}%;
+      top:${Math.random()*100}%;
+      animation:float ${duration}s infinite ease-in-out;
+      box-shadow:0 0 ${size*2}px rgba(255,255,255,0.5);
     `;
     container.appendChild(particle);
   }
@@ -763,21 +771,42 @@ function createParticles(container) {
   if (!document.getElementById('particle-style')) {
     const style = document.createElement('style');
     style.id = 'particle-style';
-    style.textContent = `@keyframes float{0%,100%{transform:translateY(0)translateX(0);opacity:0}50%{opacity:1}100%{transform:translateY(-100vh)translateX(${Math.random()*100-50}px)}}`;
+    style.textContent = `
+      @keyframes float{
+        0%{transform:translateY(100vh) translateX(0) scale(0);opacity:0}
+        10%{opacity:1}
+        90%{opacity:1}
+        100%{transform:translateY(-20vh) translateX(${Math.random()*200-100}px) scale(1.5);opacity:0}
+      }
+    `;
     document.head.appendChild(style);
   }
 }
 
-
 function createGradientAnimation(container) {
   container.style.cssText = `
-    background:linear-gradient(45deg,#ff6b9d,#c06c84,#6c5b7b,#355c7d);
-    background-size:400% 400%;animation:gradientMove 15s ease infinite;
+    position:fixed;inset:0;z-index:-1;
+    background:linear-gradient(45deg,
+      rgba(107,158,202,0.3),
+      rgba(136,184,157,0.3),
+      rgba(202,141,166,0.3),
+      rgba(157,136,189,0.3)
+    );
+    background-size:400% 400%;
+    animation:gradientMove 20s ease infinite;
   `;
   if (!document.getElementById('gradient-style')) {
     const style = document.createElement('style');
     style.id = 'gradient-style';
-    style.textContent = `@keyframes gradientMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}`;
+    style.textContent = `
+      @keyframes gradientMove{
+        0%{background-position:0% 50%}
+        25%{background-position:100% 50%}
+        50%{background-position:100% 100%}
+        75%{background-position:0% 100%}
+        100%{background-position:0% 50%}
+      }
+    `;
     document.head.appendChild(style);
   }
 }
@@ -786,19 +815,19 @@ function createMatrixRain(container) {
   const canvas = document.createElement('canvas');
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-  canvas.style.cssText = 'width:100%;height:100%;';
+  canvas.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;';
   container.appendChild(canvas);
   
   const ctx = canvas.getContext('2d');
-  const chars = '01アイウエオカキクケコ';
-  const fontSize = 14;
+  const chars = '01アイウエオカキクケコサシスセソタチツテト';
+  const fontSize = 16;
   const columns = Math.floor(canvas.width / fontSize);
   const drops = Array(columns).fill(1);
   
   function draw() {
-    ctx.fillStyle = 'rgba(0,0,0,0.05)';
+    ctx.fillStyle = 'rgba(0,0,0,0.08)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#0F0';
+    ctx.fillStyle = '#0F8';
     ctx.font = fontSize + 'px monospace';
     
     for (let i = 0; i < drops.length; i++) {
@@ -812,14 +841,23 @@ function createMatrixRain(container) {
 }
 
 function createFireflies(container) {
-  for (let i = 0; i < 20; i++) {
+  // 增加数量和亮度
+  for (let i = 0; i < 40; i++) {
     const fly = document.createElement('div');
     const left = Math.random() * 100;
     const top = Math.random() * 100;
+    const size = Math.random() * 3 + 2;
+    const duration = Math.random() * 8 + 5;
     fly.style.cssText = `
-      position:absolute;width:3px;height:3px;background:#ffd700;border-radius:50%;
-      box-shadow:0 0 10px #ffd700;left:${left}%;top:${top}%;
-      animation:firefly ${Math.random()*5+3}s infinite ease-in-out;
+      position:absolute;
+      width:${size}px;
+      height:${size}px;
+      background:radial-gradient(circle, #ffd700, #ff8c00);
+      border-radius:50%;
+      box-shadow:0 0 ${size*8}px #ffd700, 0 0 ${size*15}px rgba(255,215,0,0.5);
+      left:${left}%;
+      top:${top}%;
+      animation:firefly ${duration}s infinite ease-in-out;
     `;
     container.appendChild(fly);
   }
@@ -827,6 +865,17 @@ function createFireflies(container) {
   if (!document.getElementById('firefly-style')) {
     const style = document.createElement('style');
     style.id = 'firefly-style';
+    style.textContent = `
+      @keyframes firefly{
+        0%,100%{transform:translate(0,0) scale(0.8);opacity:0.3}
+        25%{transform:translate(${Math.random()*100-50}px,${Math.random()*100-50}px) scale(1.2);opacity:1}
+        50%{transform:translate(${Math.random()*100-50}px,${Math.random()*100-50}px) scale(0.9);opacity:0.7}
+        75%{transform:translate(${Math.random()*100-50}px,${Math.random()*100-50}px) scale(1.1);opacity:1}
+      }
+    `;
+    document.head.appendChild(style);
+  }
+}
     style.textContent = `@keyframes firefly{0%,100%{transform:translate(0,0);opacity:0.3}50%{transform:translate(${Math.random()*100-50}px,${Math.random()*100-50}px);opacity:1}}`;
     document.head.appendChild(style);
   }
@@ -2067,42 +2116,132 @@ function applyEyeProtection() {
   document.body.style.filter = filters[intensity] || 'none';
 }
 
+/* =========================================================
+   翻译系统
+========================================================= */
+const TRANSLATIONS = {
+  // 首页
+  selectMode: { zh: '选择游戏模式开始', en: 'Select game mode to start' },
+  classicMode: { zh: '经典模式', en: 'Classic' },
+  survivalMode: { zh: '生存模式', en: 'Survival' },
+  zenMode: { zh: '禅模式', en: 'Zen' },
+  specialMode: { zh: '特殊地雷', en: 'Special' },
+  easy: { zh: '简单', en: 'Easy' },
+  medium: { zh: '中等', en: 'Medium' },
+  hard: { zh: '困难', en: 'Hard' },
+  custom: { zh: '自定义', en: 'Custom' },
+  mines: { zh: '雷', en: 'mines' },
+  baseCoins: { zh: '基础', en: 'Base' },
+  coins: { zh: '金币', en: 'Coins' },
+  winrate: { zh: '胜率', en: 'Winrate' },
+  rank: { zh: '段位', en: 'Rank' },
+  
+  // 按钮
+  shop: { zh: '商城', en: 'Shop' },
+  settings: { zh: '设置', en: 'Settings' },
+  achievements: { zh: '成就', en: 'Achievements' },
+  statistics: { zh: '统计中心', en: 'Statistics' },
+  music: { zh: '音乐播放器', en: 'Music Player' },
+  dailyCheckIn: { zh: '每日签到', en: 'Daily Check-in' },
+  
+  // 游戏界面
+  mineCount: { zh: '剩余地雷', en: 'Mines Left' },
+  timer: { zh: '用时', en: 'Time' },
+  restart: { zh: '重新开始', en: 'Restart' },
+  flagMode: { zh: '标雷模式', en: 'Flag Mode' },
+  
+  // 结算
+  victory: { zh: '🎉 通关成功！', en: '🎉 Victory!' },
+  defeat: { zh: '💥 踩到地雷了', en: '💥 Game Over' },
+  newRecord: { zh: '✨ NEW RECORD ✨', en: '✨ NEW RECORD ✨' },
+  playAgain: { zh: '再玩一次', en: 'Play Again' },
+  backHome: { zh: '返回首页', en: 'Back to Home' },
+  
+  // 商城
+  items: { zh: '道具', en: 'Items' },
+  skins: { zh: '皮肤', en: 'Skins' },
+  backgrounds: { zh: '背景', en: 'Backgrounds' },
+  sounds: { zh: '音效', en: 'Sounds' },
+  effects: { zh: '特效', en: 'Effects' },
+  owned: { zh: '已持有', en: 'Owned' },
+  buy: { zh: '购买', en: 'Buy' },
+  equip: { zh: '装备', en: 'Equip' },
+  equipped: { zh: '✅ 使用中', en: '✅ Equipped' },
+  
+  // 其他
+  back: { zh: '返回', en: 'Back' },
+  confirm: { zh: '确定', en: 'Confirm' },
+  cancel: { zh: '取消', en: 'Cancel' }
+};
+
+function t(key) {
+  const lang = SAVE.language || 'zh';
+  return TRANSLATIONS[key] ? TRANSLATIONS[key][lang] : key;
+}
+
 // 语言切换
 function switchLanguage(lang) {
   SAVE.language = lang;
   saveState(SAVE);
-  // 不刷新页面，直接更新界面
   updateAllTexts();
-  toast(lang === 'zh' ? '已切换到中文' : 'Switched to English');
+  toast(lang === 'zh' ? '✓ 已切换到中文' : '✓ Switched to English');
 }
 
-// 更新所有界面文字（不刷新页面）
+// 更新所有界面文字
 function updateAllTexts() {
   const lang = SAVE.language || 'zh';
   
-  // 由于大部分文本是静态HTML，暂时保留reload
-  // 如果需要完全不刷新，需要把所有文本改成t()函数调用
-  // 这里先简化实现，只更新动态部分
+  // 更新首页
+  const subtitle = document.querySelector('.subtitle');
+  if (subtitle) subtitle.textContent = t('selectMode');
   
-  // 更新动态文本
-  if ($('#screen-home').classList.contains('active')) {
-    renderRecordsBox();
-    updatePlayerCard();
-  }
+  // 更新模式标签
+  const modeTabs = $all('.mode-tab');
+  if (modeTabs[0]) modeTabs[0].textContent = t('classicMode');
+  if (modeTabs[1]) modeTabs[1].textContent = t('survivalMode');
+  if (modeTabs[2]) modeTabs[2].textContent = t('zenMode');
+  if (modeTabs[3]) modeTabs[3].textContent = t('specialMode');
+  
+  // 更新难度卡片
+  const diffCards = $all('.diff-card');
+  diffCards.forEach(card => {
+    const diff = card.dataset.diff;
+    const nameEl = card.querySelector('.diff-name');
+    if (nameEl && diff) {
+      if (diff === 'easy') nameEl.textContent = t('easy');
+      else if (diff === 'medium') nameEl.textContent = t('medium');
+      else if (diff === 'hard') nameEl.textContent = t('hard');
+      else if (diff === 'custom') nameEl.textContent = t('custom');
+    }
+  });
+  
+  // 更新胜率文字
+  const winrateLabel = document.querySelector('#player-winrate')?.previousElementSibling;
+  if (winrateLabel) winrateLabel.textContent = t('winrate');
+  
+  // 更新按钮提示
+  $('#btn-shop-open')?.setAttribute('title', t('shop'));
+  $('#btn-achievements')?.setAttribute('title', t('achievements'));
+  $('#btn-settings')?.setAttribute('title', t('settings'));
+  $('#btn-stats')?.setAttribute('title', t('statistics'));
+  $('#btn-music')?.setAttribute('title', t('music'));
+  $('#btn-daily-checkin')?.setAttribute('title', t('dailyCheckIn'));
   
   // 重新渲染当前屏幕
   const activeScreen = document.querySelector('.screen.active');
   if (activeScreen) {
     const screenId = activeScreen.id;
-    if (screenId === 'screen-shop') renderShop();
-    else if (screenId === 'screen-music') renderMusicPlayer();
-    else if (screenId === 'screen-achievements') renderAchievements();
-    else if (screenId === 'screen-statistics') renderStatistics();
+    if (screenId === 'screen-shop') setTimeout(() => renderShop(), 0);
+    else if (screenId === 'screen-music') setTimeout(() => renderMusicPlayer(), 0);
+    else if (screenId === 'screen-achievements') setTimeout(() => renderAchievements(), 0);
+    else if (screenId === 'screen-statistics') setTimeout(() => renderStats(), 0);
   }
   
-  // 注意：完整的语言切换需要把所有文本标签改成动态生成
-  // 当前方案：关键UI不刷新，静态文本保持原语言（用户可接受）
-  toast(lang === 'zh' ? '✓ 已切换到中文' : '✓ Switched to English');
+  // 更新玩家卡片和记录
+  if ($('#screen-home').classList.contains('active')) {
+    updatePlayerCard();
+    renderRecordsBox();
+  }
 }
 
 
