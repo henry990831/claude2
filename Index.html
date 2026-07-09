@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <?!= include('CSS'); ?>
+</head>
+<body>
+<div id="particles-bg"></div>
+<div id="app">
+
+  <!-- ===================== 首页 / 难度选择 ===================== -->
+  <section id="screen-home" class="screen active">
+    <div class="top-bar">
+      <div class="coin-pill glow-effect">
+        <span class="coin-icon">🪙</span>
+        <span id="coin-count-home">0</span>
+      </div>
+      <div class="top-right-btns">
+        <button class="icon-btn" id="btn-daily-checkin" title="每日签到">📅</button>
+        <button class="icon-btn" id="btn-achievements" title="成就">🏆</button>
+        <button class="icon-btn" id="btn-shop-open" title="商城">🛍️</button>
+      </div>
+    </div>
+
+    <h1 class="logo gradient-text pulse-animation">💎 MINESWEEPER</h1>
+    <p class="subtitle">选择游戏模式开始</p>
+
+    <!-- 游戏模式切换 -->
+    <div class="mode-tabs">
+      <button class="mode-tab active" data-mode="classic">经典模式</button>
+      <button class="mode-tab" data-mode="survival">生存模式</button>
+      <button class="mode-tab" data-mode="zen">禅模式</button>
+    </div>
+
+    <!-- 经典模式 -->
+    <div id="classic-mode-panel" class="mode-panel">
+      <div class="diff-grid">
+        <button class="diff-card glass-card" data-diff="easy">
+          <div class="diff-emoji">🌱</div>
+          <div class="diff-name">简单</div>
+          <div class="diff-meta">9×9 · 10 雷</div>
+          <div class="diff-reward">🪙 基础 5 金币</div>
+        </button>
+        <button class="diff-card glass-card" data-diff="medium">
+          <div class="diff-emoji">🔥</div>
+          <div class="diff-name">中等</div>
+          <div class="diff-meta">16×16 · 40 雷</div>
+          <div class="diff-reward">🪙 基础 15 金币</div>
+        </button>
+        <button class="diff-card glass-card" data-diff="hard">
+          <div class="diff-emoji">💀</div>
+          <div class="diff-name">困难</div>
+          <div class="diff-meta">30×16 · 99 雷</div>
+          <div class="diff-reward">🪙 基础 30 金币</div>
+        </button>
+        <button class="diff-card glass-card" data-diff="custom">
+          <div class="diff-emoji">⚙️</div>
+          <div class="diff-name">自定义</div>
+          <div class="diff-meta">自己调</div>
+          <div class="diff-reward">🪙 动态奖励</div>
+        </button>
+      </div>
+
+      <div id="custom-panel" class="custom-panel glass-card hidden">
+        <div class="slider-row">
+          <label>行数 (高) <span id="val-rows">9</span></label>
+          <input type="range" id="slider-rows" min="5" max="24" value="9">
+        </div>
+        <div class="slider-row">
+          <label>列数 (宽) <span id="val-cols">9</span></label>
+          <input type="range" id="slider-cols" min="5" max="30" value="9">
+        </div>
+        <div class="slider-row">
+          <label>地雷数 <span id="val-mines">10</span></label>
+          <input type="range" id="slider-mines" min="1" max="80" value="10">
+        </div>
+        <div class="density-tag" id="density-tag">密度 12% · 简单</div>
+        <button class="primary-btn gradient-btn" id="btn-custom-start">开始自定义游戏</button>
+      </div>
+    </div>
+
+    <!-- 生存模式 -->
+    <div id="survival-mode-panel" class="mode-panel hidden">
+      <div class="survival-info glass-card">
+        <h3>🔥 生存模式</h3>
+        <p>连续通关，难度逐步提升！</p>
+        <div class="survival-stats">
+          <div class="stat-item">
+            <div class="stat-label">当前连胜</div>
+            <div class="stat-value" id="current-streak">0</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">最高连胜</div>
+            <div class="stat-value" id="best-streak">0</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">连胜加成</div>
+            <div class="stat-value" id="streak-bonus">×1.0</div>
+          </div>
+        </div>
+        <div class="survival-rules">
+          <div class="rule-item">✨ 每局胜利，下局难度提升</div>
+          <div class="rule-item">💰 连胜越多，金币加成越高</div>
+          <div class="rule-item">💎 连胜 5/10/20 解锁成就奖励</div>
+          <div class="rule-item">💀 失败一次，连胜重置</div>
+        </div>
+        <button class="primary-btn gradient-btn" id="btn-survival-start">开始生存挑战</button>
+      </div>
+    </div>
+
+    <!-- 禅模式 -->
+    <div id="zen-mode-panel" class="mode-panel hidden">
+      <div class="zen-info glass-card">
+        <h3>🧘 禅模式</h3>
+        <p>放松心情，享受扫雷的乐趣</p>
+        <div class="zen-features">
+          <div class="feature-item">⏱️ 无计时压力</div>
+          <div class="feature-item">🎵 舒缓音效</div>
+          <div class="feature-item">✨ 平静动画</div>
+          <div class="feature-item">🪙 少量金币奖励</div>
+        </div>
+        <div class="diff-grid">
+          <button class="diff-card glass-card" data-diff="easy" data-zen="true">
+            <div class="diff-emoji">🍃</div>
+            <div class="diff-name">轻松</div>
+            <div class="diff-meta">9×9 · 10 雷</div>
+          </button>
+          <button class="diff-card glass-card" data-diff="medium" data-zen="true">
+            <div class="diff-emoji">🌸</div>
+            <div class="diff-name">平和</div>
+            <div class="diff-meta">16×16 · 40 雷</div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="records-box glass-card" id="records-box"></div>
+
+    <div class="dev-toggle" id="btn-dev-mode">🛠️ 开发者模式</div>
+  </section>
+
+  <!-- ===================== 游戏画面 ===================== -->
+  <section id="screen-game" class="screen">
+    <div class="game-header">
+      <button class="icon-btn glass-btn" id="btn-back">←</button>
+      <div class="counter glass-card">💣 <span id="mine-count">10</span></div>
+      <div class="counter timer glass-card" id="timer-display">⏱ <span id="timer">0</span>s</div>
+      <button class="icon-btn glass-btn" id="btn-restart">🔄</button>
+      <button class="icon-btn glass-btn" id="btn-flag-mode" title="标雷模式">🚩</button>
+    </div>
+
+    <div id="survival-progress" class="survival-progress hidden glass-card">
+      <div class="progress-info">
+        <span>🔥 连胜: <b id="game-streak">0</b></span>
+        <span>💰 加成: <b id="game-bonus">×1.0</b></span>
+      </div>
+    </div>
+
+    <div class="items-bar" id="items-bar"></div>
+
+    <div id="board-wrap" class="glass-card">
+      <div id="board"></div>
+    </div>
+  </section>
+
+  <!-- ===================== 商城 ===================== -->
+  <section id="screen-shop" class="screen">
+    <div class="game-header">
+      <button class="icon-btn glass-btn" id="btn-shop-back">←</button>
+      <div class="coin-pill glow-effect">
+        <span class="coin-icon">🪙</span>
+        <span id="coin-count-shop">0</span>
+      </div>
+      <div style="width:44px"></div>
+    </div>
+
+    <h2 class="shop-title gradient-text">✨ 商城</h2>
+
+    <div class="shop-tabs">
+      <button class="shop-tab active" data-tab="items">道具</button>
+      <button class="shop-tab" data-tab="skins">皮肤</button>
+      <button class="shop-tab" data-tab="backgrounds">背景</button>
+      <button class="shop-tab" data-tab="sounds">音效</button>
+      <button class="shop-tab" data-tab="effects">特效</button>
+    </div>
+
+    <div id="shop-items" class="shop-grid"></div>
+    <div id="shop-skins" class="shop-grid hidden"></div>
+    <div id="shop-backgrounds" class="shop-grid hidden"></div>
+    <div id="shop-sounds" class="shop-grid hidden"></div>
+    <div id="shop-effects" class="shop-grid hidden"></div>
+  </section>
+
+  <!-- ===================== 成就系统 ===================== -->
+  <section id="screen-achievements" class="screen">
+    <div class="game-header">
+      <button class="icon-btn glass-btn" id="btn-achievements-back">←</button>
+      <h2 class="section-title gradient-text">🏆 成就</h2>
+      <div style="width:44px"></div>
+    </div>
+
+    <div class="achievements-stats glass-card">
+      <div class="stat-item">
+        <div class="stat-value" id="achievements-unlocked">0</div>
+        <div class="stat-label">已解锁</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="achievements-total">0</div>
+        <div class="stat-label">总成就</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="achievements-points">0</div>
+        <div class="stat-label">成就点数</div>
+      </div>
+    </div>
+
+    <div id="achievements-list" class="achievements-list"></div>
+  </section>
+
+  <!-- ===================== 每日签到 ===================== -->
+  <section id="screen-daily" class="screen">
+    <div class="game-header">
+      <button class="icon-btn glass-btn" id="btn-daily-back">←</button>
+      <h2 class="section-title gradient-text">📅 每日签到</h2>
+      <div style="width:44px"></div>
+    </div>
+
+    <div class="daily-status glass-card" id="daily-status">
+      <div class="daily-icon">📅</div>
+      <div id="daily-message">加载中...</div>
+      <button class="primary-btn gradient-btn" id="btn-do-checkin">立即签到</button>
+    </div>
+
+    <div class="daily-rewards glass-card">
+      <h3>🎁 连续签到奖励</h3>
+      <div class="rewards-grid" id="daily-rewards-grid"></div>
+    </div>
+
+    <div class="daily-history glass-card">
+      <h3>📊 签到记录</h3>
+      <div id="daily-history-list"></div>
+    </div>
+  </section>
+
+  <!-- ===================== 结算弹窗 ===================== -->
+  <div id="modal-result" class="modal hidden">
+    <div class="modal-card glass-modal">
+      <div id="result-title" class="result-title">🎉 通关！</div>
+      <div id="record-badge" class="record-badge gradient-badge hidden">✨ NEW RECORD ✨</div>
+      <div id="achievement-unlocked" class="achievement-notification hidden"></div>
+      <div class="result-stats" id="result-stats"></div>
+      <div class="coin-earn glow-text" id="coin-earn"></div>
+      <div class="modal-btns">
+        <button class="primary-btn gradient-btn" id="btn-play-again">再玩一次</button>
+        <button class="secondary-btn glass-btn" id="btn-to-home">返回首页</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 成就解锁通知 -->
+  <div id="achievement-toast" class="achievement-toast hidden">
+    <div class="achievement-toast-content">
+      <div class="achievement-toast-icon">🏆</div>
+      <div class="achievement-toast-text">
+        <div class="achievement-toast-title"></div>
+        <div class="achievement-toast-desc"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+</div>
+
+<?!= include('JS'); ?>
+</body>
+</html>
