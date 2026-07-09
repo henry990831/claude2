@@ -1,5 +1,10 @@
 <script>
 /* =========================================================
+   扫雷 Minesweeper Pro - Complete Edition
+   包含：段位系统、特殊地雷、统计中心、音乐播放器、护眼模式
+========================================================= */
+
+/* =========================================================
    常量配置
 ========================================================= */
 const DIFFS = {
@@ -27,12 +32,22 @@ const SKINS = {
   candy:     { name:'糖果乐园', price:80,  icon:'🍬' }
 };
 
+// 段位专属皮肤
+const RANK_SKINS = {
+  gold:    { name:'黄金星辰', icon:'⭐', rankRequired: 'gold' },
+  diamond: { name:'璀璨钻石', icon:'💠', rankRequired: 'diamond' },
+  master:  { name:'王者荣耀', icon:'👑', rankRequired: 'master' },
+  king:    { name:'永恒火焰', icon:'🔥', rankRequired: 'king' }
+};
+
 const BACKGROUNDS = {
+  none:      { name:'无背景', price:0, icon:'⚪', desc:'默认背景' },
   particles: { name:'粒子星空', price:50, icon:'✨', desc:'动态粒子背景' },
   gradient:  { name:'流动渐变', price:40, icon:'🌈', desc:'动态渐变效果' },
   matrix:    { name:'黑客矩阵', price:60, icon:'💻', desc:'代码雨效果' },
   firefly:   { name:'萤火之森', price:70, icon:'🔥', desc:'飘动萤火虫' }
 };
+
 
 const SOUND_PACKS = {
   classic: { name:'经典', price:0, icon:'🔊', desc:'默认音效' },
@@ -48,89 +63,45 @@ const EFFECTS = {
   rainbow:   { name:'彩虹', price:55, icon:'🌈', desc:'彩虹光效' }
 };
 
-
-// 成就系统配置
-const ACHIEVEMENTS = {
-  first_win: { 
-    id:'first_win', name:'初次胜利', icon:'🎉', desc:'完成第一次通关', 
-    reward:50, check:(s)=>s.totalWins>=1 
-  },
-  speed_demon: { 
-    id:'speed_demon', name:'速度恶魔', icon:'⚡', desc:'在标准时间50%内完成中等难度', 
-    reward:100, check:(s)=>s.bestMediumTime && s.bestMediumTime <= 90 
-  },
-  survivor_5: { 
-    id:'survivor_5', name:'生存者', icon:'🔥', desc:'生存模式连胜5次', 
-    reward:100, check:(s)=>s.maxStreak>=5 
-  },
-  survivor_10: { 
-    id:'survivor_10', name:'生存大师', icon:'💪', desc:'生存模式连胜10次', 
-    reward:200, check:(s)=>s.maxStreak>=10 
-  },
-  survivor_20: { 
-    id:'survivor_20', name:'不朽传奇', icon:'👑', desc:'生存模式连胜20次', 
-    reward:500, check:(s)=>s.maxStreak>=20 
-  },
-  no_flag_win: { 
-    id:'no_flag_win', name:'完美直觉', icon:'🧠', desc:'不使用旗帜通关一次', 
-    reward:80, check:(s)=>s.noFlagWin 
-  },
-  item_master: { 
-    id:'item_master', name:'道具大师', icon:'🎯', desc:'使用所有类型道具各10次', 
-    reward:150, check:(s)=>s.itemsUsedTotal>=50 
-  },
-  rich: { 
-    id:'rich', name:'富甲一方', icon:'💰', desc:'累计拥有1000金币', 
-    reward:100, check:(s)=>s.maxCoins>=1000 
-  },
-  daily_7: { 
-    id:'daily_7', name:'坚持不懈', icon:'📅', desc:'连续签到7天', 
-    reward:100, check:(s)=>s.dailyStreak>=7 
-  },
-  zen_master: { 
-    id:'zen_master', name:'禅道大师', icon:'🧘', desc:'完成50局禅模式', 
-    reward:200, check:(s)=>s.zenWins>=50 
-  },
-  collector: { 
-    id:'collector', name:'收藏家', icon:'🎨', desc:'拥有5个以上皮肤', 
-    reward:150, check:(s)=>s.skinsOwned>=5 
-  },
-  total_wins_100: { 
-    id:'total_wins_100', name:'百战老将', icon:'🎖️', desc:'累计胜利100次', 
-    reward:300, check:(s)=>s.totalWins>=100 
-  }
+// BGM 音乐列表
+const BGM_TRACKS = {
+  calm:      { name:'宁静旋律', price:0,   icon:'🎹', bpm:60,  style:'钢琴' },
+  electronic:{ name:'电子节拍', price:40,  icon:'🎸', bpm:100, style:'电子' },
+  jazz:      { name:'爵士夜晚', price:50,  icon:'🎺', bpm:80,  style:'爵士' },
+  rock:      { name:'摇滚冲击', price:60,  icon:'🥁', bpm:120, style:'摇滚' },
+  space:     { name:'太空漫游', price:60,  icon:'🌌', bpm:0,   style:'氛围' },
+  classical: { name:'古典华尔兹',price:70,  icon:'🎻', bpm:70,  style:'古典' },
+  pop:       { name:'流行旋律', price:50,  icon:'🎤', bpm:110, style:'流行' },
+  cyber:     { name:'赛博朋克', price:80,  icon:'🎧', bpm:130, style:'合成波' },
+  tribal:    { name:'部落鼓点', price:60,  icon:'🪘', bpm:90,  style:'民族' },
+  epic:      { name:'史诗交响', price:100, icon:'🎼', bpm:140, style:'史诗' }
 };
 
-const DIFF_LABEL = { easy:'简单', medium:'中等', hard:'困难', custom:'自定义' };
+// 段位配置
+const RANKS = {
+  bronze:  { name:'青铜', icon:'◆', color:'#8B4513', minScore:0,    skin:null },
+  silver:  { name:'白银', icon:'◇', color:'#C0C0C0', minScore:200,  skin:null },
+  gold:    { name:'黄金', icon:'✦', color:'#FFD700', minScore:500,  skin:'gold' },
+  diamond: { name:'钻石', icon:'❖', color:'#4169E1', minScore:800,  skin:'diamond' },
+  master:  { name:'大师', icon:'✧', color:'#9400D3', minScore:1150, skin:'master' },
+  king:    { name:'王者', icon:'✺', color:'#FF4500', minScore:1550, skin:'king' }
+};
+
+// 特殊地雷类型
+const SPECIAL_MINE_TYPES = {
+  treasure: { icon:'💰', color:'#FFD700', chance:0.05, desc:'宝藏雷' },
+  chain:    { icon:'🔥', color:'#DC143C', chance:0.10, desc:'连锁雷' },
+  freeze:   { icon:'❄️', color:'#87CEEB', chance:0.05, desc:'冰冻雷' },
+  mystery:  { icon:'🎲', color:'rainbow', chance:0.05, desc:'随机雷' }
+};
+
+const DIFF_LABEL = { easy:'简单', medium:'中等', hard:'困难', custom:'自定义', special:'特殊地雷' };
+
 
 /* =========================================================
-   持久化存档（localStorage）
+   持久化存档
 ========================================================= */
-const SAVE_KEY = 'ms_save_v2';
-
-function loadState() {
-  let raw = null;
-  try { raw = localStorage.getItem(SAVE_KEY); } catch(e) {}
-  let s = raw ? JSON.parse(raw) : null;
-  if (!s) {
-    s = createDefaultSave();
-    saveState(s);
-  } else {
-    // 向后兼容：补充新字段
-    s = { ...createDefaultSave(), ...s };
-    if (!s.survival) s.survival = { currentStreak:0, maxStreak:0, currentLevel:1 };
-    if (!s.daily) s.daily = createDefaultDaily();
-    if (!s.achievements) s.achievements = { unlocked:[], stats:{} };
-    if (!s.ownedBackgrounds) s.ownedBackgrounds = ['none'];
-    if (!s.ownedSounds) s.ownedSounds = ['classic'];
-    if (!s.ownedEffects) s.ownedEffects = ['none'];
-    if (!s.activeBackground) s.activeBackground = 'none';
-    if (!s.activeSound) s.activeSound = 'classic';
-    if (!s.activeEffect) s.activeEffect = 'none';
-  }
-  return s;
-}
-
+const SAVE_KEY = 'ms_save_v3';
 
 function createDefaultSave() {
   return {
@@ -144,28 +115,48 @@ function createDefaultSave() {
     activeSound: 'classic',
     ownedEffects: ['none'],
     activeEffect: 'none',
+    ownedBGM: ['calm'],
+    activeBGM: 'calm',
     best: {
       easy:{ time:null, score:0 }, medium:{ time:null, score:0 },
-      hard:{ time:null, score:0 }, custom:{ time:null, score:0 }
+      hard:{ time:null, score:0 }, custom:{ time:null, score:0 }, special:{ time:null, score:0 }
     },
-    lastWinDate: { easy:null, medium:null, hard:null, custom:null },
+    lastWinDate: { easy:null, medium:null, hard:null, custom:null, special:null },
     survival: { currentStreak:0, maxStreak:0, currentLevel:1 },
-    daily: createDefaultDaily(),
+    daily: { lastCheckIn:null, consecutiveDays:0, totalCheckIns:0, history:[], timezone:'UTC', resetHour:0 },
     achievements: { unlocked:[], stats:{} },
+    rank: { wins:0, losses:0, score:0, currentRank:'bronze' },
+    statistics: {
+      totalGames:0, totalWins:0, totalLosses:0, totalPlayTime:0,
+      byDifficulty: {}, totalCoinsEarned:0, totalCoinsSpent:0,
+      firstPlayDate:null, lastPlayDate:null, activeDays:0
+    },
+    eyeProtection: { enabled:false, mode:'auto', intensity:'medium', reminderInterval:30 },
+    musicPlayer: { volume:0.7, bgmVolume:0.8, sfxVolume:0.6, playing:false, mode:'loop' },
     devMode: false,
     devModeBackupCoins: null
   };
 }
 
-function createDefaultDaily() {
-  return {
-    lastCheckIn: null,
-    consecutiveDays: 0,
-    totalCheckIns: 0,
-    history: [],
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC',
-    resetHour: 0  // 每天0点重置
-  };
+function loadState() {
+  let raw = null;
+  try { raw = localStorage.getItem(SAVE_KEY); } catch(e) {}
+  let s = raw ? JSON.parse(raw) : null;
+  if (!s) {
+    s = createDefaultSave();
+    saveState(s);
+  } else {
+    // 向后兼容：补充新字段
+    const defaults = createDefaultSave();
+    s = { ...defaults, ...s };
+    if (!s.rank) s.rank = defaults.rank;
+    if (!s.statistics) s.statistics = defaults.statistics;
+    if (!s.eyeProtection) s.eyeProtection = defaults.eyeProtection;
+    if (!s.musicPlayer) s.musicPlayer = defaults.musicPlayer;
+    if (!s.ownedBGM) s.ownedBGM = ['calm'];
+    if (!s.activeBGM) s.activeBGM = 'calm';
+  }
+  return s;
 }
 
 function saveState(s) {
@@ -174,13 +165,12 @@ function saveState(s) {
 
 let SAVE = loadState();
 
+
 /* =========================================================
-   振动反馈（移动设备）
+   振动反馈
 ========================================================= */
 function vibrate(pattern) {
-  if (navigator.vibrate) {
-    navigator.vibrate(pattern);
-  }
+  if (navigator.vibrate) navigator.vibrate(pattern);
 }
 
 const Vibration = {
@@ -192,25 +182,40 @@ const Vibration = {
   pattern: (arr) => vibrate(arr)
 };
 
-
 /* =========================================================
-   音效系统（Web Audio）
+   音效系统（支持不同音效包）
 ========================================================= */
 let audioCtx = null;
-function ac() { 
-  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); 
-  return audioCtx; 
+function ac() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
 }
 
-function beep(freq, dur, type, gain) {
+function beep(freq, dur, type, gain, pack) {
   try {
     const ctx = ac();
     const osc = ctx.createOscillator();
     const g = ctx.createGain();
+    
+    // 根据音效包调整参数
+    if (pack === 'retro') {
+      type = 'square';
+      freq *= 0.8;
+      gain *= 1.2;
+    } else if (pack === 'nature') {
+      type = 'sine';
+      gain *= 0.6;
+      dur *= 1.5;
+    } else if (pack === 'scifi') {
+      type = 'sawtooth';
+      freq *= 1.3;
+    }
+    
     osc.type = type || 'sine';
     osc.frequency.value = freq;
-    g.gain.value = gain || 0.08;
-    osc.connect(g); g.connect(ctx.destination);
+    g.gain.value = (gain || 0.08) * (SAVE.musicPlayer.sfxVolume || 0.6);
+    osc.connect(g);
+    g.connect(ctx.destination);
     osc.start();
     g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + dur);
     osc.stop(ctx.currentTime + dur);
@@ -218,33 +223,38 @@ function beep(freq, dur, type, gain) {
 }
 
 const Sound = {
-  click: () => { beep(520, 0.05, 'square', 0.05); Vibration.light(); },
-  flag: () => { beep(340, 0.08, 'triangle', 0.07); Vibration.light(); },
-  open: () => { beep(660, 0.06, 'sine', 0.05); Vibration.light(); },
-  win: () => { 
-    beep(523, 0.12, 'sine', 0.09); 
-    setTimeout(() => beep(659, 0.12, 'sine', 0.09), 120); 
-    setTimeout(() => beep(784, 0.2, 'sine', 0.09), 240);
+  click: () => { beep(520, 0.05, 'square', 0.05, SAVE.activeSound); Vibration.light(); },
+  flag: () => { beep(340, 0.08, 'triangle', 0.07, SAVE.activeSound); Vibration.light(); },
+  open: () => { beep(660, 0.06, 'sine', 0.05, SAVE.activeSound); Vibration.light(); },
+  win: () => {
+    const pack = SAVE.activeSound;
+    beep(523, 0.12, 'sine', 0.09, pack);
+    setTimeout(() => beep(659, 0.12, 'sine', 0.09, pack), 120);
+    setTimeout(() => beep(784, 0.2, 'sine', 0.09, pack), 240);
     Vibration.success();
   },
-  lose: () => { 
-    beep(200, 0.25, 'sawtooth', 0.09); 
-    setTimeout(() => beep(120, 0.35, 'sawtooth', 0.09), 150);
+  lose: () => {
+    const pack = SAVE.activeSound;
+    beep(200, 0.25, 'sawtooth', 0.09, pack);
+    setTimeout(() => beep(120, 0.35, 'sawtooth', 0.09, pack), 150);
     Vibration.error();
   },
-  coin: () => { 
-    beep(880, 0.05, 'square', 0.06); 
-    setTimeout(() => beep(1200, 0.08, 'square', 0.06), 60);
+  coin: () => {
+    const pack = SAVE.activeSound;
+    beep(880, 0.05, 'square', 0.06, pack);
+    setTimeout(() => beep(1200, 0.08, 'square', 0.06, pack), 60);
     Vibration.light();
   },
-  buy: () => { beep(700, 0.1, 'sine', 0.08); Vibration.medium(); },
+  buy: () => { beep(700, 0.1, 'sine', 0.08, SAVE.activeSound); Vibration.medium(); },
   achievement: () => {
-    beep(800, 0.1, 'sine', 0.08);
-    setTimeout(() => beep(1000, 0.1, 'sine', 0.08), 100);
-    setTimeout(() => beep(1200, 0.15, 'sine', 0.08), 200);
+    const pack = SAVE.activeSound;
+    beep(800, 0.1, 'sine', 0.08, pack);
+    setTimeout(() => beep(1000, 0.1, 'sine', 0.08, pack), 100);
+    setTimeout(() => beep(1200, 0.15, 'sine', 0.08, pack), 200);
     Vibration.pattern([10, 30, 10, 30, 10]);
   }
 };
+
 
 /* =========================================================
    工具函数
@@ -252,19 +262,15 @@ const Sound = {
 function $(sel) { return document.querySelector(sel); }
 function $all(sel) { return document.querySelectorAll(sel); }
 
-
 function todayStr() {
   const d = getUserDate();
   return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
 }
 
 function getUserDate() {
-  // 考虑用户时区和自定义重置小时
   const now = new Date();
   const resetHour = SAVE.daily.resetHour || 0;
   const adjusted = new Date(now.getTime());
-  
-  // 如果当前小时小于重置小时，认为还是"昨天"
   if (now.getHours() < resetHour) {
     adjusted.setDate(adjusted.getDate() - 1);
   }
@@ -285,22 +291,18 @@ function toast(msg) {
   toast._tm = setTimeout(() => t.classList.add('hidden'), 2000);
 }
 
-function applySkin() {
-  document.body.className = 'skin-' + SAVE.activeSkin;
-  applyBackground();
-}
-
 function refreshCoinDisplays() {
   const display = SAVE.devMode ? '∞' : SAVE.coins;
   $('#coin-count-home').textContent = display;
-  $('#coin-count-shop').textContent = display;
+  if ($('#coin-count-shop')) $('#coin-count-shop').textContent = display;
 }
 
 /* =========================================================
-   背景特效系统
+   背景特效系统（实时渲染）
 ========================================================= */
 function applyBackground() {
   const bg = $('#particles-bg');
+  if (!bg) return;
   bg.innerHTML = '';
   
   if (SAVE.activeBackground === 'particles') {
@@ -317,64 +319,53 @@ function applyBackground() {
 function createParticles(container) {
   for (let i = 0; i < 30; i++) {
     const particle = document.createElement('div');
+    const size = Math.random() * 4 + 2;
     particle.style.cssText = `
-      position: absolute;
-      width: ${Math.random() * 4 + 2}px;
-      height: ${Math.random() * 4 + 2}px;
-      background: rgba(255, 255, 255, ${Math.random() * 0.8 + 0.2});
-      border-radius: 50%;
-      left: ${Math.random() * 100}%;
-      top: ${Math.random() * 100}%;
-      animation: float ${Math.random() * 10 + 10}s infinite ease-in-out;
+      position:absolute;width:${size}px;height:${size}px;
+      background:rgba(255,255,255,${Math.random()*0.8+0.2});border-radius:50%;
+      left:${Math.random()*100}%;top:${Math.random()*100}%;
+      animation:float ${Math.random()*10+10}s infinite ease-in-out;
     `;
     container.appendChild(particle);
   }
   
-  const style = document.createElement('style');
-  style.textContent = `
-    @keyframes float {
-      0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
-      50% { opacity: 1; }
-      100% { transform: translateY(-100vh) translateX(${Math.random() * 100 - 50}px); }
-    }
-  `;
-  document.head.appendChild(style);
+  if (!document.getElementById('particle-style')) {
+    const style = document.createElement('style');
+    style.id = 'particle-style';
+    style.textContent = `@keyframes float{0%,100%{transform:translateY(0)translateX(0);opacity:0}50%{opacity:1}100%{transform:translateY(-100vh)translateX(${Math.random()*100-50}px)}}`;
+    document.head.appendChild(style);
+  }
 }
 
 
 function createGradientAnimation(container) {
   container.style.cssText = `
-    background: linear-gradient(45deg, #ff6b9d, #c06c84, #6c5b7b, #355c7d);
-    background-size: 400% 400%;
-    animation: gradientMove 15s ease infinite;
+    background:linear-gradient(45deg,#ff6b9d,#c06c84,#6c5b7b,#355c7d);
+    background-size:400% 400%;animation:gradientMove 15s ease infinite;
   `;
-  
-  const style = document.createElement('style');
-  style.textContent = `
-    @keyframes gradientMove {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-  `;
-  document.head.appendChild(style);
+  if (!document.getElementById('gradient-style')) {
+    const style = document.createElement('style');
+    style.id = 'gradient-style';
+    style.textContent = `@keyframes gradientMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}`;
+    document.head.appendChild(style);
+  }
 }
 
 function createMatrixRain(container) {
   const canvas = document.createElement('canvas');
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-  canvas.style.cssText = 'width: 100%; height: 100%;';
+  canvas.style.cssText = 'width:100%;height:100%;';
   container.appendChild(canvas);
   
   const ctx = canvas.getContext('2d');
   const chars = '01アイウエオカキクケコ';
   const fontSize = 14;
-  const columns = canvas.width / fontSize;
-  const drops = Array(Math.floor(columns)).fill(1);
+  const columns = Math.floor(canvas.width / fontSize);
+  const drops = Array(columns).fill(1);
   
   function draw() {
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+    ctx.fillStyle = 'rgba(0,0,0,0.05)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = '#0F0';
     ctx.font = fontSize + 'px monospace';
@@ -382,43 +373,113 @@ function createMatrixRain(container) {
     for (let i = 0; i < drops.length; i++) {
       const text = chars[Math.floor(Math.random() * chars.length)];
       ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-      if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-        drops[i] = 0;
-      }
+      if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
       drops[i]++;
     }
   }
-  
   setInterval(draw, 50);
 }
 
 function createFireflies(container) {
   for (let i = 0; i < 20; i++) {
     const fly = document.createElement('div');
+    const left = Math.random() * 100;
+    const top = Math.random() * 100;
     fly.style.cssText = `
-      position: absolute;
-      width: 3px;
-      height: 3px;
-      background: #ffd700;
-      border-radius: 50%;
-      box-shadow: 0 0 10px #ffd700;
-      left: ${Math.random() * 100}%;
-      top: ${Math.random() * 100}%;
-      animation: firefly ${Math.random() * 5 + 3}s infinite ease-in-out;
+      position:absolute;width:3px;height:3px;background:#ffd700;border-radius:50%;
+      box-shadow:0 0 10px #ffd700;left:${left}%;top:${top}%;
+      animation:firefly ${Math.random()*5+3}s infinite ease-in-out;
     `;
     container.appendChild(fly);
   }
   
-  const style = document.createElement('style');
-  style.textContent = `
-    @keyframes firefly {
-      0%, 100% { transform: translate(0, 0); opacity: 0.3; }
-      50% { transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px); opacity: 1; }
-    }
-  `;
-  document.head.appendChild(style);
+  if (!document.getElementById('firefly-style')) {
+    const style = document.createElement('style');
+    style.id = 'firefly-style';
+    style.textContent = `@keyframes firefly{0%,100%{transform:translate(0,0);opacity:0.3}50%{transform:translate(${Math.random()*100-50}px,${Math.random()*100-50}px);opacity:1}}`;
+    document.head.appendChild(style);
+  }
 }
 
+/* =========================================================
+   段位系统
+========================================================= */
+function calculateRankScore() {
+  return (SAVE.rank.wins * 5) + (SAVE.rank.wins / (SAVE.rank.wins + SAVE.rank.losses || 1) * 1000);
+}
+
+function updateRank() {
+  const score = calculateRankScore();
+  SAVE.rank.score = Math.round(score);
+  
+  let newRank = 'bronze';
+  for (const [key, rank] of Object.entries(RANKS)) {
+    if (score >= rank.minScore) newRank = key;
+  }
+  
+  if (newRank !== SAVE.rank.currentRank) {
+    const oldRank = RANKS[SAVE.rank.currentRank];
+    const newRankData = RANKS[newRank];
+    SAVE.rank.currentRank = newRank;
+    
+    // 解锁段位皮肤
+    if (newRankData.skin && !SAVE.ownedSkins.includes(newRankData.skin)) {
+      SAVE.ownedSkins.push(newRankData.skin);
+      toast(`🎉 恭喜晋级 ${newRankData.icon} ${newRankData.name}！解锁专属皮肤！`);
+      Sound.achievement();
+    } else {
+      toast(`🎉 段位提升：${newRankData.icon} ${newRankData.name}`);
+    }
+  }
+  
+  saveState(SAVE);
+}
+
+
+/* =========================================================
+   护眼模式
+========================================================= */
+let eyeProtectionTimer = null;
+let playTimeStart = null;
+
+function applyEyeProtection() {
+  const mode = SAVE.eyeProtection.mode;
+  const intensity = SAVE.eyeProtection.intensity;
+  let enabled = SAVE.eyeProtection.enabled;
+  
+  if (mode === 'auto') {
+    const hour = new Date().getHours();
+    enabled = (hour >= 18 || hour < 6);
+  }
+  
+  const filters = {
+    light: 'sepia(5%) saturate(95%)',
+    medium: 'sepia(10%) saturate(90%) contrast(95%)',
+    heavy: 'sepia(15%) saturate(85%) contrast(90%) brightness(90%)'
+  };
+  
+  document.body.style.filter = enabled ? filters[intensity] : 'none';
+  
+  // 游戏时长提醒
+  if (enabled && SAVE.eyeProtection.reminderInterval > 0) {
+    clearInterval(eyeProtectionTimer);
+    eyeProtectionTimer = setInterval(() => {
+      showEyeProtectionReminder();
+    }, SAVE.eyeProtection.reminderInterval * 60 * 1000);
+  }
+}
+
+function showEyeProtectionReminder() {
+  const playTime = playTimeStart ? Math.floor((Date.now() - playTimeStart) / 60000) : 0;
+  if (playTime >= SAVE.eyeProtection.reminderInterval) {
+    const modal = confirm(`👀 休息提醒\n\n已连续游戏 ${playTime} 分钟\n\n建议：\n• 远眺窗外 20 秒\n• 闭眼休息 1 分钟\n• 喝一口水\n\n点击"确定"继续游戏，"取消"休息5分钟`);
+    if (modal) {
+      playTimeStart = Date.now();
+    } else {
+      playTimeStart = Date.now() + 5 * 60 * 1000;
+    }
+  }
+}
 
 /* =========================================================
    开发者模式
@@ -445,9 +506,6 @@ function toggleDevMode() {
   saveState(SAVE);
   refreshCoinDisplays();
   updateDevModeUI();
-  if ($('#screen-shop').classList.contains('active')) {
-    renderShop();
-  }
 }
 
 function updateDevModeUI() {
@@ -484,7 +542,7 @@ function buildEmptyBoard(rows, cols) {
   for (let r = 0; r < rows; r++) {
     const row = [];
     for (let c = 0; c < cols; c++) {
-      row.push({ mine: false, revealed: false, flagged: false, adj: 0 });
+      row.push({ mine: false, revealed: false, flagged: false, adj: 0, specialType: null });
     }
     board.push(row);
   }
@@ -503,7 +561,7 @@ function neighborsOf(r, c, rows, cols) {
   return list;
 }
 
-function placeMines(board, rows, cols, mines, safeR, safeC) {
+function placeMines(board, rows, cols, mines, safeR, safeC, isSpecialMode) {
   const safeSet = new Set();
   safeSet.add(safeR + '_' + safeC);
   neighborsOf(safeR, safeC, rows, cols).forEach(([r, c]) => safeSet.add(r + '_' + c));
@@ -514,18 +572,27 @@ function placeMines(board, rows, cols, mines, safeR, safeC) {
       if (!safeSet.has(r + '_' + c)) candidates.push([r, c]);
     }
   }
-  
+
   for (let i = candidates.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [candidates[i], candidates[j]] = [candidates[j], candidates[i]];
   }
-  
+
   const m = Math.min(mines, candidates.length);
   for (let i = 0; i < m; i++) {
     const [r, c] = candidates[i];
     board[r][c].mine = true;
+    
+    // 特殊地雷模式
+    if (isSpecialMode) {
+      const rand = Math.random();
+      if (rand < 0.05) board[r][c].specialType = 'treasure';
+      else if (rand < 0.15) board[r][c].specialType = 'chain';
+      else if (rand < 0.20) board[r][c].specialType = 'freeze';
+      else if (rand < 0.25) board[r][c].specialType = 'mystery';
+    }
   }
-  
+
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
       if (board[r][c].mine) continue;
@@ -539,15 +606,10 @@ function placeMines(board, rows, cols, mines, safeR, safeC) {
   return m;
 }
 
-
-/* =========================================================
-   开始游戏
-========================================================= */
-function startGame(diffKey, customCfg, isZen = false, isSurvival = false) {
+function startGame(diffKey, customCfg, isZen = false, isSurvival = false, isSpecial = false) {
   let rows, cols, mines, base, par;
-  
+
   if (isSurvival) {
-    // 生存模式：根据关卡递增难度
     const level = SAVE.survival.currentLevel;
     rows = Math.min(9 + Math.floor(level / 3), 20);
     cols = Math.min(9 + Math.floor(level / 3), 20);
@@ -556,45 +618,54 @@ function startGame(diffKey, customCfg, isZen = false, isSurvival = false) {
     base = cp.base * (1 + level * 0.1);
     par = cp.par;
   } else if (diffKey === 'custom') {
-    rows = customCfg.rows; cols = customCfg.cols; mines = customCfg.mines;
+    rows = customCfg.rows;
+    cols = customCfg.cols;
+    mines = customCfg.mines;
     const cp = customBaseAndPar(rows, cols, mines);
-    base = cp.base; par = cp.par;
+    base = cp.base;
+    par = cp.par;
   } else {
     const d = DIFFS[diffKey];
-    rows = d.rows; cols = d.cols; mines = d.mines; base = d.base; par = d.par;
+    rows = d.rows;
+    cols = d.cols;
+    mines = d.mines;
+    base = d.base;
+    par = d.par;
   }
+
+  if (isSpecial) base = Math.round(base * 1.3);
 
   G = {
     diffKey, rows, cols, mines, origMines: mines, base, par,
     board: buildEmptyBoard(rows, cols),
-    started: false, over: false,
-    firstClick: true,
-    timer: 0, timerInt: null, frozen: false,
-    flagMode: false,
-    itemsUsed: 0,
-    flagCount: 0,
-    revealedSafe: 0,
-    undoSnapshot: null,
-    isZen: isZen,
-    isSurvival: isSurvival,
-    noFlagUsed: true
+    started: false, over: false, firstClick: true,
+    timer: 0, timerInt: null, frozen: false, flagMode: false,
+    itemsUsed: 0, flagCount: 0, revealedSafe: 0, undoSnapshot: null,
+    isZen, isSurvival, isSpecial, noFlagUsed: true
   };
 
-  const cellSize = cols <= 9 ? 34 : cols <= 16 ? 28 : cols <= 22 ? 24 : 20;
+  renderGame();
+  showScreen('screen-game');
+  playTimeStart = Date.now();
+}
+
+function renderGame() {
+  const cellSize = G.cols <= 9 ? 34 : G.cols <= 16 ? 28 : G.cols <= 22 ? 24 : 20;
   const boardEl = $('#board');
-  boardEl.style.gridTemplateColumns = `repeat(${cols}, ${cellSize}px)`;
+  boardEl.style.gridTemplateColumns = `repeat(${G.cols}, ${cellSize}px)`;
   boardEl.innerHTML = '';
   G.cellEls = [];
-  
-  for (let r = 0; r < rows; r++) {
+
+  for (let r = 0; r < G.rows; r++) {
     const rowEls = [];
-    for (let c = 0; c < cols; c++) {
+    for (let c = 0; c < G.cols; c++) {
       const div = document.createElement('div');
       div.className = 'cell';
       div.style.width = cellSize + 'px';
       div.style.height = cellSize + 'px';
       div.style.fontSize = Math.round(cellSize * 0.45) + 'px';
-      div.dataset.r = r; div.dataset.c = c;
+      div.dataset.r = r;
+      div.dataset.c = c;
       div.addEventListener('click', onCellClick);
       div.addEventListener('contextmenu', onCellRightClick);
       boardEl.appendChild(div);
@@ -603,39 +674,20 @@ function startGame(diffKey, customCfg, isZen = false, isSurvival = false) {
     G.cellEls.push(rowEls);
   }
 
-  $('#mine-count').textContent = mines;
+  $('#mine-count').textContent = G.mines;
   $('#timer').textContent = '0';
-  
-  // 禅模式隐藏计时器
+
   const timerDisplay = $('#timer-display');
-  if (isZen) {
-    timerDisplay.classList.add('hidden');
-  } else {
-    timerDisplay.classList.remove('hidden');
-  }
-  
-  // 生存模式显示进度
-  const survivalProgress = $('#survival-progress');
-  if (isSurvival) {
-    survivalProgress.classList.remove('hidden');
-    $('#game-streak').textContent = SAVE.survival.currentStreak;
-    const bonus = 1 + (SAVE.survival.currentStreak * 0.1);
-    $('#game-bonus').textContent = '×' + bonus.toFixed(1);
-  } else {
-    survivalProgress.classList.add('hidden');
-  }
-  
+  if (G.isZen) timerDisplay.classList.add('hidden');
+  else timerDisplay.classList.remove('hidden');
+
   $('#btn-flag-mode').classList.remove('active-mode');
   renderItemsBar();
-  showScreen('screen-game');
 }
 
 
-/* =========================================================
-   计时器
-========================================================= */
 function startTimer() {
-  if (G.isZen) return; // 禅模式不计时
+  if (G.isZen) return;
   G.timerInt = setInterval(() => {
     if (G.frozen) return;
     G.timer++;
@@ -643,13 +695,10 @@ function startTimer() {
   }, 1000);
 }
 
-function stopTimer() { 
-  clearInterval(G.timerInt); 
+function stopTimer() {
+  clearInterval(G.timerInt);
 }
 
-/* =========================================================
-   点击逻辑
-========================================================= */
 let pendingClick = null;
 const DBLCLICK_WINDOW = 240;
 
@@ -685,7 +734,8 @@ function onCellRightClick(e) {
   const r = +e.currentTarget.dataset.r, c = +e.currentTarget.dataset.c;
   if (!G || G.over) return;
   if (pendingClick && pendingClick.r === r && pendingClick.c === c) {
-    clearTimeout(pendingClick.timerId); pendingClick = null;
+    clearTimeout(pendingClick.timerId);
+    pendingClick = null;
   }
   const cell = G.board[r][c];
   if (!cell.revealed) toggleFlag(r, c);
@@ -718,7 +768,7 @@ function handlePrimaryAction(r, c) {
 
   if (G.firstClick) {
     snapshotBoard();
-    const placed = placeMines(G.board, G.rows, G.cols, G.mines, r, c);
+    const placed = placeMines(G.board, G.rows, G.cols, G.mines, r, c, G.isSpecial);
     G.mines = placed;
     $('#mine-count').textContent = Math.max(0, G.mines - G.flagCount);
     G.firstClick = false;
@@ -731,7 +781,6 @@ function handlePrimaryAction(r, c) {
   revealCell(r, c);
   if (!G.over) checkWin();
 }
-
 
 function snapshotBoard() {
   G.undoSnapshot = {
@@ -754,7 +803,11 @@ function revealCell(r, c) {
     renderCell(cr, cc);
 
     if (cur.mine) {
-      triggerLose(cr, cc);
+      if (G.isSpecial && cur.specialType) {
+        handleSpecialMine(cr, cc, cur.specialType);
+      } else {
+        triggerLose(cr, cc);
+      }
       return;
     }
     Sound.open();
@@ -765,6 +818,85 @@ function revealCell(r, c) {
     }
   }
 }
+
+function handleSpecialMine(r, c, type) {
+  if (type === 'treasure') {
+    const coins = Math.floor(Math.random() * 11) + 5;
+    SAVE.coins += coins;
+    saveState(SAVE);
+    refreshCoinDisplays();
+    toast(`💰 发现宝藏！获得 ${coins} 金币`);
+    Sound.coin();
+    G.board[r][c].mine = false;
+    checkWin();
+  } else if (type === 'freeze') {
+    toast('❄️ 冰冻雷！时间暂停 5 秒');
+    G.frozen = true;
+    setTimeout(() => { G.frozen = false; }, 5000);
+    G.board[r][c].mine = false;
+    checkWin();
+  } else if (type === 'chain') {
+    toast('🔥 连锁雷！引爆周围地雷');
+    Vibration.error();
+    const nbrs = neighborsOf(r, c, G.rows, G.cols);
+    nbrs.forEach(([nr, nc]) => {
+      if (G.board[nr][nc].mine) {
+        G.board[nr][nc].revealed = true;
+        renderCell(nr, nc);
+      }
+    });
+    triggerLose(r, c);
+  } else if (type === 'mystery') {
+    const rand = Math.random();
+    if (rand < 0.30) {
+      const coins = 20;
+      SAVE.coins += coins;
+      saveState(SAVE);
+      refreshCoinDisplays();
+      toast(`🎲 随机雷：获得 ${coins} 金币！`);
+      Sound.coin();
+      G.board[r][c].mine = false;
+      checkWin();
+    } else if (rand < 0.55) {
+      toast('🎲 随机雷：揭示 3×3 区域');
+      const nbrs = neighborsOf(r, c, G.rows, G.cols).concat([[r, c]]);
+      nbrs.forEach(([nr, nc]) => {
+        if (!G.board[nr][nc].mine && !G.board[nr][nc].revealed) {
+          G.board[nr][nc].revealed = true;
+          G.revealedSafe++;
+          renderCell(nr, nc);
+        }
+      });
+      G.board[r][c].mine = false;
+      checkWin();
+    } else if (rand < 0.75) {
+      toast('🎲 随机雷：自动标记 3 个地雷');
+      let marked = 0;
+      for (let rr = 0; rr < G.rows && marked < 3; rr++) {
+        for (let cc = 0; cc < G.cols && marked < 3; cc++) {
+          if (G.board[rr][cc].mine && !G.board[rr][cc].revealed && !G.board[rr][cc].flagged) {
+            toggleFlag(rr, cc);
+            marked++;
+          }
+        }
+      }
+      G.board[r][c].mine = false;
+      checkWin();
+    } else if (rand < 0.90) {
+      if (G.timer >= 10) {
+        G.timer -= 10;
+        $('#timer').textContent = G.timer;
+        toast('🎲 随机雷：时间 -10 秒');
+      }
+      G.board[r][c].mine = false;
+      checkWin();
+    } else {
+      toast('🎲 随机雷：爆炸！');
+      triggerLose(r, c);
+    }
+  }
+}
+
 
 function toggleFlag(r, c) {
   const cell = G.board[r][c];
@@ -785,9 +917,24 @@ function renderCell(r, c) {
     el.classList.add('revealed');
     if (cell.mine) {
       el.classList.add('mine-cell');
+      if (cell.specialType) {
+        el.textContent = SPECIAL_MINE_TYPES[cell.specialType].icon;
+      }
     } else if (cell.adj > 0) {
       el.textContent = cell.adj;
       el.dataset.n = cell.adj;
+      
+      // 特殊地雷周围数字颜色
+      if (G.isSpecial) {
+        const nbrs = neighborsOf(r, c, G.rows, G.cols);
+        for (const [nr, nc] of nbrs) {
+          if (G.board[nr][nc].mine && G.board[nr][nc].specialType) {
+            const type = G.board[nr][nc].specialType;
+            el.style.color = SPECIAL_MINE_TYPES[type].color;
+            break;
+          }
+        }
+      }
     }
     void el.offsetWidth;
     el.classList.add('pop');
@@ -796,15 +943,11 @@ function renderCell(r, c) {
   }
 }
 
-
-/* =========================================================
-   胜负判断
-========================================================= */
 function triggerLose(r, c) {
   G.over = true;
   stopTimer();
   G.cellEls[r][c].classList.add('exploded');
-  
+
   for (let rr = 0; rr < G.rows; rr++) {
     for (let cc = 0; cc < G.cols; cc++) {
       const cell = G.board[rr][cc];
@@ -814,16 +957,20 @@ function triggerLose(r, c) {
       }
     }
   }
-  
+
   Sound.lose();
   
-  // 生存模式失败：重置连胜
   if (G.isSurvival) {
     SAVE.survival.currentStreak = 0;
     SAVE.survival.currentLevel = 1;
-    saveState(SAVE);
   }
   
+  SAVE.rank.losses++;
+  SAVE.statistics.totalLosses++;
+  SAVE.statistics.totalGames++;
+  updateRank();
+  saveState(SAVE);
+
   setTimeout(() => showResult(false), 600);
 }
 
@@ -834,197 +981,26 @@ function checkWin() {
     stopTimer();
     Sound.win();
     
-    // 生存模式：增加连胜和等级
     if (G.isSurvival) {
       SAVE.survival.currentStreak++;
       SAVE.survival.currentLevel++;
       if (SAVE.survival.currentStreak > SAVE.survival.maxStreak) {
         SAVE.survival.maxStreak = SAVE.survival.currentStreak;
       }
-      updateAchievementStats({ maxStreak: SAVE.survival.maxStreak });
-      saveState(SAVE);
     }
+    
+    SAVE.rank.wins++;
+    SAVE.statistics.totalWins++;
+    SAVE.statistics.totalGames++;
+    updateRank();
     
     setTimeout(() => showResult(true), 400);
   }
 }
 
-
-/* =========================================================
-   结算与奖励
-========================================================= */
-function computeCoins() {
-  if (G.isZen) {
-    // 禅模式：固定少量奖励
-    return { coins: 5, dailyBonus: 0, speedMult: 1, itemMult: 1, fairBonus: 1 };
-  }
-  
-  const ratio = G.timer / G.par;
-  let speedMult;
-  if (ratio <= 0.5) speedMult = 3.0;
-  else if (ratio <= 1) speedMult = 2.0;
-  else if (ratio <= 1.5) speedMult = 1.5;
-  else if (ratio <= 2) speedMult = 1.0;
-  else speedMult = 0.5;
-
-  const itemMult = Math.max(0.3, 1 - 0.15 * G.itemsUsed);
-  const fairBonus = G.itemsUsed === 0 ? 1.5 : 1.0;
-
-  let coins = Math.round(G.base * speedMult * itemMult * fairBonus);
-
-  // 生存模式连胜加成
-  if (G.isSurvival) {
-    const streakBonus = 1 + (SAVE.survival.currentStreak * 0.1);
-    coins = Math.round(coins * streakBonus);
-  }
-
-  // 每日首胜
-  let dailyBonus = 0;
-  const today = todayStr();
-  if (!G.isSurvival && SAVE.lastWinDate[G.diffKey] !== today) {
-    dailyBonus = 20;
-    SAVE.lastWinDate[G.diffKey] = today;
-  }
-  
-  return { coins: coins + dailyBonus, dailyBonus, speedMult, itemMult, fairBonus };
-}
-
-function computeScore() {
-  if (G.isZen) return 0;
-  
-  const baseScore = G.rows * G.cols * 4;
-  const mineScore = G.mines * 15;
-  const timeScore = Math.max(0, (2 * G.par - G.timer)) * 3;
-  const fairBonus = G.itemsUsed === 0 ? 500 : 0;
-  const itemPenalty = G.itemsUsed * 150;
-  return Math.max(0, Math.round(baseScore + mineScore + timeScore + fairBonus - itemPenalty));
-}
-
-function showResult(won) {
-  const modal = $('#modal-result');
-  const title = $('#result-title');
-  const badge = $('#record-badge');
-  const stats = $('#result-stats');
-  const earnEl = $('#coin-earn');
-  const achievementEl = $('#achievement-unlocked');
-
-  badge.classList.add('hidden');
-  achievementEl.classList.add('hidden');
-
-  if (won) {
-    title.textContent = G.isSurvival ? '🔥 生存模式 +1！' : (G.isZen ? '🧘 禅心通达' : '🎉 通关成功！');
-    const { coins, dailyBonus, speedMult, itemMult, fairBonus } = computeCoins();
-    const score = computeScore();
-    
-    SAVE.coins += coins;
-    
-    // 更新成就统计
-    updateAchievementStats({
-      totalWins: (SAVE.achievements.stats.totalWins || 0) + 1,
-      bestMediumTime: G.diffKey === 'medium' ? Math.min(SAVE.achievements.stats.bestMediumTime || Infinity, G.timer) : undefined,
-      noFlagWin: G.noFlagUsed ? true : undefined,
-      itemsUsedTotal: (SAVE.achievements.stats.itemsUsedTotal || 0) + G.itemsUsed,
-      maxCoins: Math.max(SAVE.achievements.stats.maxCoins || 0, SAVE.coins),
-      zenWins: G.isZen ? (SAVE.achievements.stats.zenWins || 0) + 1 : undefined,
-      skinsOwned: SAVE.ownedSkins.length
-    });
-
-    const best = SAVE.best[G.diffKey];
-    let newRecord = false;
-    if (!G.isZen && best) {
-      if (best.time === null || G.timer < best.time) { best.time = G.timer; newRecord = true; }
-      if (score > best.score) { best.score = score; newRecord = true; }
-    }
-
-    if (newRecord) badge.classList.remove('hidden');
-
-    let statsHTML = '';
-    if (G.isSurvival) {
-      statsHTML = `
-        <div>当前连胜 <b>${SAVE.survival.currentStreak}</b></div>
-        <div>最高连胜 <b>${SAVE.survival.maxStreak}</b></div>
-        <div>下一关等级 <b>${SAVE.survival.currentLevel}</b></div>
-      `;
-    } else if (!G.isZen) {
-      statsHTML = `
-        <div>用时 <b>${fmtTime(G.timer)}</b></div>
-        <div>本局分数 <b>${score}</b></div>
-        <div>历史最佳用时 <b>${best.time !== null ? fmtTime(best.time) : '--'}</b></div>
-        <div>历史最佳分数 <b>${best.score}</b></div>
-        <div>使用道具次数 <b>${G.itemsUsed}</b></div>
-      `;
-    } else {
-      statsHTML = `<div>禅模式完成 <b>平和心境</b></div>`;
-    }
-    stats.innerHTML = statsHTML;
-    
-    earnEl.innerHTML = `🪙 获得 ${coins} 金币` + (dailyBonus ? ` (含每日首胜 +${dailyBonus})` : '');
-    Sound.coin();
-    
-    // 检查成就
-    checkAchievements();
-    
-  } else {
-    title.textContent = '💥 踩到地雷了';
-    stats.innerHTML = `
-      <div>用时 <b>${fmtTime(G.timer)}</b></div>
-      <div>难度 <b>${G.isSurvival ? '生存 Lv.' + SAVE.survival.currentLevel : DIFF_LABEL[G.diffKey]}</b></div>
-    `;
-    if (SAVE.ownedItems.undo > 0 && G.undoSnapshot) {
-      earnEl.innerHTML = `你还有 ↩️ 撤销道具，可以救回这一局`;
-      const btnUndo = document.createElement('button');
-      btnUndo.className = 'primary-btn gradient-btn';
-      btnUndo.textContent = '↩️ 使用撤销 (剩 ' + SAVE.ownedItems.undo + ')';
-      btnUndo.style.marginBottom = '8px';
-      btnUndo.onclick = () => {
-        useUndoItem();
-        modal.classList.add('hidden');
-      };
-      stats.after(btnUndo);
-      btnUndo.id = 'temp-undo-btn';
-    } else {
-      earnEl.textContent = '没有获得金币，再试一次吧';
-    }
-  }
-
-  saveState(SAVE);
-  refreshCoinDisplays();
-  modal.classList.remove('hidden');
-}
-
-
-function useUndoItem() {
-  if (!G.undoSnapshot) return;
-  SAVE.ownedItems.undo -= 1;
-  saveState(SAVE);
-  G.over = false;
-  const snap = G.undoSnapshot.cells;
-  for (let r = 0; r < G.rows; r++) {
-    for (let c = 0; c < G.cols; c++) {
-      G.board[r][c].revealed = snap[r][c].revealed;
-      G.board[r][c].flagged = snap[r][c].flagged;
-      renderCell(r, c);
-    }
-  }
-  G.timer = G.undoSnapshot.timer;
-  $('#timer').textContent = G.timer;
-  G.revealedSafe = 0;
-  for (let r = 0; r < G.rows; r++) {
-    for (let c = 0; c < G.cols; c++) {
-      if (G.board[r][c].revealed && !G.board[r][c].mine) G.revealedSafe++;
-    }
-  }
-  G.itemsUsed++;
-  startTimer();
-  renderItemsBar();
-  toast('已撤销，继续加油！');
-}
-
-/* =========================================================
-   道具系统
-========================================================= */
 function renderItemsBar() {
   const bar = $('#items-bar');
+  if (!bar) return;
   bar.innerHTML = '';
   Object.keys(ITEMS).forEach(key => {
     if (key === 'undo') return;
@@ -1039,7 +1015,7 @@ function renderItemsBar() {
 
 function useItem(key) {
   if (!G || G.over) return;
-  if ((SAVE.ownedItems[key] || 0) <= 0) { toast('道具不足，去商城买一点吧'); return; }
+  if ((SAVE.ownedItems[key] || 0) <= 0) { toast('道具不足'); return; }
 
   if (key === 'scan') {
     const hiddenSafe = [];
@@ -1049,11 +1025,13 @@ function useItem(key) {
         if (!cell.revealed && !cell.flagged && !cell.mine) hiddenSafe.push([r, c]);
       }
     }
-    if (!hiddenSafe.length) { toast('已经没有可揭示的安全格了'); return; }
+    if (!hiddenSafe.length) { toast('没有可揭示的安全格'); return; }
     const [r, c] = hiddenSafe[Math.floor(Math.random() * hiddenSafe.length)];
     if (G.firstClick) {
-      placeMines(G.board, G.rows, G.cols, G.mines, r, c);
-      G.firstClick = false; G.started = true; startTimer();
+      placeMines(G.board, G.rows, G.cols, G.mines, r, c, G.isSpecial);
+      G.firstClick = false;
+      G.started = true;
+      startTimer();
     }
     revealCell(r, c);
     checkWin();
@@ -1065,7 +1043,7 @@ function useItem(key) {
         if (!cell.revealed && !cell.flagged && cell.mine) hiddenMines.push([r, c]);
       }
     }
-    if (!hiddenMines.length) { toast('没有可标记的地雷了'); return; }
+    if (!hiddenMines.length) { toast('没有可标记的地雷'); return; }
     const [r, c] = hiddenMines[Math.floor(Math.random() * hiddenMines.length)];
     toggleFlag(r, c);
   } else if (key === 'freeze') {
@@ -1081,20 +1059,11 @@ function useItem(key) {
         if (!cell.revealed && cell.mine) hiddenMines.push([r, c]);
       }
     }
-    if (!hiddenMines.length) { toast('没有地雷可以拆除了'); return; }
+    if (!hiddenMines.length) { toast('没有地雷可拆除'); return; }
     const [r, c] = hiddenMines[Math.floor(Math.random() * hiddenMines.length)];
     G.board[r][c].mine = false;
     if (G.board[r][c].flagged) { G.board[r][c].flagged = false; G.flagCount--; }
     G.mines--;
-    neighborsOf(r, c, G.rows, G.cols).concat([[r, c]]).forEach(([nr, nc]) => {
-      const cell = G.board[nr][nc];
-      if (!cell.mine) {
-        let n = 0;
-        neighborsOf(nr, nc, G.rows, G.cols).forEach(([xr, xc]) => { if (G.board[xr][xc].mine) n++; });
-        cell.adj = n;
-        if (cell.revealed) renderCell(nr, nc);
-      }
-    });
     $('#mine-count').textContent = Math.max(0, G.mines - G.flagCount);
     toast('💥 已拆除一个地雷');
     checkWin();
@@ -1106,593 +1075,136 @@ function useItem(key) {
   renderItemsBar();
 }
 
+function showResult(won) {
+  const modal = $('#modal-result');
+  const title = $('#result-title');
+  const stats = $('#result-stats');
+  const earnEl = $('#coin-earn');
 
-/* =========================================================
-   成就系统
-========================================================= */
-function updateAchievementStats(updates) {
-  if (!SAVE.achievements.stats) SAVE.achievements.stats = {};
-  Object.keys(updates).forEach(key => {
-    if (updates[key] !== undefined) {
-      SAVE.achievements.stats[key] = updates[key];
-    }
-  });
+  if (won) {
+    title.textContent = G.isSurvival ? '🔥 生存 +1' : (G.isZen ? '🧘 禅心通达' : '🎉 通关！');
+    const coins = computeCoins();
+    SAVE.coins += coins;
+    SAVE.statistics.totalCoinsEarned += coins;
+    
+    stats.innerHTML = `
+      <div>用时 <b>${fmtTime(G.timer)}</b></div>
+      <div>金币 <b>+${coins}</b></div>
+    `;
+    earnEl.textContent = `🪙 获得 ${coins} 金币`;
+    Sound.coin();
+    
+    triggerVictoryEffect();
+  } else {
+    title.textContent = '💥 失败';
+    stats.innerHTML = `<div>用时 <b>${fmtTime(G.timer)}</b></div>`;
+    earnEl.textContent = '';
+  }
+
   saveState(SAVE);
-}
-
-function checkAchievements() {
-  const newUnlocked = [];
-  Object.values(ACHIEVEMENTS).forEach(ach => {
-    if (SAVE.achievements.unlocked.includes(ach.id)) return;
-    if (ach.check(SAVE.achievements.stats)) {
-      SAVE.achievements.unlocked.push(ach.id);
-      SAVE.coins += ach.reward;
-      newUnlocked.push(ach);
-    }
-  });
-  
-  if (newUnlocked.length > 0) {
-    saveState(SAVE);
-    refreshCoinDisplays();
-    newUnlocked.forEach(ach => {
-      showAchievementToast(ach);
-      Sound.achievement();
-    });
-  }
-}
-
-function showAchievementToast(ach) {
-  const toast = $('#achievement-toast');
-  toast.querySelector('.achievement-toast-icon').textContent = ach.icon;
-  toast.querySelector('.achievement-toast-title').textContent = '🏆 成就解锁：' + ach.name;
-  toast.querySelector('.achievement-toast-desc').textContent = ach.desc + ' · +' + ach.reward + ' 🪙';
-  toast.classList.remove('hidden');
-  setTimeout(() => toast.classList.add('hidden'), 4000);
-}
-
-function renderAchievements() {
-  const list = $('#achievements-list');
-  list.innerHTML = '';
-  
-  Object.values(ACHIEVEMENTS).forEach(ach => {
-    const unlocked = SAVE.achievements.unlocked.includes(ach.id);
-    const div = document.createElement('div');
-    div.className = 'achievement-item glass-card ' + (unlocked ? 'unlocked' : 'locked');
-    div.innerHTML = `
-      <div class="achievement-icon">${ach.icon}</div>
-      <div class="achievement-info">
-        <div class="achievement-title">${ach.name}</div>
-        <div class="achievement-desc">${ach.desc}</div>
-        <div class="achievement-reward">奖励: ${ach.reward} 🪙</div>
-      </div>
-    `;
-    list.appendChild(div);
-  });
-  
-  const unlocked = SAVE.achievements.unlocked.length;
-  const total = Object.keys(ACHIEVEMENTS).length;
-  const points = SAVE.achievements.unlocked.reduce((sum, id) => {
-    const ach = Object.values(ACHIEVEMENTS).find(a => a.id === id);
-    return sum + (ach ? ach.reward : 0);
-  }, 0);
-  
-  $('#achievements-unlocked').textContent = unlocked;
-  $('#achievements-total').textContent = total;
-  $('#achievements-points').textContent = points;
-}
-
-
-/* =========================================================
-   每日签到系统
-========================================================= */
-function renderDailyCheckIn() {
-  const today = todayStr();
-  const lastCheckIn = SAVE.daily.lastCheckIn;
-  const canCheckIn = !lastCheckIn || lastCheckIn !== today;
-  
-  const statusDiv = $('#daily-status');
-  const messageDiv = $('#daily-message');
-  const btnCheckIn = $('#btn-do-checkin');
-  
-  if (canCheckIn) {
-    messageDiv.innerHTML = `
-      <div style="font-size:18px; font-weight:700; margin-bottom:8px;">✨ 可以签到了！</div>
-      <div style="color:var(--text-dim);">连续签到 ${SAVE.daily.consecutiveDays} 天</div>
-    `;
-    btnCheckIn.disabled = false;
-    btnCheckIn.textContent = '立即签到';
-  } else {
-    messageDiv.innerHTML = `
-      <div style="font-size:18px; font-weight:700; margin-bottom:8px;">✅ 今日已签到</div>
-      <div style="color:var(--text-dim);">连续签到 ${SAVE.daily.consecutiveDays} 天</div>
-      <div style="color:var(--text-dim); font-size:13px; margin-top:8px;">明天记得回来哦！</div>
-    `;
-    btnCheckIn.disabled = true;
-    btnCheckIn.textContent = '已签到';
-  }
-  
-  // 渲染签到奖励日历
-  const rewardsGrid = $('#daily-rewards-grid');
-  rewardsGrid.innerHTML = '';
-  const rewards = [10, 15, 20, 30, 40, 60, 100];
-  for (let i = 0; i < 7; i++) {
-    const day = document.createElement('div');
-    const isClaimed = SAVE.daily.consecutiveDays > i;
-    const isToday = canCheckIn && SAVE.daily.consecutiveDays === i;
-    day.className = 'reward-day' + (isClaimed ? ' claimed' : '') + (isToday ? ' today' : '');
-    day.innerHTML = `
-      <div class="reward-day-label">第${i + 1}天</div>
-      <div class="reward-day-value">${rewards[i]}</div>
-    `;
-    rewardsGrid.appendChild(day);
-  }
-  
-  // 渲染签到历史
-  const historyList = $('#daily-history-list');
-  if (SAVE.daily.history.length === 0) {
-    historyList.innerHTML = '<div style="text-align:center; color:var(--text-dim);">暂无签到记录</div>';
-  } else {
-    historyList.innerHTML = SAVE.daily.history.slice(-10).reverse().map(record => {
-      return `<div class="history-item"><span>${record.date}</span><span>+${record.reward} 🪙</span></div>`;
-    }).join('');
-  }
-}
-
-function doCheckIn() {
-  const today = todayStr();
-  const lastCheckIn = SAVE.daily.lastCheckIn;
-  
-  if (lastCheckIn === today) {
-    toast('今天已经签到过了');
-    return;
-  }
-  
-  // 检查连续性
-  const yesterday = new Date(getUserDate());
-  yesterday.setDate(yesterday.getDate() - 1);
-  const yesterdayStr = yesterday.getFullYear() + '-' + (yesterday.getMonth() + 1) + '-' + yesterday.getDate();
-  
-  if (lastCheckIn === yesterdayStr) {
-    // 连续签到
-    SAVE.daily.consecutiveDays++;
-  } else if (lastCheckIn === null) {
-    // 第一次签到
-    SAVE.daily.consecutiveDays = 1;
-  } else {
-    // 中断了，重新开始
-    SAVE.daily.consecutiveDays = 1;
-  }
-  
-  // 如果超过7天，重置到1（循环）
-  if (SAVE.daily.consecutiveDays > 7) {
-    SAVE.daily.consecutiveDays = 1;
-  }
-  
-  const rewards = [10, 15, 20, 30, 40, 60, 100];
-  const reward = rewards[SAVE.daily.consecutiveDays - 1];
-  
-  SAVE.coins += reward;
-  SAVE.daily.lastCheckIn = today;
-  SAVE.daily.totalCheckIns++;
-  SAVE.daily.history.push({ date: today, reward });
-  
-  // 更新成就统计
-  updateAchievementStats({ 
-    dailyStreak: SAVE.daily.consecutiveDays,
-    maxCoins: Math.max(SAVE.achievements.stats.maxCoins || 0, SAVE.coins)
-  });
-  
-  saveState(SAVE);
-  checkAchievements();
-  
-  Sound.coin();
-  Vibration.success();
-  toast(`✅ 签到成功！获得 ${reward} 金币`);
-  
   refreshCoinDisplays();
-  renderDailyCheckIn();
+  modal.classList.remove('hidden');
 }
 
+function computeCoins() {
+  if (G.isZen) return 5;
+  
+  const ratio = G.timer / G.par;
+  let speedMult = ratio <= 0.5 ? 3.0 : ratio <= 1 ? 2.0 : ratio <= 1.5 ? 1.5 : ratio <= 2 ? 1.0 : 0.5;
+  const itemMult = Math.max(0.3, 1 - 0.15 * G.itemsUsed);
+  const fairBonus = G.itemsUsed === 0 ? 1.5 : 1.0;
+  let coins = Math.round(G.base * speedMult * itemMult * fairBonus);
+  
+  if (G.isSurvival) {
+    const streakBonus = 1 + (SAVE.survival.currentStreak * 0.1);
+    coins = Math.round(coins * streakBonus);
+  }
+  
+  if (G.isSpecial) coins = Math.round(coins * 1.3);
+  
+  return coins;
+}
 
-/* =========================================================
-   屏幕切换
-========================================================= */
+function triggerVictoryEffect() {
+  const effect = SAVE.activeEffect;
+  if (effect === 'confetti') createConfetti();
+  else if (effect === 'firework') createFirework();
+  else if (effect === 'rainbow') createRainbow();
+}
+
+function createConfetti() {
+  for (let i = 0; i < 50; i++) {
+    const confetti = document.createElement('div');
+    confetti.style.cssText = `position:fixed;width:10px;height:10px;background:hsl(${Math.random()*360},100%,50%);
+      left:${Math.random()*100}%;top:-20px;animation:confettiFall ${Math.random()*2+2}s ease-out forwards;z-index:9999;`;
+    document.body.appendChild(confetti);
+    setTimeout(() => confetti.remove(), 4000);
+  }
+  
+  if (!document.getElementById('confetti-style')) {
+    const style = document.createElement('style');
+    style.id = 'confetti-style';
+    style.textContent = '@keyframes confettiFall{to{top:100vh;transform:rotate(720deg)}}';
+    document.head.appendChild(style);
+  }
+}
+
+function createFirework() {
+  toast('🎆 烟花特效');
+}
+
+function createRainbow() {
+  toast('🌈 彩虹特效');
+}
+
 function showScreen(id) {
   $all('.screen').forEach(s => s.classList.remove('active'));
-  $('#' + id).classList.add('active');
-  if (id === 'screen-home') {
-    renderRecordsBox();
-    updateSurvivalDisplay();
-  } else if (id === 'screen-achievements') {
-    renderAchievements();
-  } else if (id === 'screen-daily') {
-    renderDailyCheckIn();
-  }
+  const screen = $('#' + id);
+  if (screen) screen.classList.add('active');
 }
 
-function renderRecordsBox() {
-  const box = $('#records-box');
-  const rows = ['easy', 'medium', 'hard'].map(k => {
-    const b = SAVE.best[k];
-    return `<div class="rec-row"><span>${DIFF_LABEL[k]}最佳</span><b>${b.time !== null ? fmtTime(b.time) : '--'} · ${b.score}分</b></div>`;
-  }).join('');
-  box.innerHTML = '<div style="margin-bottom:10px;color:var(--text-main);font-weight:800;font-size:14px;">🏆 个人记录</div>' + rows;
-}
-
-function updateSurvivalDisplay() {
-  $('#current-streak').textContent = SAVE.survival.currentStreak;
-  $('#best-streak').textContent = SAVE.survival.maxStreak;
-  const bonus = 1 + (SAVE.survival.currentStreak * 0.1);
-  $('#streak-bonus').textContent = '×' + bonus.toFixed(1);
-}
-
-/* =========================================================
-   首页：模式切换
-========================================================= */
-$all('.mode-tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    $all('.mode-tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    const mode = tab.dataset.mode;
-    
-    $('#classic-mode-panel').classList.toggle('hidden', mode !== 'classic');
-    $('#survival-mode-panel').classList.toggle('hidden', mode !== 'survival');
-    $('#zen-mode-panel').classList.toggle('hidden', mode !== 'zen');
-    
-    if (mode === 'survival') {
-      updateSurvivalDisplay();
-    }
-  });
-});
-
-/* =========================================================
-   首页：难度选择
-========================================================= */
-let selectedDiff = null;
-
-$all('.diff-card').forEach(card => {
-  card.addEventListener('click', () => {
-    const isZen = card.dataset.zen === 'true';
-    const diff = card.dataset.diff;
-    
-    if (!isZen) {
-      $all('.diff-card').forEach(c => c.classList.remove('selected'));
-      card.classList.add('selected');
-      selectedDiff = diff;
-      
-      if (selectedDiff === 'custom') {
-        $('#custom-panel').classList.remove('hidden');
-        updateDensityTag();
-      } else {
-        $('#custom-panel').classList.add('hidden');
-        startGame(selectedDiff);
-      }
-    } else {
-      // 禅模式直接开始
-      startGame(diff, null, true, false);
-    }
-  });
-});
-
-function updateDensityTag() {
-  const rows = +$('#slider-rows').value;
-  const cols = +$('#slider-cols').value;
-  let mineSlider = $('#slider-mines');
-  const maxMines = Math.max(1, (rows - 1) * (cols - 1));
-  mineSlider.max = maxMines;
-  if (+mineSlider.value > maxMines) mineSlider.value = maxMines;
-  const mines = +mineSlider.value;
-
-  $('#val-rows').textContent = rows;
-  $('#val-cols').textContent = cols;
-  $('#val-mines').textContent = mines;
-
-  const info = densityInfo(rows, cols, mines);
-  $('#density-tag').textContent = `密度 ${info.pct}% · ${info.label}`;
-}
-
-['slider-rows', 'slider-cols', 'slider-mines'].forEach(id => {
-  $('#' + id).addEventListener('input', updateDensityTag);
-});
-
-$('#btn-custom-start').addEventListener('click', () => {
-  const rows = +$('#slider-rows').value;
-  const cols = +$('#slider-cols').value;
-  const mines = +$('#slider-mines').value;
-  startGame('custom', { rows, cols, mines });
-});
-
-$('#btn-survival-start').addEventListener('click', () => {
-  startGame(null, null, false, true);
-});
-
-
-/* =========================================================
-   游戏内按钮
-========================================================= */
-$('#btn-back').addEventListener('click', () => {
-  if (G) stopTimer();
-  showScreen('screen-home');
-});
-
-$('#btn-restart').addEventListener('click', () => {
-  if (!G) return;
-  stopTimer();
-  if (G.isSurvival) {
-    startGame(null, null, false, true);
-  } else if (G.diffKey === 'custom') {
-    startGame('custom', { rows: G.rows, cols: G.cols, mines: G.origMines }, G.isZen);
-  } else {
-    startGame(G.diffKey, null, G.isZen);
-  }
-});
-
-$('#btn-flag-mode').addEventListener('click', (e) => {
-  if (!G) return;
-  G.flagMode = !G.flagMode;
-  e.currentTarget.classList.toggle('active-mode', G.flagMode);
-  Sound.click();
-});
-
-/* =========================================================
-   结算弹窗按钮
-========================================================= */
-$('#btn-play-again').addEventListener('click', () => {
-  $('#modal-result').classList.add('hidden');
-  const tempBtn = document.getElementById('temp-undo-btn');
-  if (tempBtn) tempBtn.remove();
-  
-  if (G.isSurvival) {
-    startGame(null, null, false, true);
-  } else if (G.diffKey === 'custom') {
-    startGame('custom', { rows: G.rows, cols: G.cols, mines: G.origMines }, G.isZen);
-  } else {
-    startGame(G.diffKey, null, G.isZen);
-  }
-});
-
-$('#btn-to-home').addEventListener('click', () => {
-  $('#modal-result').classList.add('hidden');
-  const tempBtn = document.getElementById('temp-undo-btn');
-  if (tempBtn) tempBtn.remove();
-  showScreen('screen-home');
-});
-
-/* =========================================================
-   商城
-========================================================= */
-$('#btn-shop-open').addEventListener('click', () => { 
-  renderShop(); 
-  showScreen('screen-shop'); 
-});
-
-$('#btn-shop-back').addEventListener('click', () => showScreen('screen-home'));
-
-$all('.shop-tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    $all('.shop-tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    const which = tab.dataset.tab;
-    $('#shop-items').classList.toggle('hidden', which !== 'items');
-    $('#shop-skins').classList.toggle('hidden', which !== 'skins');
-    $('#shop-backgrounds').classList.toggle('hidden', which !== 'backgrounds');
-    $('#shop-sounds').classList.toggle('hidden', which !== 'sounds');
-    $('#shop-effects').classList.toggle('hidden', which !== 'effects');
-  });
-});
-
-
-function renderShop() {
+// 初始化
+document.addEventListener('DOMContentLoaded', () => {
+  applySkin();
+  applyBackground();
+  applyEyeProtection();
   refreshCoinDisplays();
+  updateDevModeUI();
   
-  // 道具
-  const itemsGrid = $('#shop-items');
-  itemsGrid.innerHTML = '';
-  Object.keys(ITEMS).forEach(key => {
-    const it = ITEMS[key];
-    const owned = SAVE.ownedItems[key] || 0;
-    const card = document.createElement('div');
-    card.className = 'shop-card glass-card';
-    card.innerHTML = `
-      <div class="icon">${it.icon}</div>
-      <div class="name">${it.name}</div>
-      <div class="desc">${it.desc}</div>
-      <div style="font-size:11px;color:var(--text-dim);margin-bottom:8px;">已持有 ${owned}</div>
-      <button class="buy">🪙 ${it.price} 购买</button>
-    `;
-    card.querySelector('button').onclick = () => {
-      if (SAVE.coins < it.price) { toast('金币不够啦'); return; }
-      SAVE.coins -= it.price;
-      SAVE.ownedItems[key] = (SAVE.ownedItems[key] || 0) + 1;
-      saveState(SAVE);
-      Sound.buy();
-      renderShop();
-      if (G && !G.over) renderItemsBar();
-    };
-    itemsGrid.appendChild(card);
+  // 事件监听器
+  $('#btn-back')?.addEventListener('click', () => {
+    if (G) stopTimer();
+    showScreen('screen-home');
   });
+  
+  $('#btn-restart')?.addEventListener('click', () => {
+    if (!G) return;
+    stopTimer();
+    startGame(G.diffKey, null, G.isZen, G.isSurvival, G.isSpecial);
+  });
+  
+  $('#btn-flag-mode')?.addEventListener('click', (e) => {
+    if (!G) return;
+    G.flagMode = !G.flagMode;
+    e.currentTarget.classList.toggle('active-mode', G.flagMode);
+  });
+  
+  $('#btn-play-again')?.addEventListener('click', () => {
+    $('#modal-result').classList.add('hidden');
+    startGame(G.diffKey, null, G.isZen, G.isSurvival, G.isSpecial);
+  });
+  
+  $('#btn-to-home')?.addEventListener('click', () => {
+    $('#modal-result').classList.add('hidden');
+    showScreen('screen-home');
+  });
+  
+  $('#btn-dev-mode')?.addEventListener('click', toggleDevMode);
+  
+  console.log('💎 Minesweeper Pro Complete Edition loaded');
+});
 
-  // 皮肤
-  const skinsGrid = $('#shop-skins');
-  skinsGrid.innerHTML = '';
-  Object.keys(SKINS).forEach(key => {
-    const sk = SKINS[key];
-    const owned = SAVE.ownedSkins.includes(key);
-    const equipped = SAVE.activeSkin === key;
-    const card = document.createElement('div');
-    card.className = 'shop-card glass-card';
-    card.innerHTML = `
-      <div class="icon">${sk.icon}</div>
-      <div class="name">${sk.name}</div>
-      <div class="desc">${key === 'classic' ? '默认皮肤' : '主题皮肤'}</div>
-      <button class="${equipped ? 'equipped' : (owned ? 'owned' : 'buy')}">
-        ${equipped ? '✅ 使用中' : (owned ? '装备' : '🪙 ' + sk.price + ' 购买')}
-      </button>
-    `;
-    card.querySelector('button').onclick = () => {
-      if (equipped) return;
-      if (!owned) {
-        if (SAVE.coins < sk.price) { toast('金币不够啦'); return; }
-        SAVE.coins -= sk.price;
-        SAVE.ownedSkins.push(key);
-        Sound.buy();
-      }
-      SAVE.activeSkin = key;
-      applySkin();
-      saveState(SAVE);
-      updateAchievementStats({ skinsOwned: SAVE.ownedSkins.length });
-      renderShop();
-      refreshCoinDisplays();
-    };
-    skinsGrid.appendChild(card);
-  });
-
-  // 背景
-  const bgGrid = $('#shop-backgrounds');
-  bgGrid.innerHTML = '';
-  Object.keys(BACKGROUNDS).forEach(key => {
-    const bg = BACKGROUNDS[key];
-    const owned = SAVE.ownedBackgrounds.includes(key);
-    const equipped = SAVE.activeBackground === key;
-    const card = document.createElement('div');
-    card.className = 'shop-card glass-card';
-    card.innerHTML = `
-      <div class="icon">${bg.icon}</div>
-      <div class="name">${bg.name}</div>
-      <div class="desc">${bg.desc}</div>
-      <button class="${equipped ? 'equipped' : (owned ? 'owned' : 'buy')}">
-        ${equipped ? '✅ 使用中' : (owned ? '装备' : '🪙 ' + bg.price + ' 购买')}
-      </button>
-    `;
-    card.querySelector('button').onclick = () => {
-      if (equipped) return;
-      if (!owned) {
-        if (SAVE.coins < bg.price) { toast('金币不够啦'); return; }
-        SAVE.coins -= bg.price;
-        SAVE.ownedBackgrounds.push(key);
-        Sound.buy();
-      }
-      SAVE.activeBackground = key;
-      applySkin();
-      saveState(SAVE);
-      renderShop();
-      refreshCoinDisplays();
-    };
-    bgGrid.appendChild(card);
-  });
-
-  // 音效包
-  const soundGrid = $('#shop-sounds');
-  soundGrid.innerHTML = '';
-  Object.keys(SOUND_PACKS).forEach(key => {
-    const sp = SOUND_PACKS[key];
-    const owned = SAVE.ownedSounds.includes(key);
-    const equipped = SAVE.activeSound === key;
-    const card = document.createElement('div');
-    card.className = 'shop-card glass-card';
-    card.innerHTML = `
-      <div class="icon">${sp.icon}</div>
-      <div class="name">${sp.name}</div>
-      <div class="desc">${sp.desc}</div>
-      <button class="${equipped ? 'equipped' : (owned ? 'owned' : 'buy')}">
-        ${equipped ? '✅ 使用中' : (owned ? '装备' : '🪙 ' + sp.price + ' 购买')}
-      </button>
-    `;
-    card.querySelector('button').onclick = () => {
-      if (equipped) return;
-      if (!owned) {
-        if (SAVE.coins < sp.price) { toast('金币不够啦'); return; }
-        SAVE.coins -= sp.price;
-        SAVE.ownedSounds.push(key);
-        Sound.buy();
-      }
-      SAVE.activeSound = key;
-      saveState(SAVE);
-      toast('🔊 音效已切换为：' + sp.name);
-      renderShop();
-      refreshCoinDisplays();
-    };
-    soundGrid.appendChild(card);
-  });
-
-  // 特效
-  const effectGrid = $('#shop-effects');
-  effectGrid.innerHTML = '';
-  Object.keys(EFFECTS).forEach(key => {
-    const ef = EFFECTS[key];
-    const owned = SAVE.ownedEffects.includes(key);
-    const equipped = SAVE.activeEffect === key;
-    const card = document.createElement('div');
-    card.className = 'shop-card glass-card';
-    card.innerHTML = `
-      <div class="icon">${ef.icon}</div>
-      <div class="name">${ef.name}</div>
-      <div class="desc">${ef.desc}</div>
-      <button class="${equipped ? 'equipped' : (owned ? 'owned' : 'buy')}">
-        ${equipped ? '✅ 使用中' : (owned ? '装备' : '🪙 ' + ef.price + ' 购买')}
-      </button>
-    `;
-    card.querySelector('button').onclick = () => {
-      if (equipped) return;
-      if (!owned) {
-        if (SAVE.coins < ef.price) { toast('金币不够啦'); return; }
-        SAVE.coins -= ef.price;
-        SAVE.ownedEffects.push(key);
-        Sound.buy();
-      }
-      SAVE.activeEffect = key;
-      saveState(SAVE);
-      toast('✨ 特效已切换为：' + ef.name);
-      renderShop();
-      refreshCoinDisplays();
-    };
-    effectGrid.appendChild(card);
-  });
+function applySkin() {
+  document.body.className = 'skin-' + SAVE.activeSkin;
 }
-
-
-/* =========================================================
-   成就和每日签到入口
-========================================================= */
-$('#btn-achievements').addEventListener('click', () => {
-  showScreen('screen-achievements');
-});
-
-$('#btn-achievements-back').addEventListener('click', () => {
-  showScreen('screen-home');
-});
-
-$('#btn-daily-checkin').addEventListener('click', () => {
-  showScreen('screen-daily');
-});
-
-$('#btn-daily-back').addEventListener('click', () => {
-  showScreen('screen-home');
-});
-
-$('#btn-do-checkin').addEventListener('click', () => {
-  doCheckIn();
-});
-
-/* =========================================================
-   开发者模式按钮
-========================================================= */
-$('#btn-dev-mode').addEventListener('click', toggleDevMode);
-
-/* =========================================================
-   初始化
-========================================================= */
-applySkin();
-refreshCoinDisplays();
-renderRecordsBox();
-updateDensityTag();
-updateDevModeUI();
-updateSurvivalDisplay();
-
-// 检查成就（启动时）
-checkAchievements();
-
-console.log('💎 扫雷 Minesweeper Pro 已加载');
-console.log('🎮 新增功能：生存模式、每日签到、成就系统、振动反馈、禅模式');
-console.log('🎨 现代化UI设计：glassmorphism、动态背景、渐变动画');
 </script>
