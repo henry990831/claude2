@@ -1201,10 +1201,178 @@ document.addEventListener('DOMContentLoaded', () => {
   
   $('#btn-dev-mode')?.addEventListener('click', toggleDevMode);
   
+  // 难度卡片点击事件
+  $all('.diff-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const diff = card.dataset.diff;
+      if (!diff) return;
+      
+      // 判断是哪个模式
+      const isClassic = card.closest('#classic-mode-panel');
+      const isSurvival = card.closest('#survival-mode-panel');
+      const isZen = card.closest('#zen-mode-panel');
+      const isSpecial = card.closest('#special-mode-panel');
+      
+      if (diff.startsWith('survival-')) {
+        const actualDiff = diff.replace('survival-', '');
+        startGame(actualDiff, null, false, true, false);
+      } else if (diff.startsWith('zen-')) {
+        const actualDiff = diff === 'zen-normal' ? 'medium' : 'custom';
+        const customCfg = diff === 'zen-hard' ? {rows:24, cols:24, mines:120} : null;
+        startGame(actualDiff, customCfg, true, false, false);
+      } else if (diff.startsWith('special-')) {
+        const actualDiff = diff.replace('special-', '');
+        startGame(actualDiff, null, false, false, true);
+      } else {
+        startGame(diff, null, false, false, false);
+      }
+    });
+  });
+  
+  // 模式切换标签
+  $all('.mode-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      $all('.mode-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const mode = tab.dataset.mode;
+      
+      $all('.mode-panel').forEach(p => p.classList.add('hidden'));
+      const panel = $('#' + mode + '-mode-panel');
+      if (panel) panel.classList.remove('hidden');
+    });
+  });
+  
+  // 商城按钮
+  $('#btn-shop-open')?.addEventListener('click', () => {
+    renderShop();
+    showScreen('screen-shop');
+  });
+  
+  $('#btn-shop-back')?.addEventListener('click', () => showScreen('screen-home'));
+  
+  // 商城标签切换
+  $all('.shop-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      $all('.shop-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const which = tab.dataset.tab;
+      
+      $('#shop-items')?.classList.toggle('hidden', which !== 'items');
+      $('#shop-skins')?.classList.toggle('hidden', which !== 'skins');
+      $('#shop-backgrounds')?.classList.toggle('hidden', which !== 'backgrounds');
+      $('#shop-sounds')?.classList.toggle('hidden', which !== 'sounds');
+      $('#shop-effects')?.classList.toggle('hidden', which !== 'effects');
+    });
+  });
+  
+  // 其他屏幕导航
+  $('#btn-stats')?.addEventListener('click', () => {
+    renderStats();
+    showScreen('screen-stats');
+  });
+  
+  $('#btn-stats-back')?.addEventListener('click', () => showScreen('screen-home'));
+  
+  $('#btn-music')?.addEventListener('click', () => {
+    renderMusicPlayer();
+    showScreen('screen-music');
+  });
+  
+  $('#btn-music-back')?.addEventListener('click', () => showScreen('screen-home'));
+  
+  $('#btn-settings')?.addEventListener('click', () => showScreen('screen-settings'));
+  $('#btn-settings-back')?.addEventListener('click', () => showScreen('screen-home'));
+  
+  $('#btn-rank')?.addEventListener('click', () => {
+    renderRank();
+    showScreen('screen-rank');
+  });
+  
+  $('#btn-rank-back')?.addEventListener('click', () => showScreen('screen-home'));
+  
+  $('#btn-achievements')?.addEventListener('click', () => {
+    renderAchievements();
+    showScreen('screen-achievements');
+  });
+  
+  $('#btn-achievements-back')?.addEventListener('click', () => showScreen('screen-home'));
+  
+  $('#btn-daily-checkin')?.addEventListener('click', () => {
+    renderDailyCheckin();
+    showScreen('screen-daily-checkin');
+  });
+  
+  $('#btn-checkin-back')?.addEventListener('click', () => showScreen('screen-home'));
+  
   console.log('💎 Minesweeper Pro Complete Edition loaded');
 });
 
 function applySkin() {
   document.body.className = 'skin-' + SAVE.activeSkin;
+}
+
+// 商城渲染
+function renderShop() {
+  // TODO: 实现商城渲染
+  toast('商城功能开发中');
+}
+
+// 统计中心渲染
+function renderStats() {
+  toast('统计中心开发中');
+}
+
+// 音乐播放器渲染
+function renderMusicPlayer() {
+  toast('音乐播放器开发中');
+}
+
+// 段位渲染
+function renderRank() {
+  toast('段位系统开发中');
+}
+
+// 成就渲染
+function renderAchievements() {
+  toast('成就系统开发中');
+}
+
+// 每日签到渲染
+function renderDailyCheckin() {
+  const today = todayStr();
+  const lastCheckin = SAVE.daily.lastCheckIn;
+  const canCheckin = lastCheckin !== today;
+  
+  $('#consecutive-days').textContent = SAVE.daily.consecutiveDays;
+  $('#total-checkin-days').textContent = SAVE.daily.totalCheckIns;
+  
+  const btn = $('#btn-do-checkin');
+  const status = $('#checkin-status');
+  
+  if (canCheckin) {
+    btn.disabled = false;
+    btn.textContent = '立即签到';
+    btn.onclick = () => {
+      SAVE.daily.lastCheckIn = today;
+      SAVE.daily.consecutiveDays++;
+      SAVE.daily.totalCheckIns++;
+      
+      let reward = 10;
+      if (SAVE.daily.consecutiveDays >= 7) reward = 30;
+      else if (SAVE.daily.consecutiveDays >= 3) reward = 20;
+      
+      SAVE.coins += reward;
+      saveState(SAVE);
+      refreshCoinDisplays();
+      toast(`✅ 签到成功！获得 ${reward} 金币`);
+      Sound.coin();
+      renderDailyCheckin();
+    };
+    status.textContent = '';
+  } else {
+    btn.disabled = true;
+    btn.textContent = '今日已签到';
+    status.textContent = '✅ 明天再来吧';
+  }
 }
 </script>
