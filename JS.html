@@ -641,7 +641,9 @@ function startGame(diffKey, customCfg, isZen = false, isSurvival = false, isSpec
     started: false, over: false, firstClick: true,
     timer: 0, timerInt: null, frozen: false, flagMode: false,
     itemsUsed: 0, flagCount: 0, revealedSafe: 0, undoSnapshot: null,
-    isZen, isSurvival, isSpecial, noFlagUsed: true
+    isZen, isSurvival, isSpecial, noFlagUsed: true,
+    moveHistory: [], // 记录所有操作
+    mistakes: []     // 记录失误
   };
 
   renderGame();
@@ -757,6 +759,14 @@ function handlePrimaryAction(r, c) {
       const nbrs = neighborsOf(r, c, G.rows, G.cols);
       const flagged = nbrs.filter(([nr, nc]) => G.board[nr][nc].flagged).length;
       if (flagged === cell.adj) {
+        // 记录和弦操作
+        G.moveHistory.push({
+          type: 'chord',
+          r, c,
+          time: G.timer,
+          timestamp: Date.now()
+        });
+        
         nbrs.forEach(([nr, nc]) => {
           if (!G.board[nr][nc].flagged && !G.board[nr][nc].revealed) revealCell(nr, nc);
         });
@@ -777,6 +787,14 @@ function handlePrimaryAction(r, c) {
   } else {
     snapshotBoard();
   }
+
+  // 记录点击操作
+  G.moveHistory.push({
+    type: 'reveal',
+    r, c,
+    time: G.timer,
+    timestamp: Date.now()
+  });
 
   revealCell(r, c);
   if (!G.over) checkWin();
@@ -900,12 +918,32 @@ function handleSpecialMine(r, c, type) {
 
 function toggleFlag(r, c) {
   const cell = G.board[r][c];
+  const wasFlagged = cell.flagged;
   cell.flagged = !cell.flagged;
   G.flagCount += cell.flagged ? 1 : -1;
   $('#mine-count').textContent = G.mines - G.flagCount;
   renderCell(r, c);
   Sound.flag();
   if (cell.flagged) G.noFlagUsed = false;
+  
+  // 记录标旗操作
+  G.moveHistory.push({
+    type: cell.flagged ? 'flag' : 'unflag',
+    r, c,
+    time: G.timer,
+    timestamp: Date.now(),
+    isMine: cell.mine // 记录是否是真雷
+  });
+  
+  // 检测错误标旗
+  if (cell.flagged && !cell.mine) {
+    G.mistakes.push({
+      type: 'wrong_flag',
+      r, c,
+      time: G.timer,
+      description: '错误标旗：这里不是地雷'
+    });
+  }
 }
 
 function renderCell(r, c) {
@@ -947,6 +985,17 @@ function triggerLose(r, c) {
   G.over = true;
   stopTimer();
   G.cellEls[r][c].classList.add('exploded');
+  
+  // 记录致命失误
+  G.mistakes.push({
+    type: 'fatal',
+    r, c,
+    time: G.timer,
+    description: '踩到地雷导致游戏失败'
+  });
+  
+  // 分析失误：找出本可以避免的错误
+  analyzeMistakes();
 
   for (let rr = 0; rr < G.rows; rr++) {
     for (let cc = 0; cc < G.cols; cc++) {
@@ -972,6 +1021,67 @@ function triggerLose(r, c) {
   saveState(SAVE);
 
   setTimeout(() => showResult(false), 600);
+}
+
+// 分析失误
+function analyzeMistakes() {
+  const fatalCell = G.mistakes.find(m => m.type === 'fatal');
+  if (!fatalCell) return;
+  
+  const fr = fatalCell.r, fc = fatalCell.c;
+  
+  // 检查周围已揭示的数字格子
+  const nbrs = neighborsOf(fr, fc, G.rows, G.cols);
+  for (const [nr, nc] of nbrs) {
+    const cell = G.board[nr][nc];
+    if (cell.revealed && cell.adj > 0) {
+      // 检查这个数字周围的情况
+      const cellNbrs = neighborsOf(nr, nc, G.rows, G.cols);
+      const hiddenCount = cellNbrs.filter(([r,c]) => !G.board[r][c].revealed && !G.board[r][c].flagged).length;
+      const flaggedCount = cellNbrs.filter(([r,c]) => G.board[r][c].flagged).length;
+      const mineCount = cellNbrs.filter(([r,c]) => G.board[r][c].mine).length;
+      
+      // 如果隐藏格子数等于剩余雷数，说明这些都是雷，应该先标记
+      if (cell.adj - flaggedCount === hiddenCount && hiddenCount > 0) {
+        G.mistakes.push({
+          type: 'should_flag',
+          r: nr,
+          c: nc,
+          time: fatalCell.time - 1,
+          description: `数字 ${cell.adj} 周围的隐藏格子都应该先标旗`,
+          relatedCells: cellNbrs.filter(([r,c]) => !G.board[r][c].revealed)
+        });
+        break;
+      }
+    }
+  }
+  
+  // 检查是否有明显可以推理的安全格子没有点击
+  for (let r = 0; r < G.rows; r++) {
+    for (let c = 0; c < G.cols; c++) {
+      const cell = G.board[r][c];
+      if (cell.revealed && cell.adj > 0) {
+        const cellNbrs = neighborsOf(r, c, G.rows, G.cols);
+        const flaggedCount = cellNbrs.filter(([nr,nc]) => G.board[nr][nc].flagged).length;
+        
+        // 如果旗子数已经等于数字，周围其他格子都是安全的
+        if (flaggedCount === cell.adj) {
+          const safeUnrevealed = cellNbrs.filter(([nr,nc]) => 
+            !G.board[nr][nc].revealed && !G.board[nr][nc].flagged
+          );
+          if (safeUnrevealed.length > 0) {
+            G.mistakes.push({
+              type: 'missed_safe',
+              r, c,
+              time: fatalCell.time - 2,
+              description: `数字 ${cell.adj} 周围已标够旗，其他格子是安全的`,
+              relatedCells: safeUnrevealed
+            });
+          }
+        }
+      }
+    }
+  }
 }
 
 function checkWin() {
@@ -1089,6 +1199,7 @@ function showResult(won) {
     
     stats.innerHTML = `
       <div>用时 <b>${fmtTime(G.timer)}</b></div>
+      <div>总操作 <b>${G.moveHistory.length}</b> 次</div>
       <div>金币 <b>+${coins}</b></div>
     `;
     earnEl.textContent = `🪙 获得 ${coins} 金币`;
@@ -1096,9 +1207,35 @@ function showResult(won) {
     
     triggerVictoryEffect();
   } else {
-    title.textContent = '💥 失败';
-    stats.innerHTML = `<div>用时 <b>${fmtTime(G.timer)}</b></div>`;
-    earnEl.textContent = '';
+    title.textContent = '💥 游戏失败';
+    const mistakeCount = G.mistakes.length;
+    stats.innerHTML = `
+      <div>用时 <b>${fmtTime(G.timer)}</b></div>
+      <div>总操作 <b>${G.moveHistory.length}</b> 次</div>
+      <div>发现失误 <b>${mistakeCount}</b> 处</div>
+    `;
+    
+    // 添加"查看复盘"按钮
+    if (mistakeCount > 0) {
+      earnEl.innerHTML = `
+        <button class="secondary-btn" id="btn-review" style="margin-top:10px;background:var(--accent);color:#fff;border:none;">
+          🔍 查看失误分析 (${mistakeCount})
+        </button>
+      `;
+      
+      // 延迟绑定事件，等待按钮渲染
+      setTimeout(() => {
+        const reviewBtn = $('#btn-review');
+        if (reviewBtn) {
+          reviewBtn.onclick = () => {
+            modal.classList.add('hidden');
+            showReviewScreen();
+          };
+        }
+      }, 100);
+    } else {
+      earnEl.textContent = '没有发现明显失误';
+    }
   }
 
   saveState(SAVE);
@@ -1374,5 +1511,221 @@ function renderDailyCheckin() {
     btn.textContent = '今日已签到';
     status.textContent = '✅ 明天再来吧';
   }
+}
+
+// 显示复盘分析界面
+function showReviewScreen() {
+  if (!G || !G.mistakes || G.mistakes.length === 0) {
+    toast('没有失误记录');
+    return;
+  }
+  
+  // 创建复盘弹窗
+  let reviewModal = $('#review-modal');
+  if (!reviewModal) {
+    reviewModal = document.createElement('div');
+    reviewModal.id = 'review-modal';
+    reviewModal.className = 'modal';
+    document.body.appendChild(reviewModal);
+  }
+  
+  const mistakes = G.mistakes;
+  const fatalMistake = mistakes.find(m => m.type === 'fatal');
+  const wrongFlags = mistakes.filter(m => m.type === 'wrong_flag');
+  const shouldFlags = mistakes.filter(m => m.type === 'should_flag');
+  const missedSafe = mistakes.filter(m => m.type === 'missed_safe');
+  
+  let mistakesList = '';
+  
+  // 致命失误
+  if (fatalMistake) {
+    mistakesList += `
+      <div class="mistake-item fatal" style="background:rgba(255,107,107,0.1);border-left:4px solid var(--danger);padding:12px;margin-bottom:12px;border-radius:8px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <span style="font-size:24px;">💥</span>
+          <div>
+            <div style="font-weight:800;color:var(--danger);">致命失误</div>
+            <div style="font-size:12px;color:var(--text-dim);">第 ${fmtTime(fatalMistake.time)}</div>
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--text-main);">${fatalMistake.description}</div>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:4px;">位置：行${fatalMistake.r + 1} 列${fatalMistake.c + 1}</div>
+        <button class="secondary-btn" onclick="highlightCell(${fatalMistake.r}, ${fatalMistake.c})" style="margin-top:8px;padding:6px 12px;font-size:12px;">📍 高亮显示</button>
+      </div>
+    `;
+  }
+  
+  // 应该标旗的地方
+  if (shouldFlags.length > 0) {
+    shouldFlags.forEach((mistake, idx) => {
+      mistakesList += `
+        <div class="mistake-item should-flag" style="background:rgba(255,193,7,0.1);border-left:4px solid var(--warning);padding:12px;margin-bottom:12px;border-radius:8px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <span style="font-size:24px;">⚠️</span>
+            <div>
+              <div style="font-weight:800;color:var(--warning);">漏标地雷</div>
+              <div style="font-size:12px;color:var(--text-dim);">第 ${fmtTime(mistake.time)}</div>
+            </div>
+          </div>
+          <div style="font-size:13px;color:var(--text-main);">${mistake.description}</div>
+          <div style="font-size:12px;color:var(--text-dim);margin-top:4px;">位置：行${mistake.r + 1} 列${mistake.c + 1}</div>
+          <button class="secondary-btn" onclick="highlightMistakeArea(${mistake.r}, ${mistake.c}, 'should-flag')" style="margin-top:8px;padding:6px 12px;font-size:12px;">📍 高亮显示区域</button>
+        </div>
+      `;
+    });
+  }
+  
+  // 错误标旗
+  if (wrongFlags.length > 0) {
+    mistakesList += `
+      <div class="mistake-item wrong-flag" style="background:rgba(255,152,0,0.1);border-left:4px solid #FF9800;padding:12px;margin-bottom:12px;border-radius:8px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <span style="font-size:24px;">🚩</span>
+          <div>
+            <div style="font-weight:800;color:#FF9800;">错误标旗</div>
+            <div style="font-size:12px;color:var(--text-dim);">共 ${wrongFlags.length} 处</div>
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--text-main);">标记了非地雷位置，可能干扰判断</div>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:6px;">
+          ${wrongFlags.map(m => `行${m.r+1} 列${m.c+1}`).join('、')}
+        </div>
+      </div>
+    `;
+  }
+  
+  // 漏掉的安全格子
+  if (missedSafe.length > 0) {
+    missedSafe.slice(0, 2).forEach(mistake => {
+      mistakesList += `
+        <div class="mistake-item missed-safe" style="background:rgba(76,175,80,0.1);border-left:4px solid var(--success);padding:12px;margin-bottom:12px;border-radius:8px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <span style="font-size:24px;">💡</span>
+            <div>
+              <div style="font-weight:800;color:var(--success);">漏掉的安全格</div>
+              <div style="font-size:12px;color:var(--text-dim);">第 ${fmtTime(mistake.time)}</div>
+            </div>
+          </div>
+          <div style="font-size:13px;color:var(--text-main);">${mistake.description}</div>
+          <div style="font-size:12px;color:var(--text-dim);margin-top:4px;">位置：行${mistake.r + 1} 列${mistake.c + 1}</div>
+          <button class="secondary-btn" onclick="highlightMistakeArea(${mistake.r}, ${mistake.c}, 'missed-safe')" style="margin-top:8px;padding:6px 12px;font-size:12px;">📍 高亮显示区域</button>
+        </div>
+      `;
+    });
+  }
+  
+  if (!mistakesList) {
+    mistakesList = '<div style="text-align:center;color:var(--text-dim);padding:20px;">没有发现明显失误</div>';
+  }
+  
+  reviewModal.innerHTML = `
+    <div class="modal-card glass-modal" style="max-width:500px;max-height:80vh;overflow-y:auto;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div style="font-size:20px;font-weight:900;">🔍 失误分析</div>
+        <button class="icon-btn" id="btn-close-review" style="width:36px;height:36px;">✕</button>
+      </div>
+      
+      <div class="glass-card" style="padding:12px;margin-bottom:16px;text-align:center;">
+        <div style="font-size:13px;color:var(--text-dim);margin-bottom:6px;">本局统计</div>
+        <div style="display:flex;justify-content:space-around;">
+          <div>
+            <div style="font-size:20px;font-weight:900;color:var(--accent);">${G.moveHistory.length}</div>
+            <div style="font-size:11px;color:var(--text-dim);">总操作</div>
+          </div>
+          <div>
+            <div style="font-size:20px;font-weight:900;color:var(--danger);">${mistakes.length}</div>
+            <div style="font-size:11px;color:var(--text-dim);">失误数</div>
+          </div>
+          <div>
+            <div style="font-size:20px;font-weight:900;color:var(--warning);">${fmtTime(G.timer)}</div>
+            <div style="font-size:11px;color:var(--text-dim);">用时</div>
+          </div>
+        </div>
+      </div>
+      
+      <div style="font-weight:800;margin-bottom:12px;font-size:15px;">失误列表</div>
+      <div id="mistakes-list">
+        ${mistakesList}
+      </div>
+      
+      <div class="modal-btns" style="margin-top:16px;">
+        <button class="primary-btn" id="btn-back-to-game">返回游戏画面</button>
+        <button class="secondary-btn" id="btn-close-review2">关闭复盘</button>
+      </div>
+    </div>
+  `;
+  
+  reviewModal.classList.remove('hidden');
+  
+  // 绑定事件
+  $('#btn-close-review').onclick = () => {
+    reviewModal.classList.add('hidden');
+    $('#modal-result').classList.remove('hidden');
+  };
+  
+  $('#btn-close-review2').onclick = () => {
+    reviewModal.classList.add('hidden');
+    $('#modal-result').classList.remove('hidden');
+  };
+  
+  $('#btn-back-to-game').onclick = () => {
+    reviewModal.classList.add('hidden');
+    // 游戏界面已经显示，只需关闭弹窗
+  };
+}
+
+// 高亮单个格子
+function highlightCell(r, c) {
+  if (!G || !G.cellEls || !G.cellEls[r] || !G.cellEls[r][c]) return;
+  
+  const cell = G.cellEls[r][c];
+  cell.style.boxShadow = '0 0 0 3px var(--danger), 0 0 20px var(--danger)';
+  cell.style.transform = 'scale(1.2)';
+  cell.style.zIndex = '100';
+  
+  // 滚动到该格子
+  cell.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  
+  setTimeout(() => {
+    cell.style.boxShadow = '';
+    cell.style.transform = '';
+    cell.style.zIndex = '';
+  }, 3000);
+  
+  toast(`位置：行${r+1} 列${c+1}`);
+}
+
+// 高亮区域
+function highlightMistakeArea(r, c, type) {
+  if (!G || !G.cellEls) return;
+  
+  const mainCell = G.cellEls[r][c];
+  const color = type === 'should-flag' ? 'var(--warning)' : 'var(--success)';
+  
+  // 高亮中心格子
+  mainCell.style.boxShadow = `0 0 0 3px ${color}, 0 0 20px ${color}`;
+  mainCell.style.transform = 'scale(1.15)';
+  mainCell.style.zIndex = '100';
+  mainCell.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  
+  // 高亮周围格子
+  const nbrs = neighborsOf(r, c, G.rows, G.cols);
+  nbrs.forEach(([nr, nc]) => {
+    const cell = G.cellEls[nr][nc];
+    cell.style.boxShadow = `0 0 0 2px ${color}`;
+    cell.style.opacity = '0.8';
+  });
+  
+  setTimeout(() => {
+    mainCell.style.boxShadow = '';
+    mainCell.style.transform = '';
+    mainCell.style.zIndex = '';
+    nbrs.forEach(([nr, nc]) => {
+      G.cellEls[nr][nc].style.boxShadow = '';
+      G.cellEls[nr][nc].style.opacity = '';
+    });
+  }, 3000);
+  
+  toast(`查看行${r+1} 列${c+1} 周围区域`);
 }
 </script>
