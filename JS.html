@@ -97,6 +97,225 @@ const SPECIAL_MINE_TYPES = {
 
 const DIFF_LABEL = { easy:'简单', medium:'中等', hard:'困难', custom:'自定义', special:'特殊地雷' };
 
+/* =========================================================
+   多语言支持
+========================================================= */
+const LANG = {
+  zh: {
+    // 游戏模式
+    classicMode: '经典模式',
+    survivalMode: '生存模式',
+    zenMode: '禅模式',
+    specialMode: '特殊地雷',
+    
+    // 难度
+    easy: '简单',
+    medium: '中等',
+    hard: '困难',
+    custom: '自定义',
+    
+    // 通用
+    coins: '金币',
+    time: '用时',
+    operations: '总操作',
+    mistakes: '发现失误',
+    position: '位置',
+    row: '行',
+    col: '列',
+    
+    // 按钮
+    start: '开始',
+    playAgain: '再玩一次',
+    backToHome: '返回首页',
+    close: '关闭',
+    confirm: '确定',
+    cancel: '取消',
+    viewReview: '查看失误分析',
+    highlight: '高亮显示',
+    highlightArea: '高亮显示区域',
+    backToGame: '返回游戏画面',
+    
+    // 失误类型
+    fatalMistake: '致命失误',
+    shouldFlag: '漏标地雷',
+    wrongFlag: '错误标旗',
+    missedSafe: '漏掉的安全格',
+    lastMove: '最后一步',
+    
+    // 描述
+    fatalDesc: '踩到地雷导致游戏失败',
+    shouldFlagDesc: '周围的隐藏格子都应该先标旗',
+    wrongFlagDesc: '标记了非地雷位置，可能干扰判断',
+    missedSafeDesc: '周围已标够旗，其他格子是安全的',
+    
+    // 统计
+    gameStats: '游戏统计',
+    totalGames: '总局数',
+    wins: '胜场',
+    winRate: '胜率',
+    perfectWins: '完美通关',
+    coinStats: '金币统计',
+    currentCoins: '当前金币',
+    totalEarned: '累计获得',
+    totalSpent: '累计消费',
+    maxEarn: '单局最高',
+    timeStats: '时间统计',
+    totalTime: '总游戏时长',
+    easyBest: '简单最快',
+    mediumBest: '中等最快',
+    hardBest: '困难最快',
+    operationStats: '操作统计',
+    totalClicks: '总点击次数',
+    totalFlags: '插旗次数',
+    itemsUsed: '使用道具次数',
+    
+    // 设置
+    settings: '设置',
+    eyeProtection: '护眼模式',
+    eyeProtectionDesc: '减少蓝光和屏幕亮度，保护眼睛健康',
+    off: '关闭',
+    light: '轻度',
+    medium: '中度',
+    strong: '强力',
+    gameReminder: '游戏时长提醒',
+    reminderDesc: '长时间游戏会提醒休息',
+    vibrationFeedback: '震动反馈',
+    vibrationDesc: '触碰时提供触觉反馈',
+    particleEffects: '粒子特效',
+    particleDesc: '背景动态粒子效果',
+    dataManagement: '数据管理',
+    exportData: '导出存档数据',
+    importData: '导入存档数据',
+    resetData: '清空所有数据',
+    language: '语言',
+    
+    // 消息
+    devModeOn: '开发者模式已开启',
+    devModeOff: '开发者模式已关闭',
+    wrongPassword: '密码错误',
+    checkinSuccess: '签到成功！获得',
+    noMistakes: '没有发现明显失误',
+    dataExported: '数据已导出到剪贴板',
+    dataImported: '数据导入成功',
+    dataReset: '所有数据已清空',
+    confirmReset: '确定要清空所有数据吗？此操作不可恢复！',
+    times: '次',
+    places: '处',
+    got: '获得',
+    gameFailed: '游戏失败',
+    reminderOff: '已关闭时长提醒'
+  },
+  en: {
+    // Game modes
+    classicMode: 'Classic',
+    survivalMode: 'Survival',
+    zenMode: 'Zen',
+    specialMode: 'Special Mines',
+    
+    // Difficulty
+    easy: 'Easy',
+    medium: 'Medium',
+    hard: 'Hard',
+    custom: 'Custom',
+    
+    // Common
+    coins: 'Coins',
+    time: 'Time',
+    operations: 'Total Moves',
+    mistakes: 'Mistakes Found',
+    position: 'Position',
+    row: 'Row',
+    col: 'Col',
+    
+    // Buttons
+    start: 'Start',
+    playAgain: 'Play Again',
+    backToHome: 'Back to Home',
+    close: 'Close',
+    confirm: 'Confirm',
+    cancel: 'Cancel',
+    viewReview: 'View Mistake Analysis',
+    highlight: 'Highlight',
+    highlightArea: 'Highlight Area',
+    backToGame: 'Back to Game',
+    
+    // Mistake types
+    fatalMistake: 'Fatal Mistake',
+    shouldFlag: 'Missed Mine Flag',
+    wrongFlag: 'Wrong Flag',
+    missedSafe: 'Missed Safe Cell',
+    lastMove: 'Last Move',
+    
+    // Descriptions
+    fatalDesc: 'Hit mine and caused game over',
+    shouldFlagDesc: 'All hidden cells around should be flagged first',
+    wrongFlagDesc: 'Flagged non-mine positions, may interfere with judgment',
+    missedSafeDesc: 'Enough flags around, other cells are safe',
+    
+    // Statistics
+    gameStats: 'Game Statistics',
+    totalGames: 'Total Games',
+    wins: 'Wins',
+    winRate: 'Win Rate',
+    perfectWins: 'Perfect Wins',
+    coinStats: 'Coin Statistics',
+    currentCoins: 'Current Coins',
+    totalEarned: 'Total Earned',
+    totalSpent: 'Total Spent',
+    maxEarn: 'Max Single Earn',
+    timeStats: 'Time Statistics',
+    totalTime: 'Total Play Time',
+    easyBest: 'Easy Best',
+    mediumBest: 'Medium Best',
+    hardBest: 'Hard Best',
+    operationStats: 'Operation Statistics',
+    totalClicks: 'Total Clicks',
+    totalFlags: 'Total Flags',
+    itemsUsed: 'Items Used',
+    
+    // Settings
+    settings: 'Settings',
+    eyeProtection: 'Eye Protection',
+    eyeProtectionDesc: 'Reduce blue light and screen brightness to protect eye health',
+    off: 'Off',
+    light: 'Light',
+    medium: 'Medium',
+    strong: 'Strong',
+    gameReminder: 'Play Time Reminder',
+    reminderDesc: 'Reminder to rest after long play time',
+    vibrationFeedback: 'Vibration Feedback',
+    vibrationDesc: 'Provide haptic feedback on touch',
+    particleEffects: 'Particle Effects',
+    particleDesc: 'Dynamic particle background effects',
+    dataManagement: 'Data Management',
+    exportData: 'Export Save Data',
+    importData: 'Import Save Data',
+    resetData: 'Clear All Data',
+    language: 'Language',
+    
+    // Messages
+    devModeOn: 'Developer mode enabled',
+    devModeOff: 'Developer mode disabled',
+    wrongPassword: 'Wrong password',
+    checkinSuccess: 'Check-in successful! Got',
+    noMistakes: 'No obvious mistakes found',
+    dataExported: 'Data exported to clipboard',
+    dataImported: 'Data imported successfully',
+    dataReset: 'All data has been cleared',
+    confirmReset: 'Are you sure you want to clear all data? This cannot be undone!',
+    times: 'times',
+    places: 'places',
+    got: 'Got',
+    gameFailed: 'Game Failed',
+    reminderOff: 'Play time reminder disabled'
+  }
+};
+
+function t(key) {
+  const lang = SAVE.language || 'zh';
+  return LANG[lang][key] || key;
+}
+
 
 /* =========================================================
    持久化存档
@@ -106,6 +325,7 @@ const SAVE_KEY = 'ms_save_v3';
 function createDefaultSave() {
   return {
     coins: 0,
+    language: 'zh', // 'zh' or 'en'
     ownedItems: { scan:0, autoflag:0, freeze:0, defuse:0, undo:0 },
     ownedSkins: ['classic'],
     activeSkin: 'classic',
@@ -127,12 +347,13 @@ function createDefaultSave() {
     achievements: { unlocked:[], stats:{} },
     rank: { wins:0, losses:0, score:0, currentRank:'bronze' },
     statistics: {
-      totalGames:0, totalWins:0, totalLosses:0, totalPlayTime:0,
-      byDifficulty: {}, totalCoinsEarned:0, totalCoinsSpent:0,
+      totalGames:0, totalWins:0, totalLosses:0, totalPlayTime:0, totalClicks:0, totalFlags:0, totalItemsUsed:0,
+      byDifficulty: {}, totalCoinsEarned:0, totalCoinsSpent:0, maxSingleEarn:0,
       firstPlayDate:null, lastPlayDate:null, activeDays:0
     },
-    eyeProtection: { enabled:false, mode:'auto', intensity:'medium', reminderInterval:30 },
+    eyeProtection: { enabled:false, intensity:'off', reminderInterval:0 },
     musicPlayer: { volume:0.7, bgmVolume:0.8, sfxVolume:0.6, playing:false, mode:'loop' },
+    settings: { vibration:false, particles:true },
     devMode: false,
     devModeBackupCoins: null
   };
@@ -170,7 +391,9 @@ let SAVE = loadState();
    振动反馈
 ========================================================= */
 function vibrate(pattern) {
-  if (navigator.vibrate) navigator.vibrate(pattern);
+  if (SAVE.settings && SAVE.settings.vibration && navigator.vibrate) {
+    navigator.vibrate(pattern);
+  }
 }
 
 const Vibration = {
@@ -767,6 +990,9 @@ function handlePrimaryAction(r, c) {
           timestamp: Date.now()
         });
         
+        // 统计点击
+        SAVE.statistics.totalClicks++;
+        
         nbrs.forEach(([nr, nc]) => {
           if (!G.board[nr][nc].flagged && !G.board[nr][nc].revealed) revealCell(nr, nc);
         });
@@ -795,6 +1021,9 @@ function handlePrimaryAction(r, c) {
     time: G.timer,
     timestamp: Date.now()
   });
+  
+  // 统计点击
+  SAVE.statistics.totalClicks++;
 
   revealCell(r, c);
   if (!G.over) checkWin();
@@ -924,7 +1153,11 @@ function toggleFlag(r, c) {
   $('#mine-count').textContent = G.mines - G.flagCount;
   renderCell(r, c);
   Sound.flag();
-  if (cell.flagged) G.noFlagUsed = false;
+  if (cell.flagged) {
+    G.noFlagUsed = false;
+    // 统计标旗
+    SAVE.statistics.totalFlags++;
+  }
   
   // 记录标旗操作
   G.moveHistory.push({
@@ -941,7 +1174,7 @@ function toggleFlag(r, c) {
       type: 'wrong_flag',
       r, c,
       time: G.timer,
-      description: '错误标旗：这里不是地雷'
+      description: t('wrongFlagDesc')
     });
   }
 }
@@ -984,14 +1217,23 @@ function renderCell(r, c) {
 function triggerLose(r, c) {
   G.over = true;
   stopTimer();
+  
+  // 记录游戏时长
+  SAVE.statistics.totalPlayTime += G.timer;
+  SAVE.statistics.lastPlayDate = todayStr();
+  if (!SAVE.statistics.firstPlayDate) {
+    SAVE.statistics.firstPlayDate = todayStr();
+  }
+  
   G.cellEls[r][c].classList.add('exploded');
   
-  // 记录致命失误
+  // 记录致命失误 - 标记为最后一步
   G.mistakes.push({
     type: 'fatal',
     r, c,
     time: G.timer,
-    description: '踩到地雷导致游戏失败'
+    description: t('fatalDesc'),
+    isLastMove: true  // 标记为最后一步
   });
   
   // 分析失误：找出本可以避免的错误
@@ -1089,6 +1331,14 @@ function checkWin() {
   if (G.revealedSafe >= total) {
     G.over = true;
     stopTimer();
+    
+    // 记录游戏时长
+    SAVE.statistics.totalPlayTime += G.timer;
+    SAVE.statistics.lastPlayDate = todayStr();
+    if (!SAVE.statistics.firstPlayDate) {
+      SAVE.statistics.firstPlayDate = todayStr();
+    }
+    
     Sound.win();
     
     if (G.isSurvival) {
@@ -1181,6 +1431,7 @@ function useItem(key) {
 
   SAVE.ownedItems[key]--;
   G.itemsUsed++;
+  SAVE.statistics.totalItemsUsed++;
   saveState(SAVE);
   renderItemsBar();
 }
@@ -1197,29 +1448,34 @@ function showResult(won) {
     SAVE.coins += coins;
     SAVE.statistics.totalCoinsEarned += coins;
     
+    // 记录单局最高
+    if (coins > SAVE.statistics.maxSingleEarn) {
+      SAVE.statistics.maxSingleEarn = coins;
+    }
+    
     stats.innerHTML = `
-      <div>用时 <b>${fmtTime(G.timer)}</b></div>
-      <div>总操作 <b>${G.moveHistory.length}</b> 次</div>
-      <div>金币 <b>+${coins}</b></div>
+      <div>${t('time')} <b>${fmtTime(G.timer)}</b></div>
+      <div>${t('operations')} <b>${G.moveHistory.length}</b> ${t('times')}</div>
+      <div>${t('coins')} <b>+${coins}</b></div>
     `;
-    earnEl.textContent = `🪙 获得 ${coins} 金币`;
+    earnEl.textContent = `🪙 ${t('got')} ${coins} ${t('coins')}`;
     Sound.coin();
     
     triggerVictoryEffect();
   } else {
-    title.textContent = '💥 游戏失败';
+    title.textContent = '💥 ' + t('gameFailed');
     const mistakeCount = G.mistakes.length;
     stats.innerHTML = `
-      <div>用时 <b>${fmtTime(G.timer)}</b></div>
-      <div>总操作 <b>${G.moveHistory.length}</b> 次</div>
-      <div>发现失误 <b>${mistakeCount}</b> 处</div>
+      <div>${t('time')} <b>${fmtTime(G.timer)}</b></div>
+      <div>${t('operations')} <b>${G.moveHistory.length}</b> ${t('times')}</div>
+      <div>${t('mistakes')} <b>${mistakeCount}</b> ${t('places')}</div>
     `;
     
     // 添加"查看复盘"按钮
     if (mistakeCount > 0) {
       earnEl.innerHTML = `
         <button class="secondary-btn" id="btn-review" style="margin-top:10px;background:var(--accent);color:#fff;border:none;">
-          🔍 查看失误分析 (${mistakeCount})
+          🔍 ${t('viewReview')} (${mistakeCount})
         </button>
       `;
       
@@ -1234,7 +1490,7 @@ function showResult(won) {
         }
       }, 100);
     } else {
-      earnEl.textContent = '没有发现明显失误';
+      earnEl.textContent = t('noMistakes');
     }
   }
 
@@ -1441,12 +1697,150 @@ document.addEventListener('DOMContentLoaded', () => {
   
   $('#btn-checkin-back')?.addEventListener('click', () => showScreen('screen-home'));
   
+  // 语言切换按钮
+  $('#btn-language')?.addEventListener('click', () => {
+    const currentLang = SAVE.language || 'zh';
+    const newLang = currentLang === 'zh' ? 'en' : 'zh';
+    if (confirm(currentLang === 'zh' ? '切换到英文？\nSwitch to English?' : 'Switch to Chinese?\n切换到中文？')) {
+      switchLanguage(newLang);
+    }
+  });
+  
+  // 设置相关事件
+  setupSettings();
+  
   console.log('💎 Minesweeper Pro Complete Edition loaded');
 });
 
 function applySkin() {
   document.body.className = 'skin-' + SAVE.activeSkin;
 }
+
+// 设置功能
+function setupSettings() {
+  // 护眼模式按钮
+  $all('.eye-mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      $all('.eye-mode-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      SAVE.eyeProtection.intensity = btn.dataset.mode;
+      applyEyeProtection();
+      saveState(SAVE);
+      $('#current-eye-mode').textContent = btn.textContent;
+    });
+  });
+  
+  // 时长提醒按钮
+  $all('.remind-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      $all('.remind-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const time = btn.dataset.time;
+      SAVE.eyeProtection.reminderInterval = time === 'off' ? 0 : parseInt(time);
+      saveState(SAVE);
+      toast(time === 'off' ? t('reminderOff') : `已设置 ${time} 分钟提醒`);
+    });
+  });
+  
+  // 震动反馈开关
+  const vibToggle = $('#vibration-toggle');
+  if (vibToggle) {
+    vibToggle.checked = SAVE.settings.vibration;
+    vibToggle.addEventListener('change', (e) => {
+      SAVE.settings.vibration = e.target.checked;
+      saveState(SAVE);
+      if (e.target.checked) {
+        toast('震动反馈已开启');
+        Vibration.medium();
+      } else {
+        toast('震动反馈已关闭');
+      }
+    });
+  }
+  
+  // 粒子特效开关
+  const particlesToggle = $('#particles-toggle');
+  if (particlesToggle) {
+    particlesToggle.checked = SAVE.settings.particles;
+    particlesToggle.addEventListener('change', (e) => {
+      SAVE.settings.particles = e.target.checked;
+      saveState(SAVE);
+      if (e.target.checked) {
+        toast('粒子特效已开启');
+        applyBackground();
+      } else {
+        toast('粒子特效已关闭');
+        const bg = $('#particles-bg');
+        if (bg) bg.innerHTML = '';
+      }
+    });
+  }
+  
+  // 导出数据
+  $('#btn-export-data')?.addEventListener('click', () => {
+    try {
+      const dataStr = JSON.stringify(SAVE, null, 2);
+      navigator.clipboard.writeText(dataStr);
+      toast(t('dataExported'));
+    } catch (e) {
+      // 备用方法
+      const textarea = document.createElement('textarea');
+      textarea.value = JSON.stringify(SAVE);
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      toast(t('dataExported'));
+    }
+  });
+  
+  // 导入数据
+  $('#btn-import-data')?.addEventListener('click', () => {
+    const dataStr = prompt('请粘贴存档数据：');
+    if (!dataStr) return;
+    try {
+      const data = JSON.parse(dataStr);
+      SAVE = data;
+      saveState(SAVE);
+      location.reload();
+    } catch (e) {
+      toast('数据格式错误');
+    }
+  });
+  
+  // 清空数据
+  $('#btn-reset-data')?.addEventListener('click', () => {
+    if (!confirm(t('confirmReset'))) return;
+    try {
+      localStorage.removeItem(SAVE_KEY);
+      location.reload();
+    } catch (e) {
+      toast('清空失败');
+    }
+  });
+}
+
+// 护眼模式应用
+function applyEyeProtection() {
+  const intensity = SAVE.eyeProtection.intensity;
+  
+  const filters = {
+    off: 'none',
+    light: 'sepia(10%) saturate(95%)',
+    medium: 'sepia(15%) saturate(90%) contrast(95%)',
+    strong: 'sepia(20%) saturate(85%) contrast(90%) brightness(90%)'
+  };
+  
+  document.body.style.filter = filters[intensity] || 'none';
+}
+
+// 语言切换
+function switchLanguage(lang) {
+  SAVE.language = lang;
+  saveState(SAVE);
+  location.reload();
+}
+
 
 // 商城渲染
 function renderShop() {
@@ -1456,7 +1850,28 @@ function renderShop() {
 
 // 统计中心渲染
 function renderStats() {
-  toast('统计中心开发中');
+  const stats = SAVE.statistics;
+  const winRate = stats.totalGames > 0 ? Math.round((stats.totalWins / stats.totalGames) * 100) : 0;
+  const totalTimeMin = Math.floor(stats.totalPlayTime / 60);
+  
+  $('#stat-total-games').textContent = stats.totalGames;
+  $('#stat-wins').textContent = stats.totalWins;
+  $('#stat-winrate').textContent = winRate + '%';
+  $('#stat-perfect-wins').textContent = '0'; // TODO: 实现完美通关计数
+  
+  $('#stat-current-coins').textContent = SAVE.coins;
+  $('#stat-total-earned').textContent = stats.totalCoinsEarned;
+  $('#stat-total-spent').textContent = stats.totalCoinsSpent;
+  $('#stat-max-earn').textContent = stats.maxSingleEarn || 0;
+  
+  $('#stat-total-time').textContent = totalTimeMin + '分钟';
+  $('#stat-easy-best').textContent = SAVE.best.easy.time ? fmtTime(SAVE.best.easy.time) : '--';
+  $('#stat-medium-best').textContent = SAVE.best.medium.time ? fmtTime(SAVE.best.medium.time) : '--';
+  $('#stat-hard-best').textContent = SAVE.best.hard.time ? fmtTime(SAVE.best.hard.time) : '--';
+  
+  $('#stat-total-clicks').textContent = stats.totalClicks || 0;
+  $('#stat-total-flags').textContent = stats.totalFlags || 0;
+  $('#stat-items-used').textContent = stats.totalItemsUsed || 0;
 }
 
 // 音乐播放器渲染
@@ -1543,14 +1958,17 @@ function showReviewScreen() {
       <div class="mistake-item fatal" style="background:rgba(255,107,107,0.1);border-left:4px solid var(--danger);padding:12px;margin-bottom:12px;border-radius:8px;">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
           <span style="font-size:24px;">💥</span>
-          <div>
-            <div style="font-weight:800;color:var(--danger);">致命失误</div>
-            <div style="font-size:12px;color:var(--text-dim);">第 ${fmtTime(fatalMistake.time)}</div>
+          <div style="flex:1;">
+            <div style="font-weight:800;color:var(--danger);display:flex;align-items:center;gap:8px;">
+              ${t('fatalMistake')}
+              ${fatalMistake.isLastMove ? `<span style="background:linear-gradient(135deg,#ff6b6b,#ff8787);color:#fff;padding:2px 8px;border-radius:12px;font-size:10px;animation:pulse 1.5s infinite;">⚡ ${t('lastMove')}</span>` : ''}
+            </div>
+            <div style="font-size:12px;color:var(--text-dim);">${fmtTime(fatalMistake.time)}</div>
           </div>
         </div>
         <div style="font-size:13px;color:var(--text-main);">${fatalMistake.description}</div>
-        <div style="font-size:12px;color:var(--text-dim);margin-top:4px;">位置：行${fatalMistake.r + 1} 列${fatalMistake.c + 1}</div>
-        <button class="secondary-btn" onclick="highlightCell(${fatalMistake.r}, ${fatalMistake.c})" style="margin-top:8px;padding:6px 12px;font-size:12px;">📍 高亮显示</button>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:4px;">${t('position')}：${t('row')}${fatalMistake.r + 1} ${t('col')}${fatalMistake.c + 1}</div>
+        <button class="secondary-btn" onclick="highlightCell(${fatalMistake.r}, ${fatalMistake.c}, true)" style="margin-top:8px;padding:6px 12px;font-size:12px;">📍 ${t('highlight')}</button>
       </div>
     `;
   }
@@ -1675,13 +2093,32 @@ function showReviewScreen() {
 }
 
 // 高亮单个格子
-function highlightCell(r, c) {
+function highlightCell(r, c, isLastMove = false) {
   if (!G || !G.cellEls || !G.cellEls[r] || !G.cellEls[r][c]) return;
   
   const cell = G.cellEls[r][c];
-  cell.style.boxShadow = '0 0 0 3px var(--danger), 0 0 20px var(--danger)';
-  cell.style.transform = 'scale(1.2)';
+  
+  // 最后一步用特殊的紫红色高亮
+  const color = isLastMove ? '#ff0066' : 'var(--danger)';
+  const glowColor = isLastMove ? 'rgba(255,0,102,0.6)' : 'rgba(255,107,107,0.6)';
+  
+  cell.style.boxShadow = `0 0 0 4px ${color}, 0 0 30px ${glowColor}`;
+  cell.style.transform = 'scale(1.3)';
   cell.style.zIndex = '100';
+  cell.style.animation = 'pulse 1.5s infinite';
+  
+  // 添加脉冲动画样式
+  if (!document.getElementById('pulse-style')) {
+    const style = document.createElement('style');
+    style.id = 'pulse-style';
+    style.textContent = `
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
   
   // 滚动到该格子
   cell.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1690,9 +2127,11 @@ function highlightCell(r, c) {
     cell.style.boxShadow = '';
     cell.style.transform = '';
     cell.style.zIndex = '';
-  }, 3000);
+    cell.style.animation = '';
+  }, 4000);
   
-  toast(`位置：行${r+1} 列${c+1}`);
+  const moveLabel = isLastMove ? ` (${t('lastMove')})` : '';
+  toast(`${t('position')}：${t('row')}${r+1} ${t('col')}${c+1}${moveLabel}`);
 }
 
 // 高亮区域
