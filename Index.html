@@ -25,6 +25,26 @@
       </div>
     </div>
 
+    <!-- 玩家信息卡片 -->
+    <div class="glass-card" style="padding:16px;margin-bottom:16px;display:flex;align-items:center;gap:16px;">
+      <div id="player-avatar" style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-size:32px;position:relative;cursor:pointer;" onclick="showAvatarSettings()">
+        👤
+        <div id="avatar-frame" style="position:absolute;inset:-4px;border:3px solid transparent;border-radius:50%;"></div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-weight:800;font-size:16px;margin-bottom:4px;">Player</div>
+        <div style="display:flex;align-items:center;gap:8px;cursor:pointer;" onclick="document.getElementById('btn-rank').click()">
+          <span id="player-rank-icon" class="rank-icon rank-bronze" style="font-size:20px;">◆</span>
+          <span id="player-rank-name" style="font-weight:700;font-size:14px;">青铜</span>
+          <span style="font-size:11px;color:var(--text-dim);" id="player-rank-score">0分</span>
+        </div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:11px;color:var(--text-dim);">胜率</div>
+        <div id="player-winrate" style="font-weight:900;font-size:18px;color:var(--accent);">0%</div>
+      </div>
+    </div>
+
     <h1 class="logo gradient-text">💎 MINESWEEPER</h1>
     <p class="subtitle">选择游戏模式开始</p>
 
@@ -142,6 +162,12 @@
       </div>
 
       <div class="diff-grid">
+        <button class="diff-card glass-card" data-diff="zen-easy">
+          <div class="diff-emoji">🌸</div>
+          <div class="diff-name">初心禅</div>
+          <div class="diff-meta">9×9 · 10 雷</div>
+          <div class="diff-reward">🪙 固定 8 金币</div>
+        </button>
         <button class="diff-card glass-card" data-diff="zen-normal">
           <div class="diff-emoji">☮️</div>
           <div class="diff-name">标准禅</div>

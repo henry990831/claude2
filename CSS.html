@@ -20,23 +20,36 @@ html, body {
   transition: background 0.6s cubic-bezier(0.4, 0, 0.2, 1), filter 0.3s ease;
 }
 
-/* ============ 默认主题变量 ============ */
+/* ============ 默认主题变量 - 护眼配色 ============ */
 :root, body.skin-classic {
-  --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-  --text-main: #ffffff;
-  --text-dim: rgba(255, 255, 255, 0.7);
-  --accent: #00d4ff;
-  --accent-2: #ff6b9d;
-  --glass-bg: rgba(255, 255, 255, 0.08);
-  --glass-border: rgba(255, 255, 255, 0.18);
-  --cell-hidden: linear-gradient(145deg, rgba(255,255,255,0.15), rgba(255,255,255,0.08));
-  --cell-hidden-hover: linear-gradient(145deg, rgba(255,255,255,0.22), rgba(255,255,255,0.12));
-  --cell-revealed: rgba(255, 255, 255, 0.06);
-  --cell-border: rgba(255, 255, 255, 0.15);
-  --danger: #ff4757;
-  --success: #2ed573;
-  --warning: #ffa502;
-  --gold: #ffd700;
+  /* 柔和的深蓝紫渐变背景 */
+  --bg-gradient: radial-gradient(circle at 20% 20%, #1a2332 0%, #0f1419 60%, #080a0e 100%);
+  
+  /* 温和的文字颜色 */
+  --text-main: #e8edf5;
+  --text-dim: #9aa5b8;
+  
+  /* 柔和的强调色 */
+  --accent: #5b9bd5;
+  --accent-2: #7ec8a3;
+  
+  /* 玻璃效果 */
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  
+  /* 格子颜色 */
+  --cell-hidden: linear-gradient(145deg, #2a3441, #1f2732);
+  --cell-hidden-hover: linear-gradient(145deg, #343e4f, #252e3c);
+  --cell-revealed: rgba(255, 255, 255, 0.03);
+  --cell-border: rgba(255, 255, 255, 0.08);
+  
+  /* 状态颜色 */
+  --danger: #e57373;
+  --success: #81c784;
+  --warning: #ffb74d;
+  --gold: #ffd54f;
+  
+  /* 图标 */
   --mine-icon: "💣";
   --flag-icon: "🚩";
 }
@@ -47,6 +60,40 @@ body.skin-pixel {
   --accent-2: #ffdd00;
   --mine-icon: "👾";
   --flag-icon: "🟥";
+}
+
+/* ============ 设置按钮选中状态 ============ */
+.eye-mode-btn, .remind-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.eye-mode-btn.active, .remind-btn.active {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2)) !important;
+  color: #0a0d1a !important;
+  font-weight: 800;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(var(--accent), 0.4);
+}
+
+.eye-mode-btn.active::before, .remind-btn.active::before {
+  content: '✓';
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  font-weight: 900;
+}
+
+/* 切换开关样式 */
+input[type="checkbox"]:checked + span {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2)) !important;
+}
+
+input[type="checkbox"]:checked + span + span {
+  transform: translateX(22px) !important;
+  background: #fff !important;
 }
 
 body.skin-ocean {
