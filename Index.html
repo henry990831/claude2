@@ -18,10 +18,10 @@
       </div>
       <div class="top-right-btns">
         <button class="icon-btn" id="btn-language" title="Language / 语言" style="font-size:14px;font-weight:700;">🌐</button>
-        <button class="icon-btn" id="btn-daily-checkin" title="每日签到">📅</button>
-        <button class="icon-btn" id="btn-achievements" title="成就">🏆</button>
-        <button class="icon-btn" id="btn-rank" title="段位">🎖️</button>
-        <button class="icon-btn" id="btn-shop-open" title="商城">🛍️</button>
+        <button class="icon-btn" id="btn-daily-checkin" data-i18n-title="dailyCheckIn" title="每日签到">📅</button>
+        <button class="icon-btn" id="btn-achievements" data-i18n-title="achievements" title="成就">🏆</button>
+        <button class="icon-btn" id="btn-rank" data-i18n-title="rankTitleBtn" title="段位">🎖️</button>
+        <button class="icon-btn" id="btn-shop-open" data-i18n-title="shop" title="商城">🛍️</button>
       </div>
     </div>
 
@@ -40,20 +40,20 @@
         </div>
       </div>
       <div style="text-align:right;">
-        <div style="font-size:11px;color:var(--text-dim);">胜率</div>
+        <div style="font-size:11px;color:var(--text-dim);" data-i18n="winrate">胜率</div>
         <div id="player-winrate" style="font-weight:900;font-size:18px;color:var(--accent);">0%</div>
       </div>
     </div>
 
     <h1 class="logo gradient-text">💎 MINESWEEPER</h1>
-    <p class="subtitle">选择游戏模式开始</p>
+    <p class="subtitle" data-i18n="selectMode">选择游戏模式开始</p>
 
     <!-- 游戏模式切换 -->
     <div class="mode-tabs" style="display:flex;gap:6px;margin-bottom:20px;background:var(--glass-bg);padding:6px;border-radius:16px;backdrop-filter:blur(10px);">
-      <button class="mode-tab active" data-mode="classic" style="flex:1;padding:12px 8px;border:none;border-radius:12px;background:transparent;color:var(--text-dim);font-weight:700;font-size:13px;cursor:pointer;transition:all 0.3s ease;">经典模式</button>
-      <button class="mode-tab" data-mode="survival" style="flex:1;padding:12px 8px;border:none;border-radius:12px;background:transparent;color:var(--text-dim);font-weight:700;font-size:13px;cursor:pointer;transition:all 0.3s ease;">生存模式</button>
-      <button class="mode-tab" data-mode="zen" style="flex:1;padding:12px 8px;border:none;border-radius:12px;background:transparent;color:var(--text-dim);font-weight:700;font-size:13px;cursor:pointer;transition:all 0.3s ease;">禅模式</button>
-      <button class="mode-tab" data-mode="special" style="flex:1;padding:12px 8px;border:none;border-radius:12px;background:transparent;color:var(--text-dim);font-weight:700;font-size:13px;cursor:pointer;transition:all 0.3s ease;">特殊地雷</button>
+      <button class="mode-tab active" data-mode="classic" data-i18n="tab_classic" style="flex:1;padding:12px 8px;border:none;border-radius:12px;background:transparent;color:var(--text-dim);font-weight:700;font-size:13px;cursor:pointer;transition:all 0.3s ease;">经典模式</button>
+      <button class="mode-tab" data-mode="survival" data-i18n="tab_survival" style="flex:1;padding:12px 8px;border:none;border-radius:12px;background:transparent;color:var(--text-dim);font-weight:700;font-size:13px;cursor:pointer;transition:all 0.3s ease;">生存模式</button>
+      <button class="mode-tab" data-mode="zen" data-i18n="tab_zen" style="flex:1;padding:12px 8px;border:none;border-radius:12px;background:transparent;color:var(--text-dim);font-weight:700;font-size:13px;cursor:pointer;transition:all 0.3s ease;">禅模式</button>
+      <button class="mode-tab" data-mode="special" data-i18n="tab_special" style="flex:1;padding:12px 8px;border:none;border-radius:12px;background:transparent;color:var(--text-dim);font-weight:700;font-size:13px;cursor:pointer;transition:all 0.3s ease;">特殊地雷</button>
     </div>
 
     <!-- 经典模式 -->
@@ -61,45 +61,45 @@
       <div class="diff-grid">
         <button class="diff-card glass-card" data-diff="easy">
           <div class="diff-emoji">🌱</div>
-          <div class="diff-name">简单</div>
-          <div class="diff-meta">9×9 · 10 雷</div>
-          <div class="diff-reward">🪙 基础 5 金币</div>
+          <div class="diff-name" data-i18n="diff_easy">简单</div>
+          <div class="diff-meta" data-i18n="meta_9x9">9×9 · 10 雷</div>
+          <div class="diff-reward" data-i18n="reward_base5">🪙 基础 5 金币</div>
         </button>
         <button class="diff-card glass-card" data-diff="medium">
           <div class="diff-emoji">🔥</div>
-          <div class="diff-name">中等</div>
-          <div class="diff-meta">16×16 · 40 雷</div>
-          <div class="diff-reward">🪙 基础 15 金币</div>
+          <div class="diff-name" data-i18n="diff_medium">中等</div>
+          <div class="diff-meta" data-i18n="meta_16x16">16×16 · 40 雷</div>
+          <div class="diff-reward" data-i18n="reward_base15">🪙 基础 15 金币</div>
         </button>
         <button class="diff-card glass-card" data-diff="hard">
           <div class="diff-emoji">💀</div>
-          <div class="diff-name">困难</div>
-          <div class="diff-meta">30×16 · 99 雷</div>
-          <div class="diff-reward">🪙 基础 30 金币</div>
+          <div class="diff-name" data-i18n="diff_hard">困难</div>
+          <div class="diff-meta" data-i18n="meta_30x16">30×16 · 99 雷</div>
+          <div class="diff-reward" data-i18n="reward_base30">🪙 基础 30 金币</div>
         </button>
         <button class="diff-card glass-card" data-diff="custom">
           <div class="diff-emoji">⚙️</div>
-          <div class="diff-name">自定义</div>
-          <div class="diff-meta">自己调</div>
-          <div class="diff-reward">🪙 动态奖励</div>
+          <div class="diff-name" data-i18n="diff_custom">自定义</div>
+          <div class="diff-meta" data-i18n="meta_selfadjust">自己调</div>
+          <div class="diff-reward" data-i18n="reward_dynamic">🪙 动态奖励</div>
         </button>
       </div>
 
       <div id="custom-panel" class="glass-card hidden" style="margin-top:16px;padding:20px;">
         <div style="margin-bottom:14px;">
-          <label style="display:flex;justify-content:space-between;font-size:13px;color:var(--text-dim);margin-bottom:6px;">行数 (高) <span id="val-rows" style="color:var(--text-main);font-weight:700;">9</span></label>
+          <label style="display:flex;justify-content:space-between;font-size:13px;color:var(--text-dim);margin-bottom:6px;"><span data-i18n="custom_rows">行数 (高)</span> <span id="val-rows" style="color:var(--text-main);font-weight:700;">9</span></label>
           <input type="range" id="slider-rows" min="5" max="24" value="9" style="width:100%;">
         </div>
         <div style="margin-bottom:14px;">
-          <label style="display:flex;justify-content:space-between;font-size:13px;color:var(--text-dim);margin-bottom:6px;">列数 (宽) <span id="val-cols" style="color:var(--text-main);font-weight:700;">9</span></label>
+          <label style="display:flex;justify-content:space-between;font-size:13px;color:var(--text-dim);margin-bottom:6px;"><span data-i18n="custom_cols">列数 (宽)</span> <span id="val-cols" style="color:var(--text-main);font-weight:700;">9</span></label>
           <input type="range" id="slider-cols" min="5" max="30" value="9" style="width:100%;">
         </div>
         <div style="margin-bottom:14px;">
-          <label style="display:flex;justify-content:space-between;font-size:13px;color:var(--text-dim);margin-bottom:6px;">地雷数 <span id="val-mines" style="color:var(--text-main);font-weight:700;">10</span></label>
+          <label style="display:flex;justify-content:space-between;font-size:13px;color:var(--text-dim);margin-bottom:6px;"><span data-i18n="custom_mines">地雷数</span> <span id="val-mines" style="color:var(--text-main);font-weight:700;">10</span></label>
           <input type="range" id="slider-mines" min="1" max="80" value="10" style="width:100%;">
         </div>
         <div id="density-tag" style="text-align:center;font-size:12px;color:var(--accent-2);margin:8px 0 14px;font-weight:700;">密度 12% · 简单</div>
-        <button class="primary-btn" id="btn-custom-start">开始自定义游戏</button>
+        <button class="primary-btn" id="btn-custom-start" data-i18n="custom_start">开始自定义游戏</button>
       </div>
     </div>
 
@@ -108,8 +108,8 @@
     <div id="survival-mode-panel" class="mode-panel hidden">
       <div class="glass-card" style="padding:20px;margin-bottom:16px;text-align:center;">
         <div style="font-size:48px;margin-bottom:8px;">🔥</div>
-        <div style="font-size:18px;font-weight:800;margin-bottom:8px;">生存挑战</div>
-        <div style="font-size:13px;color:var(--text-dim);line-height:1.6;">
+        <div style="font-size:18px;font-weight:800;margin-bottom:8px;" data-i18n="survival_title">生存挑战</div>
+        <div style="font-size:13px;color:var(--text-dim);line-height:1.6;" data-i18n="survival_desc">
           连续通关获得连胜加成！<br>
           每次胜利：基础奖励 × (1 + 连胜数 × 0.2)<br>
           失败后连胜清零，重新开始
@@ -118,11 +118,11 @@
 
       <div class="glass-card" style="padding:20px;margin-bottom:16px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-          <span style="font-size:14px;font-weight:700;">当前连胜</span>
+          <span style="font-size:14px;font-weight:700;" data-i18n="survival_current">当前连胜</span>
           <span id="survival-streak" style="font-size:24px;font-weight:900;color:var(--accent);">0</span>
         </div>
         <div style="display:flex;justify-content:space-between;align-items:center;">
-          <span style="font-size:14px;font-weight:700;">历史最高连胜</span>
+          <span style="font-size:14px;font-weight:700;" data-i18n="survival_best">历史最高连胜</span>
           <span id="survival-best-streak" style="font-size:20px;font-weight:800;color:var(--gold);">0</span>
         </div>
       </div>
@@ -130,21 +130,21 @@
       <div class="diff-grid">
         <button class="diff-card glass-card" data-diff="survival-easy">
           <div class="diff-emoji">🌱</div>
-          <div class="diff-name">简单</div>
-          <div class="diff-meta">9×9 · 10 雷</div>
-          <div class="diff-reward" id="reward-survival-easy">🪙 5 金币</div>
+          <div class="diff-name" data-i18n="diff_easy">简单</div>
+          <div class="diff-meta" data-i18n="meta_9x9">9×9 · 10 雷</div>
+          <div class="diff-reward" id="reward-survival-easy" data-i18n="reward_5">🪙 5 金币</div>
         </button>
         <button class="diff-card glass-card" data-diff="survival-medium">
           <div class="diff-emoji">🔥</div>
-          <div class="diff-name">中等</div>
-          <div class="diff-meta">16×16 · 40 雷</div>
-          <div class="diff-reward" id="reward-survival-medium">🪙 15 金币</div>
+          <div class="diff-name" data-i18n="diff_medium">中等</div>
+          <div class="diff-meta" data-i18n="meta_16x16">16×16 · 40 雷</div>
+          <div class="diff-reward" id="reward-survival-medium" data-i18n="reward_15">🪙 15 金币</div>
         </button>
         <button class="diff-card glass-card" data-diff="survival-hard">
           <div class="diff-emoji">💀</div>
-          <div class="diff-name">困难</div>
-          <div class="diff-meta">30×16 · 99 雷</div>
-          <div class="diff-reward" id="reward-survival-hard">🪙 30 金币</div>
+          <div class="diff-name" data-i18n="diff_hard">困难</div>
+          <div class="diff-meta" data-i18n="meta_30x16">30×16 · 99 雷</div>
+          <div class="diff-reward" id="reward-survival-hard" data-i18n="reward_30">🪙 30 金币</div>
         </button>
       </div>
     </div>
@@ -153,8 +153,8 @@
     <div id="zen-mode-panel" class="mode-panel hidden">
       <div class="glass-card" style="padding:20px;margin-bottom:16px;text-align:center;">
         <div style="font-size:48px;margin-bottom:8px;">🧘</div>
-        <div style="font-size:18px;font-weight:800;margin-bottom:8px;">禅意扫雷</div>
-        <div style="font-size:13px;color:var(--text-dim);line-height:1.6;">
+        <div style="font-size:18px;font-weight:800;margin-bottom:8px;" data-i18n="zen_title">禅意扫雷</div>
+        <div style="font-size:13px;color:var(--text-dim);line-height:1.6;" data-i18n="zen_desc">
           无计时器、无压力<br>
           专注于逻辑推理，享受纯粹的扫雷乐趣<br>
           完成后获得固定金币奖励
@@ -164,21 +164,21 @@
       <div class="diff-grid">
         <button class="diff-card glass-card" data-diff="zen-easy">
           <div class="diff-emoji">🌸</div>
-          <div class="diff-name">初心禅</div>
-          <div class="diff-meta">9×9 · 10 雷</div>
-          <div class="diff-reward">🪙 固定 8 金币</div>
+          <div class="diff-name" data-i18n="diff_zen_easy">初心禅</div>
+          <div class="diff-meta" data-i18n="meta_9x9">9×9 · 10 雷</div>
+          <div class="diff-reward" data-i18n="reward_fixed8">🪙 固定 8 金币</div>
         </button>
         <button class="diff-card glass-card" data-diff="zen-normal">
           <div class="diff-emoji">☮️</div>
-          <div class="diff-name">标准禅</div>
-          <div class="diff-meta">16×16 · 40 雷</div>
-          <div class="diff-reward">🪙 固定 12 金币</div>
+          <div class="diff-name" data-i18n="diff_zen_normal">标准禅</div>
+          <div class="diff-meta" data-i18n="meta_16x16">16×16 · 40 雷</div>
+          <div class="diff-reward" data-i18n="reward_fixed12">🪙 固定 12 金币</div>
         </button>
         <button class="diff-card glass-card" data-diff="zen-hard">
           <div class="diff-emoji">🕉️</div>
-          <div class="diff-name">大师禅</div>
-          <div class="diff-meta">24×24 · 120 雷</div>
-          <div class="diff-reward">🪙 固定 25 金币</div>
+          <div class="diff-name" data-i18n="diff_zen_hard">大师禅</div>
+          <div class="diff-meta" data-i18n="meta_24x24">24×24 · 120 雷</div>
+          <div class="diff-reward" data-i18n="reward_fixed25">🪙 固定 25 金币</div>
         </button>
       </div>
     </div>
@@ -187,8 +187,8 @@
     <div id="special-mode-panel" class="mode-panel hidden">
       <div class="glass-card" style="padding:20px;margin-bottom:16px;text-align:center;">
         <div style="font-size:48px;margin-bottom:8px;">✨</div>
-        <div style="font-size:18px;font-weight:800;margin-bottom:8px;">特殊地雷狂欢</div>
-        <div style="font-size:13px;color:var(--text-dim);line-height:1.6;">
+        <div style="font-size:18px;font-weight:800;margin-bottom:8px;" data-i18n="special_title">特殊地雷狂欢</div>
+        <div style="font-size:13px;color:var(--text-dim);line-height:1.6;" data-i18n="special_desc">
           地雷不再单调！4种特殊地雷带来全新体验
         </div>
       </div>
@@ -197,29 +197,29 @@
         <div class="glass-card" style="padding:14px;display:flex;align-items:center;gap:12px;">
           <div style="font-size:32px;">💰</div>
           <div style="flex:1;">
-            <div style="font-weight:800;margin-bottom:2px;">宝藏地雷 (5%)</div>
-            <div style="font-size:12px;color:var(--text-dim);">踩到获得 5-15 金币奖励，不会爆炸</div>
+            <div style="font-weight:800;margin-bottom:2px;" data-i18n="mine_treasure_name">宝藏地雷 (5%)</div>
+            <div style="font-size:12px;color:var(--text-dim);" data-i18n="mine_treasure_desc">踩到获得 5-15 金币奖励，不会爆炸</div>
           </div>
         </div>
         <div class="glass-card" style="padding:14px;display:flex;align-items:center;gap:12px;">
           <div style="font-size:32px;">🔥</div>
           <div style="flex:1;">
-            <div style="font-weight:800;margin-bottom:2px;">连锁地雷 (10%)</div>
-            <div style="font-size:12px;color:var(--text-dim);">触发后自动揭示周围8格安全区域</div>
+            <div style="font-weight:800;margin-bottom:2px;" data-i18n="mine_chain_name">连锁地雷 (10%)</div>
+            <div style="font-size:12px;color:var(--text-dim);" data-i18n="mine_chain_desc">触发后自动揭示周围8格安全区域</div>
           </div>
         </div>
         <div class="glass-card" style="padding:14px;display:flex;align-items:center;gap:12px;">
           <div style="font-size:32px;">❄️</div>
           <div style="flex:1;">
-            <div style="font-weight:800;margin-bottom:2px;">冰冻地雷 (5%)</div>
-            <div style="font-size:12px;color:var(--text-dim);">触发后暂停计时10秒</div>
+            <div style="font-weight:800;margin-bottom:2px;" data-i18n="mine_freeze_name">冰冻地雷 (5%)</div>
+            <div style="font-size:12px;color:var(--text-dim);" data-i18n="mine_freeze_desc">触发后暂停计时10秒</div>
           </div>
         </div>
         <div class="glass-card" style="padding:14px;display:flex;align-items:center;gap:12px;">
           <div style="font-size:32px;">🎲</div>
           <div style="flex:1;">
-            <div style="font-weight:800;margin-bottom:2px;">神秘地雷 (5%)</div>
-            <div style="font-size:12px;color:var(--text-dim);">随机触发以上任意效果</div>
+            <div style="font-weight:800;margin-bottom:2px;" data-i18n="mine_mystery_name">神秘地雷 (5%)</div>
+            <div style="font-size:12px;color:var(--text-dim);" data-i18n="mine_mystery_desc">随机触发以上任意效果</div>
           </div>
         </div>
       </div>
@@ -227,21 +227,21 @@
       <div class="diff-grid">
         <button class="diff-card glass-card" data-diff="special-easy">
           <div class="diff-emoji">🎁</div>
-          <div class="diff-name">简单</div>
-          <div class="diff-meta">9×9 · 10 雷</div>
-          <div class="diff-reward">🪙 基础 8 金币</div>
+          <div class="diff-name" data-i18n="diff_easy">简单</div>
+          <div class="diff-meta" data-i18n="meta_9x9">9×9 · 10 雷</div>
+          <div class="diff-reward" data-i18n="reward_base8">🪙 基础 8 金币</div>
         </button>
         <button class="diff-card glass-card" data-diff="special-medium">
           <div class="diff-emoji">🎉</div>
-          <div class="diff-name">中等</div>
-          <div class="diff-meta">16×16 · 40 雷</div>
-          <div class="diff-reward">🪙 基础 20 金币</div>
+          <div class="diff-name" data-i18n="diff_medium">中等</div>
+          <div class="diff-meta" data-i18n="meta_16x16">16×16 · 40 雷</div>
+          <div class="diff-reward" data-i18n="reward_base20">🪙 基础 20 金币</div>
         </button>
         <button class="diff-card glass-card" data-diff="special-hard">
           <div class="diff-emoji">🎊</div>
-          <div class="diff-name">困难</div>
-          <div class="diff-meta">30×16 · 99 雷</div>
-          <div class="diff-reward">🪙 基础 40 金币</div>
+          <div class="diff-name" data-i18n="diff_hard">困难</div>
+          <div class="diff-meta" data-i18n="meta_30x16">30×16 · 99 雷</div>
+          <div class="diff-reward" data-i18n="reward_base40">🪙 基础 40 金币</div>
         </button>
       </div>
     </div>
@@ -251,9 +251,9 @@
 
     <!-- 底部按钮 -->
     <div style="display:flex;gap:10px;margin-top:20px;">
-      <button class="icon-btn" id="btn-stats" title="统计中心" style="flex:1;height:50px;font-size:16px;">📊</button>
-      <button class="icon-btn" id="btn-music" title="音乐播放器" style="flex:1;height:50px;font-size:16px;">🎵</button>
-      <button class="icon-btn" id="btn-settings" title="设置" style="flex:1;height:50px;font-size:16px;">⚙️</button>
+      <button class="icon-btn" id="btn-stats" data-i18n-title="statistics" title="统计中心" style="flex:1;height:50px;font-size:16px;">📊</button>
+      <button class="icon-btn" id="btn-music" data-i18n-title="music" title="音乐播放器" style="flex:1;height:50px;font-size:16px;">🎵</button>
+      <button class="icon-btn" id="btn-settings" data-i18n-title="settings" title="设置" style="flex:1;height:50px;font-size:16px;">⚙️</button>
     </div>
 
     <div class="dev-toggle" id="btn-dev-mode">🛠️ 开发者模式</div>
@@ -267,15 +267,15 @@
       <div class="counter">💣 <span id="mine-count">10</span></div>
       <div class="counter timer" id="timer-display">⏱ <span id="timer">0</span>s</div>
       <button class="icon-btn" id="btn-restart">🔄</button>
-      <button class="icon-btn" id="btn-flag-mode" title="标雷模式">🚩</button>
+      <button class="icon-btn" id="btn-flag-mode" data-i18n-title="flagMode" title="标雷模式">🚩</button>
     </div>
 
     <!-- 生存模式连胜显示 -->
     <div id="survival-info" class="glass-card hidden" style="padding:12px;margin-bottom:12px;text-align:center;font-weight:800;">
-      <span style="color:var(--accent);">🔥 连胜：</span>
+      <span style="color:var(--accent);" data-i18n="streakLabel">🔥 连胜：</span>
       <span id="current-streak-display" style="font-size:20px;color:var(--gold);">0</span>
       <span style="margin-left:12px;color:var(--text-dim);font-size:12px;">
-        奖励加成：<span id="bonus-multiplier" style="color:var(--accent-2);">1.0x</span>
+        <span data-i18n="bonusLabel">奖励加成：</span><span id="bonus-multiplier" style="color:var(--accent-2);">1.0x</span>
       </span>
     </div>
 
@@ -300,11 +300,11 @@
     </div>
 
     <div style="display:flex;gap:8px;margin:12px 0 20px;overflow-x:auto;padding:2px;">
-      <button class="shop-tab active" data-tab="items" style="flex:1;padding:12px 16px;border:none;border-radius:14px;font-weight:700;font-size:14px;cursor:pointer;transition:all 0.3s ease;white-space:nowrap;">道具</button>
-      <button class="shop-tab" data-tab="skins" style="flex:1;padding:12px 16px;border:none;border-radius:14px;font-weight:700;font-size:14px;cursor:pointer;transition:all 0.3s ease;white-space:nowrap;">皮肤</button>
-      <button class="shop-tab" data-tab="backgrounds" style="flex:1;padding:12px 16px;border:none;border-radius:14px;font-weight:700;font-size:14px;cursor:pointer;transition:all 0.3s ease;white-space:nowrap;">背景</button>
-      <button class="shop-tab" data-tab="sounds" style="flex:1;padding:12px 16px;border:none;border-radius:14px;font-weight:700;font-size:14px;cursor:pointer;transition:all 0.3s ease;white-space:nowrap;">音效</button>
-      <button class="shop-tab" data-tab="effects" style="flex:1;padding:12px 16px;border:none;border-radius:14px;font-weight:700;font-size:14px;cursor:pointer;transition:all 0.3s ease;white-space:nowrap;">特效</button>
+      <button class="shop-tab active" data-tab="items" data-i18n="items" style="flex:1;padding:12px 16px;border:none;border-radius:14px;font-weight:700;font-size:14px;cursor:pointer;transition:all 0.3s ease;white-space:nowrap;">道具</button>
+      <button class="shop-tab" data-tab="skins" data-i18n="skins" style="flex:1;padding:12px 16px;border:none;border-radius:14px;font-weight:700;font-size:14px;cursor:pointer;transition:all 0.3s ease;white-space:nowrap;">皮肤</button>
+      <button class="shop-tab" data-tab="backgrounds" data-i18n="backgrounds" style="flex:1;padding:12px 16px;border:none;border-radius:14px;font-weight:700;font-size:14px;cursor:pointer;transition:all 0.3s ease;white-space:nowrap;">背景</button>
+      <button class="shop-tab" data-tab="sounds" data-i18n="sounds" style="flex:1;padding:12px 16px;border:none;border-radius:14px;font-weight:700;font-size:14px;cursor:pointer;transition:all 0.3s ease;white-space:nowrap;">音效</button>
+      <button class="shop-tab" data-tab="effects" data-i18n="effects" style="flex:1;padding:12px 16px;border:none;border-radius:14px;font-weight:700;font-size:14px;cursor:pointer;transition:all 0.3s ease;white-space:nowrap;">特效</button>
     </div>
 
     <div id="shop-items" class="shop-grid"></div>
@@ -318,21 +318,21 @@
   <section id="screen-achievements" class="screen">
     <div class="game-header">
       <button class="icon-btn" id="btn-achievements-back">←</button>
-      <div style="flex:1;text-align:center;font-size:18px;font-weight:900;">🏆 成就</div>
+      <div style="flex:1;text-align:center;font-size:18px;font-weight:900;" data-i18n="achTitle">🏆 成就</div>
       <div style="width:46px"></div>
     </div>
 
     <div class="glass-card" style="padding:16px;margin-bottom:16px;text-align:center;">
-      <div style="font-size:14px;color:var(--text-dim);margin-bottom:8px;">成就进度</div>
+      <div style="font-size:14px;color:var(--text-dim);margin-bottom:8px;" data-i18n="achProgress">成就进度</div>
       <div style="display:flex;justify-content:space-around;align-items:center;">
         <div>
           <div style="font-size:24px;font-weight:900;color:var(--accent);" id="unlocked-count">0</div>
-          <div style="font-size:12px;color:var(--text-dim);">已解锁</div>
+          <div style="font-size:12px;color:var(--text-dim);" data-i18n="achUnlocked">已解锁</div>
         </div>
         <div style="font-size:32px;color:var(--text-dim);">/</div>
         <div>
           <div style="font-size:24px;font-weight:900;color:var(--text-dim);" id="total-achievements">0</div>
-          <div style="font-size:12px;color:var(--text-dim);">总计</div>
+          <div style="font-size:12px;color:var(--text-dim);" data-i18n="achTotal">总计</div>
         </div>
       </div>
     </div>
@@ -345,24 +345,24 @@
   <section id="screen-daily-checkin" class="screen">
     <div class="game-header">
       <button class="icon-btn" id="btn-checkin-back">←</button>
-      <div style="flex:1;text-align:center;font-size:18px;font-weight:900;">📅 每日签到</div>
+      <div style="flex:1;text-align:center;font-size:18px;font-weight:900;" data-i18n="checkinTitle">📅 每日签到</div>
       <div style="width:46px"></div>
     </div>
 
     <div class="glass-card" style="padding:20px;margin-bottom:16px;text-align:center;">
       <div style="font-size:48px;margin-bottom:8px;">🎁</div>
-      <div style="font-size:16px;font-weight:800;margin-bottom:6px;">连续签到领金币</div>
-      <div style="font-size:13px;color:var(--text-dim);">每日首次签到获得奖励</div>
+      <div style="font-size:16px;font-weight:800;margin-bottom:6px;" data-i18n="checkinHead">连续签到领金币</div>
+      <div style="font-size:13px;color:var(--text-dim);" data-i18n="checkinSub">每日首次签到获得奖励</div>
     </div>
 
     <div class="glass-card" style="padding:20px;margin-bottom:16px;">
       <div style="display:flex;justify-content:space-between;margin-bottom:12px;">
         <div>
-          <div style="font-size:12px;color:var(--text-dim);margin-bottom:4px;">连续签到天数</div>
+          <div style="font-size:12px;color:var(--text-dim);margin-bottom:4px;" data-i18n="checkinConsecutive">连续签到天数</div>
           <div style="font-size:24px;font-weight:900;color:var(--accent);" id="consecutive-days">0</div>
         </div>
         <div style="text-align:right;">
-          <div style="font-size:12px;color:var(--text-dim);margin-bottom:4px;">累计签到天数</div>
+          <div style="font-size:12px;color:var(--text-dim);margin-bottom:4px;" data-i18n="checkinTotal">累计签到天数</div>
           <div style="font-size:24px;font-weight:900;color:var(--gold);" id="total-checkin-days">0</div>
         </div>
       </div>
@@ -371,21 +371,21 @@
     </div>
 
     <div class="glass-card" style="padding:16px;">
-      <div style="font-weight:800;margin-bottom:12px;">签到奖励规则</div>
+      <div style="font-weight:800;margin-bottom:12px;" data-i18n="checkinRules">签到奖励规则</div>
       <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;">
         <div style="display:flex;justify-content:space-between;">
-          <span style="color:var(--text-dim);">第 1-2 天</span>
+          <span style="color:var(--text-dim);" data-i18n="checkinDay12">第 1-2 天</span>
           <span style="color:var(--gold);font-weight:700;">🪙 +10</span>
         </div>
         <div style="display:flex;justify-content:space-between;">
-          <span style="color:var(--text-dim);">第 3-6 天</span>
+          <span style="color:var(--text-dim);" data-i18n="checkinDay36">第 3-6 天</span>
           <span style="color:var(--gold);font-weight:700;">🪙 +20</span>
         </div>
         <div style="display:flex;justify-content:space-between;">
-          <span style="color:var(--text-dim);">第 7 天及以上</span>
+          <span style="color:var(--text-dim);" data-i18n="checkinDay7">第 7 天及以上</span>
           <span style="color:var(--gold);font-weight:700;">🪙 +30</span>
         </div>
-        <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--glass-border);color:var(--accent-2);font-weight:700;">
+        <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--glass-border);color:var(--accent-2);font-weight:700;" data-i18n="checkinReset">
           💎 断签后重新计算
         </div>
       </div>
@@ -396,7 +396,7 @@
   <section id="screen-rank" class="screen">
     <div class="game-header">
       <button class="icon-btn" id="btn-rank-back">←</button>
-      <div style="flex:1;text-align:center;font-size:18px;font-weight:900;">🎖️ 段位</div>
+      <div style="flex:1;text-align:center;font-size:18px;font-weight:900;" data-i18n="rankTitle">🎖️ 段位</div>
       <div style="width:46px"></div>
     </div>
 
@@ -405,7 +405,7 @@
       <div id="current-rank-name" style="font-size:22px;font-weight:900;margin-bottom:6px;">青铜</div>
       <div id="current-rank-score" style="font-size:16px;color:var(--text-dim);margin-bottom:16px;">段位分：0</div>
       
-      <div style="margin-bottom:8px;font-size:13px;color:var(--text-dim);">距离下一段位</div>
+      <div style="margin-bottom:8px;font-size:13px;color:var(--text-dim);" data-i18n="rankNext">距离下一段位</div>
       <div style="background:rgba(255,255,255,0.1);border-radius:20px;height:12px;overflow:hidden;margin-bottom:8px;">
         <div id="rank-progress-bar" style="background:linear-gradient(90deg,var(--accent),var(--accent-2));height:100%;width:0%;transition:width 0.5s ease;"></div>
       </div>
@@ -413,63 +413,63 @@
     </div>
 
     <div class="glass-card" style="padding:20px;margin-bottom:16px;">
-      <div style="font-weight:800;margin-bottom:12px;">段位计算公式</div>
+      <div style="font-weight:800;margin-bottom:12px;" data-i18n="rankFormulaTitle">段位计算公式</div>
       <div style="font-size:13px;color:var(--text-dim);line-height:1.8;">
-        <div style="margin-bottom:8px;">段位分 = (胜场 × 5) + (胜率 × 1000)</div>
+        <div style="margin-bottom:8px;" data-i18n="rankFormula">段位分 = (胜场 × 5) + (胜率 × 1000)</div>
         <div style="display:flex;justify-content:space-between;padding:4px 0;">
-          <span>当前胜场</span>
+          <span data-i18n="rankCurWins">当前胜场</span>
           <span id="rank-wins" style="color:var(--text-main);font-weight:700;">0</span>
         </div>
         <div style="display:flex;justify-content:space-between;padding:4px 0;">
-          <span>当前胜率</span>
+          <span data-i18n="rankCurWinrate">当前胜率</span>
           <span id="rank-winrate" style="color:var(--text-main);font-weight:700;">0%</span>
         </div>
       </div>
     </div>
 
     <div class="glass-card" style="padding:16px;">
-      <div style="font-weight:800;margin-bottom:12px;">段位等级</div>
+      <div style="font-weight:800;margin-bottom:12px;" data-i18n="rankLevels">段位等级</div>
       <div style="display:flex;flex-direction:column;gap:10px;">
         <div style="display:flex;align-items:center;gap:12px;padding:10px;background:rgba(255,255,255,0.05);border-radius:12px;">
           <span class="rank-icon rank-bronze" style="font-size:28px;">◆</span>
           <div style="flex:1;">
-            <div style="font-weight:700;">青铜</div>
-            <div style="font-size:11px;color:var(--text-dim);">0 - 199 分</div>
+            <div style="font-weight:700;" class="rank-tier-name" data-rank="bronze">青铜</div>
+            <div style="font-size:11px;color:var(--text-dim);" data-i18n="rankBronzeRange">0 - 199 分</div>
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:12px;padding:10px;background:rgba(255,255,255,0.05);border-radius:12px;">
           <span class="rank-icon rank-silver" style="font-size:28px;">◇</span>
           <div style="flex:1;">
-            <div style="font-weight:700;">白银</div>
-            <div style="font-size:11px;color:var(--text-dim);">200 - 499 分</div>
+            <div style="font-weight:700;" class="rank-tier-name" data-rank="silver">白银</div>
+            <div style="font-size:11px;color:var(--text-dim);" data-i18n="rankSilverRange">200 - 499 分</div>
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:12px;padding:10px;background:rgba(255,255,255,0.05);border-radius:12px;">
           <span class="rank-icon rank-gold" style="font-size:28px;">✦</span>
           <div style="flex:1;">
-            <div style="font-weight:700;">黄金</div>
-            <div style="font-size:11px;color:var(--text-dim);">500 - 799 分 · 解锁专属皮肤</div>
+            <div style="font-weight:700;" class="rank-tier-name" data-rank="gold">黄金</div>
+            <div style="font-size:11px;color:var(--text-dim);" data-i18n="rankGoldRange">500 - 799 分 · 解锁专属皮肤</div>
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:12px;padding:10px;background:rgba(255,255,255,0.05);border-radius:12px;">
           <span class="rank-icon rank-diamond" style="font-size:28px;">❖</span>
           <div style="flex:1;">
-            <div style="font-weight:700;">钻石</div>
-            <div style="font-size:11px;color:var(--text-dim);">800 - 1149 分 · 更强特效</div>
+            <div style="font-weight:700;" class="rank-tier-name" data-rank="diamond">钻石</div>
+            <div style="font-size:11px;color:var(--text-dim);" data-i18n="rankDiamondRange">800 - 1149 分 · 更强特效</div>
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:12px;padding:10px;background:rgba(255,255,255,0.05);border-radius:12px;">
           <span class="rank-icon rank-master" style="font-size:28px;">✧</span>
           <div style="flex:1;">
-            <div style="font-weight:700;">大师</div>
-            <div style="font-size:11px;color:var(--text-dim);">1150 - 1549 分 · 华丽特效</div>
+            <div style="font-weight:700;" class="rank-tier-name" data-rank="master">大师</div>
+            <div style="font-size:11px;color:var(--text-dim);" data-i18n="rankMasterRange">1150 - 1549 分 · 华丽特效</div>
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:12px;padding:10px;background:rgba(255,255,255,0.05);border-radius:12px;">
           <span class="rank-icon rank-king" style="font-size:28px;">✺</span>
           <div style="flex:1;">
-            <div style="font-weight:700;">王者</div>
-            <div style="font-size:11px;color:var(--text-dim);">1550+ 分 · 终极特效</div>
+            <div style="font-weight:700;" class="rank-tier-name" data-rank="king">王者</div>
+            <div style="font-size:11px;color:var(--text-dim);" data-i18n="rankKingRange">1550+ 分 · 终极特效</div>
           </div>
         </div>
       </div>
@@ -481,30 +481,30 @@
   <section id="screen-stats" class="screen">
     <div class="game-header">
       <button class="icon-btn" id="btn-stats-back">←</button>
-      <div style="flex:1;text-align:center;font-size:18px;font-weight:900;">📊 统计中心</div>
+      <div style="flex:1;text-align:center;font-size:18px;font-weight:900;" data-i18n="statsTitle">📊 统计中心</div>
       <div style="width:46px"></div>
     </div>
 
     <!-- 游戏统计 -->
     <div class="glass-card" style="padding:20px;margin-bottom:16px;">
       <div style="font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px;">
-        <span>🎮</span> 游戏统计
+        <span>🎮</span> <span data-i18n="statsGame">游戏统计</span>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px;">
         <div>
-          <div style="color:var(--text-dim);margin-bottom:4px;">总局数</div>
+          <div style="color:var(--text-dim);margin-bottom:4px;" data-i18n="statTotalGames">总局数</div>
           <div style="font-size:20px;font-weight:900;color:var(--text-main);" id="stat-total-games">0</div>
         </div>
         <div>
-          <div style="color:var(--text-dim);margin-bottom:4px;">胜场</div>
+          <div style="color:var(--text-dim);margin-bottom:4px;" data-i18n="statWins">胜场</div>
           <div style="font-size:20px;font-weight:900;color:var(--success);" id="stat-wins">0</div>
         </div>
         <div>
-          <div style="color:var(--text-dim);margin-bottom:4px;">胜率</div>
+          <div style="color:var(--text-dim);margin-bottom:4px;" data-i18n="statWinrate">胜率</div>
           <div style="font-size:20px;font-weight:900;color:var(--accent);" id="stat-winrate">0%</div>
         </div>
         <div>
-          <div style="color:var(--text-dim);margin-bottom:4px;">完美通关</div>
+          <div style="color:var(--text-dim);margin-bottom:4px;" data-i18n="statPerfect">完美通关</div>
           <div style="font-size:20px;font-weight:900;color:var(--gold);" id="stat-perfect-wins">0</div>
         </div>
       </div>
@@ -513,23 +513,23 @@
     <!-- 金币统计 -->
     <div class="glass-card" style="padding:20px;margin-bottom:16px;">
       <div style="font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px;">
-        <span>🪙</span> 金币统计
+        <span>🪙</span> <span data-i18n="statsCoin">金币统计</span>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px;">
         <div>
-          <div style="color:var(--text-dim);margin-bottom:4px;">当前金币</div>
+          <div style="color:var(--text-dim);margin-bottom:4px;" data-i18n="statCurCoins">当前金币</div>
           <div style="font-size:20px;font-weight:900;color:var(--gold);" id="stat-current-coins">0</div>
         </div>
         <div>
-          <div style="color:var(--text-dim);margin-bottom:4px;">累计获得</div>
+          <div style="color:var(--text-dim);margin-bottom:4px;" data-i18n="statTotalEarned">累计获得</div>
           <div style="font-size:20px;font-weight:900;color:var(--accent-2);" id="stat-total-earned">0</div>
         </div>
         <div>
-          <div style="color:var(--text-dim);margin-bottom:4px;">累计消费</div>
+          <div style="color:var(--text-dim);margin-bottom:4px;" data-i18n="statTotalSpent">累计消费</div>
           <div style="font-size:20px;font-weight:900;color:var(--danger);" id="stat-total-spent">0</div>
         </div>
         <div>
-          <div style="color:var(--text-dim);margin-bottom:4px;">单局最高</div>
+          <div style="color:var(--text-dim);margin-bottom:4px;" data-i18n="statMaxEarn">单局最高</div>
           <div style="font-size:20px;font-weight:900;color:var(--warning);" id="stat-max-earn">0</div>
         </div>
       </div>
@@ -538,23 +538,23 @@
     <!-- 时间统计 -->
     <div class="glass-card" style="padding:20px;margin-bottom:16px;">
       <div style="font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px;">
-        <span>⏱</span> 时间统计
+        <span>⏱</span> <span data-i18n="statsTime">时间统计</span>
       </div>
       <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;">
         <div style="display:flex;justify-content:space-between;">
-          <span style="color:var(--text-dim);">总游戏时长</span>
+          <span style="color:var(--text-dim);" data-i18n="statTotalTime">总游戏时长</span>
           <span style="font-weight:800;" id="stat-total-time">0分钟</span>
         </div>
         <div style="display:flex;justify-content:space-between;">
-          <span style="color:var(--text-dim);">简单最快</span>
+          <span style="color:var(--text-dim);" data-i18n="statEasyBest">简单最快</span>
           <span style="font-weight:800;color:var(--success);" id="stat-easy-best">--</span>
         </div>
         <div style="display:flex;justify-content:space-between;">
-          <span style="color:var(--text-dim);">中等最快</span>
+          <span style="color:var(--text-dim);" data-i18n="statMedBest">中等最快</span>
           <span style="font-weight:800;color:var(--accent);" id="stat-medium-best">--</span>
         </div>
         <div style="display:flex;justify-content:space-between;">
-          <span style="color:var(--text-dim);">困难最快</span>
+          <span style="color:var(--text-dim);" data-i18n="statHardBest">困难最快</span>
           <span style="font-weight:800;color:var(--danger);" id="stat-hard-best">--</span>
         </div>
       </div>
@@ -563,19 +563,19 @@
     <!-- 操作统计 -->
     <div class="glass-card" style="padding:20px;">
       <div style="font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px;">
-        <span>👆</span> 操作统计
+        <span>👆</span> <span data-i18n="statsOp">操作统计</span>
       </div>
       <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;">
         <div style="display:flex;justify-content:space-between;">
-          <span style="color:var(--text-dim);">总点击次数</span>
+          <span style="color:var(--text-dim);" data-i18n="statClicks">总点击次数</span>
           <span style="font-weight:800;" id="stat-total-clicks">0</span>
         </div>
         <div style="display:flex;justify-content:space-between;">
-          <span style="color:var(--text-dim);">插旗次数</span>
+          <span style="color:var(--text-dim);" data-i18n="statFlags">插旗次数</span>
           <span style="font-weight:800;" id="stat-total-flags">0</span>
         </div>
         <div style="display:flex;justify-content:space-between;">
-          <span style="color:var(--text-dim);">使用道具次数</span>
+          <span style="color:var(--text-dim);" data-i18n="statItems">使用道具次数</span>
           <span style="font-weight:800;" id="stat-items-used">0</span>
         </div>
       </div>
@@ -586,7 +586,7 @@
   <section id="screen-music" class="screen">
     <div class="game-header">
       <button class="icon-btn" id="btn-music-back">←</button>
-      <div style="flex:1;text-align:center;font-size:18px;font-weight:900;">🎵 音乐播放器</div>
+      <div style="flex:1;text-align:center;font-size:18px;font-weight:900;" data-i18n="musicTitle">🎵 音乐播放器</div>
       <div style="width:46px"></div>
     </div>
 
@@ -597,33 +597,33 @@
     </div>
 
     <div class="glass-card" style="padding:20px;margin-bottom:16px;">
-      <div style="font-weight:800;margin-bottom:14px;">音量控制</div>
+      <div style="font-weight:800;margin-bottom:14px;" data-i18n="musicVolume">音量控制</div>
       <div style="margin-bottom:14px;">
         <label style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;">
-          <span style="color:var(--text-dim);">背景音乐</span>
+          <span style="color:var(--text-dim);" data-i18n="musicBgm">背景音乐</span>
           <span style="font-weight:700;" id="bgm-vol-display">50%</span>
         </label>
         <input type="range" id="bgm-volume" min="0" max="100" value="50" style="width:100%;">
       </div>
       <div style="margin-bottom:14px;">
         <label style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;">
-          <span style="color:var(--text-dim);">音效</span>
+          <span style="color:var(--text-dim);" data-i18n="musicSfx">音效</span>
           <span style="font-weight:700;" id="sfx-vol-display">80%</span>
         </label>
         <input type="range" id="sfx-volume" min="0" max="100" value="80" style="width:100%;">
       </div>
       <div>
         <label style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;">
-          <span style="color:var(--text-dim);">主音量</span>
+          <span style="color:var(--text-dim);" data-i18n="musicMaster">主音量</span>
           <span style="font-weight:700;" id="master-vol-display">100%</span>
         </label>
         <input type="range" id="master-volume" min="0" max="100" value="100" style="width:100%;">
       </div>
-      <button class="secondary-btn" id="btn-mute-all" style="margin-top:14px;">🔇 全部静音</button>
+      <button class="secondary-btn" id="btn-mute-all" style="margin-top:14px;" data-i18n="musicMuteAll">🔇 全部静音</button>
     </div>
 
     <div class="glass-card" style="padding:16px;">
-      <div style="font-weight:800;margin-bottom:12px;">曲目列表</div>
+      <div style="font-weight:800;margin-bottom:12px;" data-i18n="musicPlaylist">曲目列表</div>
       <div id="music-playlist" style="display:flex;flex-direction:column;gap:8px;"></div>
     </div>
   </section>
@@ -633,39 +633,39 @@
   <section id="screen-settings" class="screen">
     <div class="game-header">
       <button class="icon-btn" id="btn-settings-back">←</button>
-      <div style="flex:1;text-align:center;font-size:18px;font-weight:900;">⚙️ 设置</div>
+      <div style="flex:1;text-align:center;font-size:18px;font-weight:900;" data-i18n="settingsTitle">⚙️ 设置</div>
       <div style="width:46px"></div>
     </div>
 
     <!-- 护眼模式 -->
     <div class="glass-card" style="padding:20px;margin-bottom:16px;">
       <div style="font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px;">
-        <span>👁️</span> 护眼模式
+        <span>👁️</span> <span data-i18n="setEye">护眼模式</span>
       </div>
-      <div style="font-size:13px;color:var(--text-dim);margin-bottom:12px;">
+      <div style="font-size:13px;color:var(--text-dim);margin-bottom:12px;" data-i18n="setEyeDesc">
         减少蓝光和屏幕亮度，保护眼睛健康
       </div>
       <div style="display:flex;gap:8px;margin-bottom:14px;">
-        <button class="eye-mode-btn active" data-mode="off" style="flex:1;padding:10px;border:none;border-radius:12px;background:var(--glass-bg);border:1px solid var(--glass-border);color:var(--text-main);font-weight:700;font-size:13px;cursor:pointer;transition:all 0.3s ease;">关闭</button>
-        <button class="eye-mode-btn" data-mode="light" style="flex:1;padding:10px;border:none;border-radius:12px;background:var(--glass-bg);border:1px solid var(--glass-border);color:var(--text-main);font-weight:700;font-size:13px;cursor:pointer;transition:all 0.3s ease;">轻度</button>
-        <button class="eye-mode-btn" data-mode="medium" style="flex:1;padding:10px;border:none;border-radius:12px;background:var(--glass-bg);border:1px solid var(--glass-border);color:var(--text-main);font-weight:700;font-size:13px;cursor:pointer;transition:all 0.3s ease;">中度</button>
-        <button class="eye-mode-btn" data-mode="strong" style="flex:1;padding:10px;border:none;border-radius:12px;background:var(--glass-bg);border:1px solid var(--glass-border);color:var(--text-main);font-weight:700;font-size:13px;cursor:pointer;transition:all 0.3s ease;">强力</button>
+        <button class="eye-mode-btn active" data-mode="off" data-i18n="setOff" style="flex:1;padding:10px;border:none;border-radius:12px;background:var(--glass-bg);border:1px solid var(--glass-border);color:var(--text-main);font-weight:700;font-size:13px;cursor:pointer;transition:all 0.3s ease;">关闭</button>
+        <button class="eye-mode-btn" data-mode="light" data-i18n="setLight" style="flex:1;padding:10px;border:none;border-radius:12px;background:var(--glass-bg);border:1px solid var(--glass-border);color:var(--text-main);font-weight:700;font-size:13px;cursor:pointer;transition:all 0.3s ease;">轻度</button>
+        <button class="eye-mode-btn" data-mode="medium" data-i18n="setMedium" style="flex:1;padding:10px;border:none;border-radius:12px;background:var(--glass-bg);border:1px solid var(--glass-border);color:var(--text-main);font-weight:700;font-size:13px;cursor:pointer;transition:all 0.3s ease;">中度</button>
+        <button class="eye-mode-btn" data-mode="strong" data-i18n="setStrong" style="flex:1;padding:10px;border:none;border-radius:12px;background:var(--glass-bg);border:1px solid var(--glass-border);color:var(--text-main);font-weight:700;font-size:13px;cursor:pointer;transition:all 0.3s ease;">强力</button>
       </div>
-      <div style="font-size:12px;color:var(--accent-2);text-align:center;">当前模式：<span id="current-eye-mode">关闭</span></div>
+      <div style="font-size:12px;color:var(--accent-2);text-align:center;"><span data-i18n="setEyeCur">当前模式：</span><span id="current-eye-mode" data-i18n="setOff">关闭</span></div>
     </div>
 
     <!-- 游戏提醒 -->
     <div class="glass-card" style="padding:20px;margin-bottom:16px;">
       <div style="font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px;">
-        <span>⏰</span> 游戏时长提醒
+        <span>⏰</span> <span data-i18n="setRemind">游戏时长提醒</span>
       </div>
-      <div style="font-size:13px;color:var(--text-dim);margin-bottom:12px;">
+      <div style="font-size:13px;color:var(--text-dim);margin-bottom:12px;" data-i18n="setRemindDesc">
         长时间游戏会提醒休息
       </div>
       <div style="display:flex;gap:8px;">
-        <button class="remind-btn active" data-time="off" style="flex:1;padding:10px;border:none;border-radius:12px;background:var(--glass-bg);border:1px solid var(--glass-border);color:var(--text-main);font-weight:700;font-size:13px;cursor:pointer;transition:all 0.3s ease;">关闭</button>
-        <button class="remind-btn" data-time="30" style="flex:1;padding:10px;border:none;border-radius:12px;background:var(--glass-bg);border:1px solid var(--glass-border);color:var(--text-main);font-weight:700;font-size:13px;cursor:pointer;transition:all 0.3s ease;">30分钟</button>
-        <button class="remind-btn" data-time="60" style="flex:1;padding:10px;border:none;border-radius:12px;background:var(--glass-bg);border:1px solid var(--glass-border);color:var(--text-main);font-weight:700;font-size:13px;cursor:pointer;transition:all 0.3s ease;">60分钟</button>
+        <button class="remind-btn active" data-time="off" data-i18n="setOff" style="flex:1;padding:10px;border:none;border-radius:12px;background:var(--glass-bg);border:1px solid var(--glass-border);color:var(--text-main);font-weight:700;font-size:13px;cursor:pointer;transition:all 0.3s ease;">关闭</button>
+        <button class="remind-btn" data-time="30" data-i18n="set30min" style="flex:1;padding:10px;border:none;border-radius:12px;background:var(--glass-bg);border:1px solid var(--glass-border);color:var(--text-main);font-weight:700;font-size:13px;cursor:pointer;transition:all 0.3s ease;">30分钟</button>
+        <button class="remind-btn" data-time="60" data-i18n="set60min" style="flex:1;padding:10px;border:none;border-radius:12px;background:var(--glass-bg);border:1px solid var(--glass-border);color:var(--text-main);font-weight:700;font-size:13px;cursor:pointer;transition:all 0.3s ease;">60分钟</button>
       </div>
     </div>
 
@@ -673,8 +673,8 @@
     <div class="glass-card" style="padding:20px;margin-bottom:16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;">
         <div>
-          <div style="font-weight:800;margin-bottom:4px;">📳 震动反馈</div>
-          <div style="font-size:12px;color:var(--text-dim);">触碰时提供触觉反馈</div>
+          <div style="font-weight:800;margin-bottom:4px;" data-i18n="setVibration">📳 震动反馈</div>
+          <div style="font-size:12px;color:var(--text-dim);" data-i18n="setVibrationDesc">触碰时提供触觉反馈</div>
         </div>
         <label style="position:relative;display:inline-block;width:50px;height:28px;">
           <input type="checkbox" id="vibration-toggle" style="opacity:0;width:0;height:0;">
@@ -688,8 +688,8 @@
     <div class="glass-card" style="padding:20px;margin-bottom:16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;">
         <div>
-          <div style="font-weight:800;margin-bottom:4px;">✨ 粒子特效</div>
-          <div style="font-size:12px;color:var(--text-dim);">背景动态粒子效果</div>
+          <div style="font-weight:800;margin-bottom:4px;" data-i18n="setParticles">✨ 粒子特效</div>
+          <div style="font-size:12px;color:var(--text-dim);" data-i18n="setParticlesDesc">背景动态粒子效果</div>
         </div>
         <label style="position:relative;display:inline-block;width:50px;height:28px;">
           <input type="checkbox" id="particles-toggle" checked style="opacity:0;width:0;height:0;">
@@ -702,11 +702,11 @@
     <!-- 数据管理 -->
     <div class="glass-card" style="padding:20px;">
       <div style="font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px;">
-        <span>💾</span> 数据管理
+        <span>💾</span> <span data-i18n="setData">数据管理</span>
       </div>
-      <button class="secondary-btn" id="btn-export-data" style="margin-bottom:10px;">导出存档数据</button>
-      <button class="secondary-btn" id="btn-import-data" style="margin-bottom:10px;">导入存档数据</button>
-      <button class="secondary-btn" id="btn-reset-data" style="background:var(--danger);color:white;border-color:var(--danger);">⚠️ 清空所有数据</button>
+      <button class="secondary-btn" id="btn-export-data" style="margin-bottom:10px;" data-i18n="setExport">导出存档数据</button>
+      <button class="secondary-btn" id="btn-import-data" style="margin-bottom:10px;" data-i18n="setImport">导入存档数据</button>
+      <button class="secondary-btn" id="btn-reset-data" style="background:var(--danger);color:white;border-color:var(--danger);" data-i18n="setReset">⚠️ 清空所有数据</button>
     </div>
   </section>
 
@@ -718,8 +718,8 @@
       <div class="result-stats" id="result-stats"></div>
       <div class="coin-earn" id="coin-earn"></div>
       <div class="modal-btns">
-        <button class="primary-btn" id="btn-play-again">再玩一次</button>
-        <button class="secondary-btn" id="btn-to-home">返回首页</button>
+        <button class="primary-btn" id="btn-play-again" data-i18n="playAgain">再玩一次</button>
+        <button class="secondary-btn" id="btn-to-home" data-i18n="backHome">返回首页</button>
       </div>
     </div>
   </div>

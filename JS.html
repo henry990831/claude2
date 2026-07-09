@@ -14,22 +14,22 @@ const DIFFS = {
 };
 
 const ITEMS = {
-  scan:     { name:'扫描',     icon:'🔍', desc:'随机揭示一个安全格',   price:20 },
-  autoflag: { name:'自动标记', icon:'🚩', desc:'自动标记一个地雷',     price:20 },
-  freeze:   { name:'时间冻结', icon:'⏸️', desc:'暂停计时10秒',        price:15 },
-  defuse:   { name:'拆弹',     icon:'💥', desc:'移除盘面上一个地雷',   price:30 },
-  undo:     { name:'撤销',     icon:'↩️', desc:'踩雷后可撤回上一步',   price:40 }
+  scan:     { name:'扫描',     nameEn:'Scan',      icon:'🔍', desc:'随机揭示一个安全格',   descEn:'Reveal a random safe cell',   price:20 },
+  autoflag: { name:'自动标记', nameEn:'Auto Flag', icon:'🚩', desc:'自动标记一个地雷',     descEn:'Auto-flag one mine',          price:20 },
+  freeze:   { name:'时间冻结', nameEn:'Freeze',    icon:'⏸️', desc:'暂停计时10秒',        descEn:'Pause the timer for 10s',      price:15 },
+  defuse:   { name:'拆弹',     nameEn:'Defuse',    icon:'💥', desc:'移除盘面上一个地雷',   descEn:'Remove one mine from board',  price:30 },
+  undo:     { name:'撤销',     nameEn:'Undo',      icon:'↩️', desc:'踩雷后可撤回上一步',   descEn:'Undo after hitting a mine',   price:40 }
 };
 
 const SKINS = {
-  classic:   { name:'经典渐变', price:0,   icon:'⬜' },
-  pixel:     { name:'复古像素', price:80,  icon:'👾' },
-  ocean:     { name:'深海秘境', price:100, icon:'🐡' },
-  space:     { name:'太空漫游', price:100, icon:'☄️' },
-  halloween: { name:'万圣夜',   price:80,  icon:'🎃' },
-  neon:      { name:'霓虹赛博', price:120, icon:'⚡' },
-  forest:    { name:'萌兽森林', price:150, icon:'👹' },
-  candy:     { name:'糖果乐园', price:80,  icon:'🍬' }
+  classic:   { name:'经典渐变', nameEn:'Classic',    price:0,   icon:'⬜' },
+  pixel:     { name:'复古像素', nameEn:'Retro Pixel',price:80,  icon:'👾' },
+  ocean:     { name:'深海秘境', nameEn:'Deep Ocean', price:100, icon:'🐡' },
+  space:     { name:'太空漫游', nameEn:'Space',      price:100, icon:'☄️' },
+  halloween: { name:'万圣夜',   nameEn:'Halloween',  price:80,  icon:'🎃' },
+  neon:      { name:'霓虹赛博', nameEn:'Neon Cyber', price:120, icon:'⚡' },
+  forest:    { name:'萌兽森林', nameEn:'Forest',     price:150, icon:'👹' },
+  candy:     { name:'糖果乐园', nameEn:'Candy Land', price:80,  icon:'🍬' }
 };
 
 // 段位专属皮肤
@@ -41,50 +41,50 @@ const RANK_SKINS = {
 };
 
 const BACKGROUNDS = {
-  none:      { name:'无背景', price:0, icon:'⚪', desc:'默认背景' },
-  particles: { name:'粒子星空', price:50, icon:'✨', desc:'动态粒子背景' },
-  gradient:  { name:'流动渐变', price:40, icon:'🌈', desc:'动态渐变效果' },
-  matrix:    { name:'黑客矩阵', price:60, icon:'💻', desc:'代码雨效果' },
-  firefly:   { name:'萤火之森', price:70, icon:'🔥', desc:'飘动萤火虫' }
+  none:      { name:'无背景', nameEn:'None',      price:0, icon:'⚪', desc:'默认背景',     descEn:'Default background' },
+  particles: { name:'粒子星空', nameEn:'Particles', price:50, icon:'✨', desc:'动态粒子背景', descEn:'Animated particle background' },
+  gradient:  { name:'流动渐变', nameEn:'Gradient',  price:40, icon:'🌈', desc:'动态渐变效果', descEn:'Animated gradient effect' },
+  matrix:    { name:'黑客矩阵', nameEn:'Matrix',    price:60, icon:'💻', desc:'代码雨效果',   descEn:'Code rain effect' },
+  firefly:   { name:'萤火之森', nameEn:'Fireflies', price:70, icon:'🔥', desc:'飘动萤火虫',   descEn:'Floating fireflies' }
 };
 
 
 const SOUND_PACKS = {
-  classic: { name:'经典', price:0, icon:'🔊', desc:'默认音效' },
-  retro:   { name:'复古', price:50, icon:'🎮', desc:'8-bit游戏音' },
-  nature:  { name:'自然', price:60, icon:'🍃', desc:'大自然声音' },
-  scifi:   { name:'科幻', price:70, icon:'🚀', desc:'未来科技音' }
+  classic: { name:'经典', nameEn:'Classic', price:0, icon:'🔊', desc:'默认音效',   descEn:'Default sounds' },
+  retro:   { name:'复古', nameEn:'Retro',   price:50, icon:'🎮', desc:'8-bit游戏音', descEn:'8-bit game sounds' },
+  nature:  { name:'自然', nameEn:'Nature',  price:60, icon:'🍃', desc:'大自然声音', descEn:'Nature sounds' },
+  scifi:   { name:'科幻', nameEn:'Sci-Fi',  price:70, icon:'🚀', desc:'未来科技音', descEn:'Futuristic tech sounds' }
 };
 
 const EFFECTS = {
-  none:      { name:'无特效', price:0, icon:'⚪', desc:'无额外特效' },
-  confetti:  { name:'彩纸', price:50, icon:'🎊', desc:'胜利彩纸雨' },
-  firework:  { name:'烟花', price:60, icon:'🎆', desc:'烟花绽放' },
-  rainbow:   { name:'彩虹', price:55, icon:'🌈', desc:'彩虹光效' }
+  none:      { name:'无特效', nameEn:'None',     price:0, icon:'⚪', desc:'无额外特效', descEn:'No extra effects' },
+  confetti:  { name:'彩纸',   nameEn:'Confetti', price:50, icon:'🎊', desc:'胜利彩纸雨', descEn:'Victory confetti rain' },
+  firework:  { name:'烟花',   nameEn:'Firework', price:60, icon:'🎆', desc:'烟花绽放',   descEn:'Firework burst' },
+  rainbow:   { name:'彩虹',   nameEn:'Rainbow',  price:55, icon:'🌈', desc:'彩虹光效',   descEn:'Rainbow glow' }
 };
 
 // BGM 音乐列表
 const BGM_TRACKS = {
-  calm:      { name:'宁静旋律', price:0,   icon:'🎹', bpm:60,  style:'钢琴' },
-  electronic:{ name:'电子节拍', price:40,  icon:'🎸', bpm:100, style:'电子' },
-  jazz:      { name:'爵士夜晚', price:50,  icon:'🎺', bpm:80,  style:'爵士' },
-  rock:      { name:'摇滚冲击', price:60,  icon:'🥁', bpm:120, style:'摇滚' },
-  space:     { name:'太空漫游', price:60,  icon:'🌌', bpm:0,   style:'氛围' },
-  classical: { name:'古典华尔兹',price:70,  icon:'🎻', bpm:70,  style:'古典' },
-  pop:       { name:'流行旋律', price:50,  icon:'🎤', bpm:110, style:'流行' },
-  cyber:     { name:'赛博朋克', price:80,  icon:'🎧', bpm:130, style:'合成波' },
-  tribal:    { name:'部落鼓点', price:60,  icon:'🪘', bpm:90,  style:'民族' },
-  epic:      { name:'史诗交响', price:100, icon:'🎼', bpm:140, style:'史诗' }
+  calm:      { name:'宁静旋律', nameEn:'Calm Melody',   price:0,   icon:'🎹', bpm:60,  style:'钢琴',   styleEn:'Piano' },
+  electronic:{ name:'电子节拍', nameEn:'Electro Beat',  price:40,  icon:'🎸', bpm:100, style:'电子',   styleEn:'Electronic' },
+  jazz:      { name:'爵士夜晚', nameEn:'Jazz Night',    price:50,  icon:'🎺', bpm:80,  style:'爵士',   styleEn:'Jazz' },
+  rock:      { name:'摇滚冲击', nameEn:'Rock Impact',   price:60,  icon:'🥁', bpm:120, style:'摇滚',   styleEn:'Rock' },
+  space:     { name:'太空漫游', nameEn:'Space Drift',   price:60,  icon:'🌌', bpm:0,   style:'氛围',   styleEn:'Ambient' },
+  classical: { name:'古典华尔兹',nameEn:'Classic Waltz', price:70,  icon:'🎻', bpm:70,  style:'古典',   styleEn:'Classical' },
+  pop:       { name:'流行旋律', nameEn:'Pop Melody',    price:50,  icon:'🎤', bpm:110, style:'流行',   styleEn:'Pop' },
+  cyber:     { name:'赛博朋克', nameEn:'Cyberpunk',     price:80,  icon:'🎧', bpm:130, style:'合成波', styleEn:'Synthwave' },
+  tribal:    { name:'部落鼓点', nameEn:'Tribal Drums',  price:60,  icon:'🪘', bpm:90,  style:'民族',   styleEn:'Tribal' },
+  epic:      { name:'史诗交响', nameEn:'Epic Symphony', price:100, icon:'🎼', bpm:140, style:'史诗',   styleEn:'Epic' }
 };
 
 // 段位配置
 const RANKS = {
-  bronze:  { name:'青铜', icon:'◆', color:'#8B4513', minScore:0,    skin:null },
-  silver:  { name:'白银', icon:'◇', color:'#C0C0C0', minScore:200,  skin:null },
-  gold:    { name:'黄金', icon:'✦', color:'#FFD700', minScore:500,  skin:'gold' },
-  diamond: { name:'钻石', icon:'❖', color:'#4169E1', minScore:800,  skin:'diamond' },
-  master:  { name:'大师', icon:'✧', color:'#9400D3', minScore:1150, skin:'master' },
-  king:    { name:'王者', icon:'✺', color:'#FF4500', minScore:1550, skin:'king' }
+  bronze:  { name:'青铜', nameEn:'Bronze',  icon:'◆', color:'#8B4513', minScore:0,    skin:null },
+  silver:  { name:'白银', nameEn:'Silver',  icon:'◇', color:'#C0C0C0', minScore:200,  skin:null },
+  gold:    { name:'黄金', nameEn:'Gold',    icon:'✦', color:'#FFD700', minScore:500,  skin:'gold' },
+  diamond: { name:'钻石', nameEn:'Diamond', icon:'❖', color:'#4169E1', minScore:800,  skin:'diamond' },
+  master:  { name:'大师', nameEn:'Master',  icon:'✧', color:'#9400D3', minScore:1150, skin:'master' },
+  king:    { name:'王者', nameEn:'King',    icon:'✺', color:'#FF4500', minScore:1550, skin:'king' }
 };
 
 // 特殊地雷类型
@@ -96,6 +96,8 @@ const SPECIAL_MINE_TYPES = {
 };
 
 const DIFF_LABEL = { easy:'简单', medium:'中等', hard:'困难', custom:'自定义', special:'特殊地雷' };
+const DIFF_LABEL_EN = { easy:'Easy', medium:'Medium', hard:'Hard', custom:'Custom', special:'Special' };
+function dl(k){ return (SAVE.language === 'en' ? DIFF_LABEL_EN[k] : DIFF_LABEL[k]) || k; }
 
 /* =========================================================
    成就系统
@@ -679,6 +681,9 @@ function getUserDate() {
 function fmtTime(sec) {
   sec = Math.round(sec);
   const m = Math.floor(sec / 60), s = sec % 60;
+  if (SAVE.language === 'en') {
+    return (m > 0 ? m + 'm ' : '') + s + 's';
+  }
   return (m > 0 ? m + '分' : '') + s + '秒';
 }
 
@@ -717,8 +722,8 @@ function updatePlayerCard() {
     rankIcon.textContent = rankData.icon;
   }
   
-  if (rankName) rankName.textContent = rankData.name;
-  if (rankScore) rankScore.textContent = Math.round(score) + '分';
+  if (rankName) rankName.textContent = L(rankData, 'name');
+  if (rankScore) rankScore.textContent = Math.round(score) + t('score_unit');
   
   // 更新胜率
   const winrate = SAVE.statistics.totalGames > 0 
@@ -901,10 +906,10 @@ function updateRank() {
     // 解锁段位皮肤
     if (newRankData.skin && !SAVE.ownedSkins.includes(newRankData.skin)) {
       SAVE.ownedSkins.push(newRankData.skin);
-      toast(`🎉 恭喜晋级 ${newRankData.icon} ${newRankData.name}！解锁专属皮肤！`);
+      toast(`${t('rankUpCongrats')} ${newRankData.icon} ${L(newRankData,'name')}! ${t('rankUpSkin')}`);
       Sound.achievement();
     } else {
-      toast(`🎉 段位提升：${newRankData.icon} ${newRankData.name}`);
+      toast(`${t('rankUpPromote')}${newRankData.icon} ${L(newRankData,'name')}`);
     }
   }
   
@@ -964,20 +969,20 @@ const DEV_PASSWORD = 'TWH0831';
 const DEV_INFINITE_COINS = 999999999;
 
 function toggleDevMode() {
-  const pwd = window.prompt('请输入开发者密码：');
+  const pwd = window.prompt(t('devPwdPrompt'));
   if (pwd === null) return;
-  if (pwd !== DEV_PASSWORD) { toast('❌ 密码错误'); return; }
+  if (pwd !== DEV_PASSWORD) { toast(t('devWrongPwd')); return; }
 
   if (!SAVE.devMode) {
     SAVE.devModeBackupCoins = SAVE.coins;
     SAVE.devMode = true;
     SAVE.coins = DEV_INFINITE_COINS;
-    toast('🛠️ 开发者模式已开启');
+    toast(t('devOnToast'));
   } else {
     SAVE.coins = (SAVE.devModeBackupCoins !== null) ? SAVE.devModeBackupCoins : SAVE.coins;
     SAVE.devMode = false;
     SAVE.devModeBackupCoins = null;
-    toast('🔒 开发者模式已关闭');
+    toast(t('devOffToast'));
   }
   saveState(SAVE);
   refreshCoinDisplays();
@@ -988,7 +993,7 @@ function updateDevModeUI() {
   const btn = $('#btn-dev-mode');
   if (!btn) return;
   btn.classList.toggle('active', !!SAVE.devMode);
-  btn.textContent = SAVE.devMode ? '🛠️ 开发者模式（已开启）' : '🛠️ 开发者模式';
+  btn.textContent = SAVE.devMode ? t('devModeOn') : t('devMode');
 }
 
 /* =========================================================
@@ -998,12 +1003,12 @@ let G = null;
 
 function densityInfo(rows, cols, mines) {
   const density = mines / (rows * cols);
-  let label = '过于简单';
-  if (density >= 0.25) label = '地狱';
-  else if (density >= 0.20) label = '困难';
-  else if (density >= 0.15) label = '中等';
-  else if (density >= 0.10) label = '简单';
-  return { pct: Math.round(density * 100), label };
+  let labelKey = 'dens_tooeasy';
+  if (density >= 0.25) labelKey = 'dens_hell';
+  else if (density >= 0.20) labelKey = 'dens_hard';
+  else if (density >= 0.15) labelKey = 'dens_medium';
+  else if (density >= 0.10) labelKey = 'dens_easy';
+  return { pct: Math.round(density * 100), labelKey, label: t(labelKey) };
 }
 
 function customBaseAndPar(rows, cols, mines) {
@@ -1325,18 +1330,18 @@ function handleSpecialMine(r, c, type) {
     SAVE.coins += coins;
     saveState(SAVE);
     refreshCoinDisplays();
-    toast(`💰 发现宝藏！获得 ${coins} 金币`);
+    toast(`${t('treasureFound')} ${coins} ${t('coins')}`);
     Sound.coin();
     G.board[r][c].mine = false;
     checkWin();
   } else if (type === 'freeze') {
-    toast('❄️ 冰冻雷！时间暂停 5 秒');
+    toast(t('freezeMine'));
     G.frozen = true;
     setTimeout(() => { G.frozen = false; }, 5000);
     G.board[r][c].mine = false;
     checkWin();
   } else if (type === 'chain') {
-    toast('🔥 连锁雷！引爆周围地雷');
+    toast(t('chainMine'));
     Vibration.error();
     const nbrs = neighborsOf(r, c, G.rows, G.cols);
     nbrs.forEach(([nr, nc]) => {
@@ -1353,12 +1358,12 @@ function handleSpecialMine(r, c, type) {
       SAVE.coins += coins;
       saveState(SAVE);
       refreshCoinDisplays();
-      toast(`🎲 随机雷：获得 ${coins} 金币！`);
+      toast(`${t('mysteryCoins')} ${coins} ${t('coins')}!`);
       Sound.coin();
       G.board[r][c].mine = false;
       checkWin();
     } else if (rand < 0.55) {
-      toast('🎲 随机雷：揭示 3×3 区域');
+      toast(t('mysteryReveal'));
       const nbrs = neighborsOf(r, c, G.rows, G.cols).concat([[r, c]]);
       nbrs.forEach(([nr, nc]) => {
         if (!G.board[nr][nc].mine && !G.board[nr][nc].revealed) {
@@ -1370,7 +1375,7 @@ function handleSpecialMine(r, c, type) {
       G.board[r][c].mine = false;
       checkWin();
     } else if (rand < 0.75) {
-      toast('🎲 随机雷：自动标记 3 个地雷');
+      toast(t('mysteryFlag'));
       let marked = 0;
       for (let rr = 0; rr < G.rows && marked < 3; rr++) {
         for (let cc = 0; cc < G.cols && marked < 3; cc++) {
@@ -1386,12 +1391,12 @@ function handleSpecialMine(r, c, type) {
       if (G.timer >= 10) {
         G.timer -= 10;
         $('#timer').textContent = G.timer;
-        toast('🎲 随机雷：时间 -10 秒');
+        toast(t('mysteryTime'));
       }
       G.board[r][c].mine = false;
       checkWin();
     } else {
-      toast('🎲 随机雷：爆炸！');
+      toast(t('mysteryBoom'));
       triggerLose(r, c);
     }
   }
@@ -1620,7 +1625,7 @@ function renderItemsBar() {
     const owned = SAVE.ownedItems[key] || 0;
     const chip = document.createElement('div');
     chip.className = 'item-chip' + (owned <= 0 ? ' disabled' : '');
-    chip.innerHTML = `<span>${ITEMS[key].icon} ${ITEMS[key].name}</span><span class="count">${owned}</span>`;
+    chip.innerHTML = `<span>${ITEMS[key].icon} ${L(ITEMS[key],'name')}</span><span class="count">${owned}</span>`;
     chip.onclick = () => useItem(key);
     bar.appendChild(chip);
   });
@@ -1628,7 +1633,7 @@ function renderItemsBar() {
 
 function useItem(key) {
   if (!G || G.over) return;
-  if ((SAVE.ownedItems[key] || 0) <= 0) { toast('道具不足'); return; }
+  if ((SAVE.ownedItems[key] || 0) <= 0) { toast(t('itemInsufficient')); return; }
 
   if (key === 'scan') {
     const hiddenSafe = [];
@@ -1638,7 +1643,7 @@ function useItem(key) {
         if (!cell.revealed && !cell.flagged && !cell.mine) hiddenSafe.push([r, c]);
       }
     }
-    if (!hiddenSafe.length) { toast('没有可揭示的安全格'); return; }
+    if (!hiddenSafe.length) { toast(t('noSafeCell')); return; }
     const [r, c] = hiddenSafe[Math.floor(Math.random() * hiddenSafe.length)];
     if (G.firstClick) {
       placeMines(G.board, G.rows, G.cols, G.mines, r, c, G.isSpecial);
@@ -1656,13 +1661,13 @@ function useItem(key) {
         if (!cell.revealed && !cell.flagged && cell.mine) hiddenMines.push([r, c]);
       }
     }
-    if (!hiddenMines.length) { toast('没有可标记的地雷'); return; }
+    if (!hiddenMines.length) { toast(t('noMineToFlag')); return; }
     const [r, c] = hiddenMines[Math.floor(Math.random() * hiddenMines.length)];
     toggleFlag(r, c);
   } else if (key === 'freeze') {
     if (G.frozen) return;
     G.frozen = true;
-    toast('⏸️ 计时暂停 10 秒');
+    toast(t('freezePaused'));
     setTimeout(() => { G.frozen = false; }, 10000);
   } else if (key === 'defuse') {
     const hiddenMines = [];
@@ -1672,13 +1677,13 @@ function useItem(key) {
         if (!cell.revealed && cell.mine) hiddenMines.push([r, c]);
       }
     }
-    if (!hiddenMines.length) { toast('没有地雷可拆除'); return; }
+    if (!hiddenMines.length) { toast(t('noMineToDefuse')); return; }
     const [r, c] = hiddenMines[Math.floor(Math.random() * hiddenMines.length)];
     G.board[r][c].mine = false;
     if (G.board[r][c].flagged) { G.board[r][c].flagged = false; G.flagCount--; }
     G.mines--;
     $('#mine-count').textContent = Math.max(0, G.mines - G.flagCount);
-    toast('💥 已拆除一个地雷');
+    toast(t('defused'));
     checkWin();
   }
 
@@ -1696,7 +1701,7 @@ function showResult(won) {
   const earnEl = $('#coin-earn');
 
   if (won) {
-    title.textContent = G.isSurvival ? '🔥 生存 +1' : (G.isZen ? '🧘 禅心通达' : '🎉 通关！');
+    title.textContent = G.isSurvival ? t('resultSurvivalTitle') : (G.isZen ? t('resultZenTitle') : t('resultWinTitle'));
     const coins = computeCoins();
     SAVE.coins += coins;
     SAVE.statistics.totalCoinsEarned += coins;
@@ -1707,28 +1712,28 @@ function showResult(won) {
     }
     
     stats.innerHTML = `
-      <div>${t('time')} <b>${fmtTime(G.timer)}</b></div>
-      <div>${t('operations')} <b>${G.moveHistory.length}</b> ${t('times')}</div>
-      <div>${t('coins')} <b>+${coins}</b></div>
+      <div>${t('resultTime')} <b>${fmtTime(G.timer)}</b></div>
+      <div>${t('resultOps')} <b>${G.moveHistory.length}</b></div>
+      <div>${t('resultCoins')} <b>+${coins}</b></div>
     `;
-    earnEl.textContent = `🪙 ${t('got')} ${coins} ${t('coins')}`;
+    earnEl.textContent = `🪙 ${t('resultGot')} ${coins} ${t('coins')}`;
     Sound.coin();
     
     triggerVictoryEffect();
   } else {
-    title.textContent = '💥 ' + t('gameFailed');
+    title.textContent = t('resultFail');
     const mistakeCount = G.mistakes.length;
     stats.innerHTML = `
-      <div>${t('time')} <b>${fmtTime(G.timer)}</b></div>
-      <div>${t('operations')} <b>${G.moveHistory.length}</b> ${t('times')}</div>
-      <div>${t('mistakes')} <b>${mistakeCount}</b> ${t('places')}</div>
+      <div>${t('resultTime')} <b>${fmtTime(G.timer)}</b></div>
+      <div>${t('resultOps')} <b>${G.moveHistory.length}</b></div>
+      <div>${t('resultMistakes')} <b>${mistakeCount}</b></div>
     `;
     
     // 添加"查看复盘"按钮
     if (mistakeCount > 0) {
       earnEl.innerHTML = `
         <button class="secondary-btn" id="btn-review" style="margin-top:10px;background:var(--accent);color:#fff;border:none;">
-          🔍 ${t('viewReview')} (${mistakeCount})
+          ${t('viewReview')} (${mistakeCount})
         </button>
       `;
       
@@ -2062,6 +2067,9 @@ function initGame() {
   
   // 设置相关事件
   setupSettings();
+
+  // 应用已保存的语言（若为英文，则把所有静态文本切换过来）
+  updateAllTexts();
   
   console.log('💎 Minesweeper Pro Complete Edition loaded');
 }
@@ -2081,7 +2089,7 @@ function updateDensityTag(){
   $('#val-mines').textContent = mines;
 
   const info = densityInfo(rows, cols, mines);
-  $('#density-tag').textContent = `密度 ${info.pct}% · ${info.label}`;
+  $('#density-tag').textContent = `${t('density')} ${info.pct}% · ${t(info.labelKey)}`;
 }
 
 // 渲染首页记录
@@ -2090,9 +2098,9 @@ function renderRecordsBox(){
   if (!box) return;
   const rows = ['easy','medium','hard'].map(k=>{
     const b = SAVE.best[k];
-    return `<div style="display:flex;justify-content:space-between;padding:4px 0;"><span style="color:var(--text-dim);">${DIFF_LABEL[k]}最佳</span><b>${b.time!==null? fmtTime(b.time) : '--'} · ${b.score}分</b></div>`;
+    return `<div style="display:flex;justify-content:space-between;padding:4px 0;"><span style="color:var(--text-dim);">${dl(k)}${t('best_suffix')}</span><b>${b.time!==null? fmtTime(b.time) : '--'} · ${b.score}${t('score_unit')}</b></div>`;
   }).join('');
-  box.innerHTML = '<div style="margin-bottom:6px;font-weight:700;">🏆 个人记录</div>' + rows;
+  box.innerHTML = `<div style="margin-bottom:6px;font-weight:700;">${t('records_title')}</div>` + rows;
 }
 
 // 页面加载完成后初始化
@@ -2122,7 +2130,7 @@ function setupSettings() {
       applyEyeProtection();
       saveState(SAVE);
       $('#current-eye-mode').textContent = btn.textContent;
-      toast(`护眼模式：${btn.textContent}`);
+      toast(`${t('eyeModeToast')}${btn.textContent}`);
     });
   });
   
@@ -2140,7 +2148,7 @@ function setupSettings() {
       const time = btn.dataset.time;
       SAVE.eyeProtection.reminderInterval = time === 'off' ? 0 : parseInt(time);
       saveState(SAVE);
-      toast(time === 'off' ? '提醒已关闭' : `已设置 ${time} 分钟提醒`);
+      toast(time === 'off' ? t('remindOff') : `${t('remindSetPre')}${time}${t('remindSetPost')}`);
     });
   });
   
@@ -2152,10 +2160,10 @@ function setupSettings() {
       SAVE.settings.vibration = e.target.checked;
       saveState(SAVE);
       if (e.target.checked) {
-        toast('震动反馈已开启');
+        toast(t('vibrationOn'));
         Vibration.medium();
       } else {
-        toast('震动反馈已关闭');
+        toast(t('vibrationOff'));
       }
     });
   }
@@ -2168,10 +2176,10 @@ function setupSettings() {
       SAVE.settings.particles = e.target.checked;
       saveState(SAVE);
       if (e.target.checked) {
-        toast('粒子特效已开启');
+        toast(t('particlesOn'));
         applyBackground();
       } else {
-        toast('粒子特效已关闭');
+        toast(t('particlesOff'));
         const bg = $('#particles-bg');
         if (bg) bg.innerHTML = '';
       }
@@ -2198,7 +2206,7 @@ function setupSettings() {
   
   // 导入数据
   $('#btn-import-data')?.addEventListener('click', () => {
-    const dataStr = prompt('请粘贴存档数据：');
+    const dataStr = prompt(t('importPrompt'));
     if (!dataStr) return;
     try {
       const data = JSON.parse(dataStr);
@@ -2206,7 +2214,7 @@ function setupSettings() {
       saveState(SAVE);
       location.reload();
     } catch (e) {
-      toast('数据格式错误');
+      toast(t('dataFormatError'));
     }
   });
   
@@ -2217,7 +2225,7 @@ function setupSettings() {
       localStorage.removeItem(SAVE_KEY);
       location.reload();
     } catch (e) {
-      toast('清空失败');
+      toast(t('resetFailed'));
     }
   });
 }
@@ -2240,43 +2248,103 @@ function applyEyeProtection() {
    翻译系统
 ========================================================= */
 const TRANSLATIONS = {
-  // 首页
-  selectMode: { zh: '选择游戏模式开始', en: 'Select game mode to start' },
-  classicMode: { zh: '经典模式', en: 'Classic' },
-  survivalMode: { zh: '生存模式', en: 'Survival' },
-  zenMode: { zh: '禅模式', en: 'Zen' },
-  specialMode: { zh: '特殊地雷', en: 'Special' },
-  easy: { zh: '简单', en: 'Easy' },
-  medium: { zh: '中等', en: 'Medium' },
-  hard: { zh: '困难', en: 'Hard' },
-  custom: { zh: '自定义', en: 'Custom' },
-  mines: { zh: '雷', en: 'mines' },
-  baseCoins: { zh: '基础', en: 'Base' },
+  // 首页 / Home
+  selectMode: { zh: '选择游戏模式开始', en: 'Select a game mode to start' },
+  tab_classic: { zh: '经典模式', en: 'Classic' },
+  tab_survival: { zh: '生存模式', en: 'Survival' },
+  tab_zen: { zh: '禅模式', en: 'Zen' },
+  tab_special: { zh: '特殊地雷', en: 'Special' },
+  winrate: { zh: '胜率', en: 'Win Rate' },
   coins: { zh: '金币', en: 'Coins' },
-  winrate: { zh: '胜率', en: 'Winrate' },
-  rank: { zh: '段位', en: 'Rank' },
-  
-  // 按钮
+  devMode: { zh: '🛠️ 开发者模式', en: '🛠️ Developer Mode' },
+  devModeOn: { zh: '🛠️ 开发者模式（已开启）', en: '🛠️ Developer Mode (ON)' },
+
+  // 难度 / Difficulty names
+  diff_easy: { zh: '简单', en: 'Easy' },
+  diff_medium: { zh: '中等', en: 'Medium' },
+  diff_hard: { zh: '困难', en: 'Hard' },
+  diff_custom: { zh: '自定义', en: 'Custom' },
+  diff_zen_easy: { zh: '初心禅', en: 'Beginner Zen' },
+  diff_zen_normal: { zh: '标准禅', en: 'Standard Zen' },
+  diff_zen_hard: { zh: '大师禅', en: 'Master Zen' },
+
+  // 难度描述 meta
+  meta_9x9: { zh: '9×9 · 10 雷', en: '9×9 · 10 mines' },
+  meta_16x16: { zh: '16×16 · 40 雷', en: '16×16 · 40 mines' },
+  meta_30x16: { zh: '30×16 · 99 雷', en: '30×16 · 99 mines' },
+  meta_selfadjust: { zh: '自己调', en: 'Adjustable' },
+  meta_24x24: { zh: '24×24 · 120 雷', en: '24×24 · 120 mines' },
+
+  // 难度奖励 reward
+  reward_base5: { zh: '🪙 基础 5 金币', en: '🪙 Base 5 coins' },
+  reward_base15: { zh: '🪙 基础 15 金币', en: '🪙 Base 15 coins' },
+  reward_base30: { zh: '🪙 基础 30 金币', en: '🪙 Base 30 coins' },
+  reward_dynamic: { zh: '🪙 动态奖励', en: '🪙 Dynamic reward' },
+  reward_5: { zh: '🪙 5 金币', en: '🪙 5 coins' },
+  reward_15: { zh: '🪙 15 金币', en: '🪙 15 coins' },
+  reward_30: { zh: '🪙 30 金币', en: '🪙 30 coins' },
+  reward_fixed8: { zh: '🪙 固定 8 金币', en: '🪙 Fixed 8 coins' },
+  reward_fixed12: { zh: '🪙 固定 12 金币', en: '🪙 Fixed 12 coins' },
+  reward_fixed25: { zh: '🪙 固定 25 金币', en: '🪙 Fixed 25 coins' },
+  reward_base8: { zh: '🪙 基础 8 金币', en: '🪙 Base 8 coins' },
+  reward_base20: { zh: '🪙 基础 20 金币', en: '🪙 Base 20 coins' },
+  reward_base40: { zh: '🪙 基础 40 金币', en: '🪙 Base 40 coins' },
+
+  // 自定义面板
+  custom_rows: { zh: '行数 (高)', en: 'Rows (H)' },
+  custom_cols: { zh: '列数 (宽)', en: 'Cols (W)' },
+  custom_mines: { zh: '地雷数', en: 'Mines' },
+  custom_start: { zh: '开始自定义游戏', en: 'Start Custom Game' },
+  density: { zh: '密度', en: 'Density' },
+
+  // 密度标签
+  dens_tooeasy: { zh: '过于简单', en: 'Too Easy' },
+  dens_easy: { zh: '简单', en: 'Easy' },
+  dens_medium: { zh: '中等', en: 'Medium' },
+  dens_hard: { zh: '困难', en: 'Hard' },
+  dens_hell: { zh: '地狱', en: 'Hell' },
+
+  // 生存模式面板
+  survival_title: { zh: '生存挑战', en: 'Survival Challenge' },
+  survival_desc: { zh: '连续通关获得连胜加成！<br>每次胜利：基础奖励 × (1 + 连胜数 × 0.2)<br>失败后连胜清零，重新开始', en: 'Win streaks give bonus rewards!<br>Each win: base reward × (1 + streak × 0.2)<br>Losing resets your streak' },
+  survival_current: { zh: '当前连胜', en: 'Current Streak' },
+  survival_best: { zh: '历史最高连胜', en: 'Best Streak' },
+
+  // 禅模式面板
+  zen_title: { zh: '禅意扫雷', en: 'Zen Minesweeper' },
+  zen_desc: { zh: '无计时器、无压力<br>专注于逻辑推理，享受纯粹的扫雷乐趣<br>完成后获得固定金币奖励', en: 'No timer, no pressure<br>Focus on logic and enjoy pure minesweeping<br>Get a fixed coin reward on completion' },
+
+  // 特殊地雷面板
+  special_title: { zh: '特殊地雷狂欢', en: 'Special Mine Party' },
+  special_desc: { zh: '地雷不再单调！4种特殊地雷带来全新体验', en: 'Mines are no longer boring! 4 special mine types for a fresh experience' },
+  mine_treasure_name: { zh: '宝藏地雷 (5%)', en: 'Treasure Mine (5%)' },
+  mine_treasure_desc: { zh: '踩到获得 5-15 金币奖励，不会爆炸', en: 'Step on it for 5-15 coins, no explosion' },
+  mine_chain_name: { zh: '连锁地雷 (10%)', en: 'Chain Mine (10%)' },
+  mine_chain_desc: { zh: '触发后自动揭示周围8格安全区域', en: 'Reveals the 8 surrounding safe cells' },
+  mine_freeze_name: { zh: '冰冻地雷 (5%)', en: 'Freeze Mine (5%)' },
+  mine_freeze_desc: { zh: '触发后暂停计时10秒', en: 'Pauses the timer for 10 seconds' },
+  mine_mystery_name: { zh: '神秘地雷 (5%)', en: 'Mystery Mine (5%)' },
+  mine_mystery_desc: { zh: '随机触发以上任意效果', en: 'Randomly triggers any of the above' },
+
+  // 记录
+  records_title: { zh: '🏆 个人记录', en: '🏆 Personal Records' },
+  best_suffix: { zh: '最佳', en: ' Best' },
+  score_unit: { zh: '分', en: ' pts' },
+
+  // 底部按钮标题
   shop: { zh: '商城', en: 'Shop' },
   settings: { zh: '设置', en: 'Settings' },
   achievements: { zh: '成就', en: 'Achievements' },
   statistics: { zh: '统计中心', en: 'Statistics' },
   music: { zh: '音乐播放器', en: 'Music Player' },
   dailyCheckIn: { zh: '每日签到', en: 'Daily Check-in' },
-  
+  rankTitleBtn: { zh: '段位', en: 'Rank' },
+
   // 游戏界面
-  mineCount: { zh: '剩余地雷', en: 'Mines Left' },
-  timer: { zh: '用时', en: 'Time' },
-  restart: { zh: '重新开始', en: 'Restart' },
   flagMode: { zh: '标雷模式', en: 'Flag Mode' },
-  
-  // 结算
-  victory: { zh: '🎉 通关成功！', en: '🎉 Victory!' },
-  defeat: { zh: '💥 踩到地雷了', en: '💥 Game Over' },
-  newRecord: { zh: '✨ NEW RECORD ✨', en: '✨ NEW RECORD ✨' },
-  playAgain: { zh: '再玩一次', en: 'Play Again' },
-  backHome: { zh: '返回首页', en: 'Back to Home' },
-  
+  streakLabel: { zh: '🔥 连胜：', en: '🔥 Streak: ' },
+  bonusLabel: { zh: '奖励加成：', en: 'Bonus: ' },
+
   // 商城
   items: { zh: '道具', en: 'Items' },
   skins: { zh: '皮肤', en: 'Skins' },
@@ -2287,7 +2355,191 @@ const TRANSLATIONS = {
   buy: { zh: '购买', en: 'Buy' },
   equip: { zh: '装备', en: 'Equip' },
   equipped: { zh: '✅ 使用中', en: '✅ Equipped' },
-  
+  skinDefaultDesc: { zh: '默认皮肤', en: 'Default skin' },
+  skinThemeDesc: { zh: '整套界面主题皮肤', en: 'Full UI theme skin' },
+  notEnoughCoins: { zh: '金币不够啦', en: 'Not enough coins' },
+
+  // 成就
+  achTitle: { zh: '🏆 成就', en: '🏆 Achievements' },
+  achProgress: { zh: '成就进度', en: 'Achievement Progress' },
+  achUnlocked: { zh: '已解锁', en: 'Unlocked' },
+  achTotal: { zh: '总计', en: 'Total' },
+  achUnlockToast: { zh: '成就解锁', en: 'Achievement Unlocked' },
+
+  // 每日签到
+  checkinTitle: { zh: '📅 每日签到', en: '📅 Daily Check-in' },
+  checkinHead: { zh: '连续签到领金币', en: 'Check in daily for coins' },
+  checkinSub: { zh: '每日首次签到获得奖励', en: 'Get a reward on your first check-in each day' },
+  checkinConsecutive: { zh: '连续签到天数', en: 'Consecutive Days' },
+  checkinTotal: { zh: '累计签到天数', en: 'Total Check-in Days' },
+  checkinNow: { zh: '立即签到', en: 'Check In Now' },
+  checkinDone: { zh: '今日已签到', en: 'Checked in today' },
+  checkinComeback: { zh: '✅ 明天再来吧', en: '✅ Come back tomorrow' },
+  checkinRules: { zh: '签到奖励规则', en: 'Check-in Reward Rules' },
+  checkinDay12: { zh: '第 1-2 天', en: 'Day 1-2' },
+  checkinDay36: { zh: '第 3-6 天', en: 'Day 3-6' },
+  checkinDay7: { zh: '第 7 天及以上', en: 'Day 7+' },
+  checkinReset: { zh: '💎 断签后重新计算', en: '💎 Resets after a missed day' },
+
+  // 段位
+  rankTitle: { zh: '🎖️ 段位', en: '🎖️ Rank' },
+  rankScoreLabel: { zh: '段位分：', en: 'Rank Score: ' },
+  rankNext: { zh: '距离下一段位', en: 'To Next Rank' },
+  rankFormulaTitle: { zh: '段位计算公式', en: 'Rank Formula' },
+  rankFormula: { zh: '段位分 = (胜场 × 5) + (胜率 × 1000)', en: 'Rank Score = (Wins × 5) + (Win Rate × 1000)' },
+  rankCurWins: { zh: '当前胜场', en: 'Current Wins' },
+  rankCurWinrate: { zh: '当前胜率', en: 'Current Win Rate' },
+  rankLevels: { zh: '段位等级', en: 'Rank Tiers' },
+  rankBronzeRange: { zh: '0 - 199 分', en: '0 - 199 pts' },
+  rankSilverRange: { zh: '200 - 499 分', en: '200 - 499 pts' },
+  rankGoldRange: { zh: '500 - 799 分 · 解锁专属皮肤', en: '500 - 799 pts · Unlock exclusive skin' },
+  rankDiamondRange: { zh: '800 - 1149 分 · 更强特效', en: '800 - 1149 pts · Stronger effects' },
+  rankMasterRange: { zh: '1150 - 1549 分 · 华丽特效', en: '1150 - 1549 pts · Gorgeous effects' },
+  rankKingRange: { zh: '1550+ 分 · 终极特效', en: '1550+ pts · Ultimate effects' },
+  rankUpSkin: { zh: '解锁专属皮肤！', en: 'Exclusive skin unlocked!' },
+  rankUpCongrats: { zh: '🎉 恭喜晋级', en: '🎉 Promoted to' },
+  rankUpPromote: { zh: '🎉 段位提升：', en: '🎉 Rank up: ' },
+
+  // 统计中心
+  statsTitle: { zh: '📊 统计中心', en: '📊 Statistics' },
+  statsGame: { zh: '游戏统计', en: 'Game Stats' },
+  statTotalGames: { zh: '总局数', en: 'Total Games' },
+  statWins: { zh: '胜场', en: 'Wins' },
+  statWinrate: { zh: '胜率', en: 'Win Rate' },
+  statPerfect: { zh: '完美通关', en: 'Perfect Wins' },
+  statsCoin: { zh: '金币统计', en: 'Coin Stats' },
+  statCurCoins: { zh: '当前金币', en: 'Current Coins' },
+  statTotalEarned: { zh: '累计获得', en: 'Total Earned' },
+  statTotalSpent: { zh: '累计消费', en: 'Total Spent' },
+  statMaxEarn: { zh: '单局最高', en: 'Max Single' },
+  statsTime: { zh: '时间统计', en: 'Time Stats' },
+  statTotalTime: { zh: '总游戏时长', en: 'Total Play Time' },
+  statEasyBest: { zh: '简单最快', en: 'Easy Best' },
+  statMedBest: { zh: '中等最快', en: 'Medium Best' },
+  statHardBest: { zh: '困难最快', en: 'Hard Best' },
+  statsOp: { zh: '操作统计', en: 'Operation Stats' },
+  statClicks: { zh: '总点击次数', en: 'Total Clicks' },
+  statFlags: { zh: '插旗次数', en: 'Flags Placed' },
+  statItems: { zh: '使用道具次数', en: 'Items Used' },
+  minutes: { zh: '分钟', en: ' min' },
+
+  // 音乐播放器
+  musicTitle: { zh: '🎵 音乐播放器', en: '🎵 Music Player' },
+  musicNoTrack: { zh: '未选择曲目', en: 'No track selected' },
+  musicVolume: { zh: '音量控制', en: 'Volume Control' },
+  musicBgm: { zh: '背景音乐', en: 'Background Music' },
+  musicSfx: { zh: '音效', en: 'Sound Effects' },
+  musicMaster: { zh: '主音量', en: 'Master Volume' },
+  musicMuteAll: { zh: '🔇 全部静音', en: '🔇 Mute All' },
+  musicPlaylist: { zh: '曲目列表', en: 'Track List' },
+  musicPlaying: { zh: '播放中', en: 'Playing' },
+  musicAmbient: { zh: '氛围音乐', en: 'Ambient' },
+  musicNowPlaying: { zh: '正在播放：', en: 'Now playing: ' },
+  musicNotEnough: { zh: '金币不足', en: 'Not enough coins' },
+  musicUnmuted: { zh: '已取消静音', en: 'Unmuted' },
+  musicMuted: { zh: '已全部静音', en: 'All muted' },
+
+  // 设置
+  settingsTitle: { zh: '⚙️ 设置', en: '⚙️ Settings' },
+  setEye: { zh: '护眼模式', en: 'Eye Protection' },
+  setEyeDesc: { zh: '减少蓝光和屏幕亮度，保护眼睛健康', en: 'Reduce blue light and brightness to protect your eyes' },
+  setOff: { zh: '关闭', en: 'Off' },
+  setLight: { zh: '轻度', en: 'Light' },
+  setMedium: { zh: '中度', en: 'Medium' },
+  setStrong: { zh: '强力', en: 'Strong' },
+  setEyeCur: { zh: '当前模式：', en: 'Current: ' },
+  setRemind: { zh: '游戏时长提醒', en: 'Play Time Reminder' },
+  setRemindDesc: { zh: '长时间游戏会提醒休息', en: 'Reminds you to rest after long play' },
+  set30min: { zh: '30分钟', en: '30 min' },
+  set60min: { zh: '60分钟', en: '60 min' },
+  setVibration: { zh: '📳 震动反馈', en: '📳 Vibration Feedback' },
+  setVibrationDesc: { zh: '触碰时提供触觉反馈', en: 'Haptic feedback on touch' },
+  setParticles: { zh: '✨ 粒子特效', en: '✨ Particle Effects' },
+  setParticlesDesc: { zh: '背景动态粒子效果', en: 'Dynamic background particles' },
+  setData: { zh: '数据管理', en: 'Data Management' },
+  setExport: { zh: '导出存档数据', en: 'Export Save Data' },
+  setImport: { zh: '导入存档数据', en: 'Import Save Data' },
+  setReset: { zh: '⚠️ 清空所有数据', en: '⚠️ Clear All Data' },
+
+  // 结算弹窗
+  resultWinTitle: { zh: '🎉 通关！', en: '🎉 Cleared!' },
+  resultSurvivalTitle: { zh: '🔥 生存 +1', en: '🔥 Survival +1' },
+  resultZenTitle: { zh: '🧘 禅心通达', en: '🧘 Zen Achieved' },
+  resultFail: { zh: '💥 踩到地雷了', en: '💥 Game Over' },
+  resultTime: { zh: '用时', en: 'Time' },
+  resultOps: { zh: '总操作', en: 'Total Moves' },
+  resultCoins: { zh: '金币', en: 'Coins' },
+  resultGot: { zh: '获得', en: 'Got' },
+  resultMistakes: { zh: '发现失误', en: 'Mistakes Found' },
+  viewReview: { zh: '🔍 查看失误分析', en: '🔍 View Mistake Analysis' },
+  noMistakes: { zh: '没有发现明显失误', en: 'No obvious mistakes found' },
+  playAgain: { zh: '再玩一次', en: 'Play Again' },
+  backHome: { zh: '返回首页', en: 'Back to Home' },
+
+  // 复盘画面
+  reviewTitle: { zh: '🔍 失误分析', en: '🔍 Mistake Analysis' },
+  reviewStats: { zh: '本局统计', en: 'This Game' },
+  reviewTotalOps: { zh: '总操作', en: 'Total Moves' },
+  reviewMistakeCount: { zh: '失误数', en: 'Mistakes' },
+  reviewTimeUsed: { zh: '用时', en: 'Time' },
+  reviewListTitle: { zh: '失误列表', en: 'Mistake List' },
+  reviewBackGame: { zh: '返回游戏画面', en: 'Back to Game' },
+  reviewClose: { zh: '关闭复盘', en: 'Close Review' },
+  noMistakeRecord: { zh: '没有失误记录', en: 'No mistake records' },
+  fatalMistake: { zh: '致命失误', en: 'Fatal Mistake' },
+  lastMove: { zh: '最后一步', en: 'Last Move' },
+  fatalDesc: { zh: '踩到地雷导致游戏失败', en: 'Stepped on a mine and lost the game' },
+  shouldFlagTitle: { zh: '漏标地雷', en: 'Missed Mine Flag' },
+  shouldFlagDesc: { zh: '周围的隐藏格子都应该先标旗', en: 'The hidden cells around should have been flagged first' },
+  wrongFlagTitle: { zh: '错误标旗', en: 'Wrong Flag' },
+  wrongFlagCount: { zh: '共', en: '' },
+  wrongFlagCountUnit: { zh: '处', en: ' total' },
+  wrongFlagDesc: { zh: '标记了非地雷位置，可能干扰判断', en: 'Flagged non-mine cells, may mislead you' },
+  missedSafeTitle: { zh: '漏掉的安全格', en: 'Missed Safe Cell' },
+  missedSafeDesc: { zh: '周围已标够旗，其他格子是安全的', en: 'Enough flags nearby, other cells are safe' },
+  highlight: { zh: '📍 高亮显示', en: '📍 Highlight' },
+  highlightArea: { zh: '📍 高亮显示区域', en: '📍 Highlight Area' },
+  position: { zh: '位置', en: 'Position' },
+  row: { zh: '行', en: 'Row ' },
+  col: { zh: '列', en: 'Col ' },
+  reviewAreaToast: { zh: '查看周围区域', en: 'Viewing surrounding area' },
+
+  // 设置/提示 toast
+  eyeModeToast: { zh: '护眼模式：', en: 'Eye protection: ' },
+  remindOff: { zh: '提醒已关闭', en: 'Reminder off' },
+  remindSetPre: { zh: '已设置 ', en: 'Reminder set: ' },
+  remindSetPost: { zh: ' 分钟提醒', en: ' min' },
+  vibrationOn: { zh: '震动反馈已开启', en: 'Vibration on' },
+  vibrationOff: { zh: '震动反馈已关闭', en: 'Vibration off' },
+  particlesOn: { zh: '粒子特效已开启', en: 'Particle effects on' },
+  particlesOff: { zh: '粒子特效已关闭', en: 'Particle effects off' },
+  dataExported: { zh: '数据已导出到剪贴板', en: 'Data exported to clipboard' },
+  dataFormatError: { zh: '数据格式错误', en: 'Invalid data format' },
+  resetFailed: { zh: '清空失败', en: 'Reset failed' },
+  confirmReset: { zh: '确定要清空所有数据吗？此操作不可恢复！', en: 'Clear all data? This cannot be undone!' },
+  importPrompt: { zh: '请粘贴存档数据：', en: 'Paste your save data:' },
+  devPwdPrompt: { zh: '请输入开发者密码：', en: 'Enter developer password:' },
+  devWrongPwd: { zh: '❌ 密码错误', en: '❌ Wrong password' },
+  devOnToast: { zh: '🛠️ 开发者模式已开启', en: '🛠️ Developer mode enabled' },
+  devOffToast: { zh: '🔒 开发者模式已关闭', en: '🔒 Developer mode disabled' },
+
+  // 游戏内 toast
+  itemInsufficient: { zh: '道具不足', en: 'Not enough items' },
+  noSafeCell: { zh: '没有可揭示的安全格', en: 'No safe cell to reveal' },
+  noMineToFlag: { zh: '没有可标记的地雷', en: 'No mine to flag' },
+  noMineToDefuse: { zh: '没有地雷可拆除', en: 'No mine to defuse' },
+  defused: { zh: '💥 已拆除一个地雷', en: '💥 Defused one mine' },
+  freezePaused: { zh: '⏸️ 计时暂停 10 秒', en: '⏸️ Timer paused for 10s' },
+  treasureFound: { zh: '💰 发现宝藏！获得', en: '💰 Treasure found! Got' },
+  freezeMine: { zh: '❄️ 冰冻雷！时间暂停 5 秒', en: '❄️ Freeze mine! Timer paused 5s' },
+  chainMine: { zh: '🔥 连锁雷！引爆周围地雷', en: '🔥 Chain mine! Nearby mines triggered' },
+  mysteryCoins: { zh: '🎲 随机雷：获得', en: '🎲 Mystery mine: got' },
+  mysteryReveal: { zh: '🎲 随机雷：揭示 3×3 区域', en: '🎲 Mystery mine: revealed 3×3 area' },
+  mysteryFlag: { zh: '🎲 随机雷：自动标记 3 个地雷', en: '🎲 Mystery mine: auto-flagged 3 mines' },
+  mysteryTime: { zh: '🎲 随机雷：时间 -10 秒', en: '🎲 Mystery mine: -10 seconds' },
+  mysteryBoom: { zh: '🎲 随机雷：爆炸！', en: '🎲 Mystery mine: boom!' },
+  undoDone: { zh: '已撤销，继续加油！', en: 'Undone, keep going!' },
+
   // 其他
   back: { zh: '返回', en: 'Back' },
   confirm: { zh: '确定', en: 'Confirm' },
@@ -2296,7 +2548,15 @@ const TRANSLATIONS = {
 
 function t(key) {
   const lang = SAVE.language || 'zh';
-  return TRANSLATIONS[key] ? TRANSLATIONS[key][lang] : key;
+  return TRANSLATIONS[key] ? (TRANSLATIONS[key][lang] != null ? TRANSLATIONS[key][lang] : TRANSLATIONS[key].zh) : key;
+}
+
+// 读取数据常量的本地化字段（如 name/nameEn, desc/descEn, style/styleEn）
+function L(obj, field) {
+  if (!obj) return '';
+  const lang = SAVE.language || 'zh';
+  if (lang === 'en' && obj[field + 'En'] != null) return obj[field + 'En'];
+  return obj[field];
 }
 
 // 语言切换
@@ -2307,65 +2567,53 @@ function switchLanguage(lang) {
   toast(lang === 'zh' ? '✓ 已切换到中文' : '✓ Switched to English');
 }
 
-// 更新所有界面文字
+// 更新所有界面文字（通用 data-i18n 遍历 + 动态屏幕重渲染）
 function updateAllTexts() {
-  const lang = SAVE.language || 'zh';
-  
-  // 更新首页
-  const subtitle = document.querySelector('.subtitle');
-  if (subtitle) subtitle.textContent = t('selectMode');
-  
-  // 更新模式标签
-  const modeTabs = $all('.mode-tab');
-  if (modeTabs[0]) modeTabs[0].textContent = t('classicMode');
-  if (modeTabs[1]) modeTabs[1].textContent = t('survivalMode');
-  if (modeTabs[2]) modeTabs[2].textContent = t('zenMode');
-  if (modeTabs[3]) modeTabs[3].textContent = t('specialMode');
-  
-  // 更新难度卡片
-  const diffCards = $all('.diff-card');
-  diffCards.forEach(card => {
-    const diff = card.dataset.diff;
-    const nameEl = card.querySelector('.diff-name');
-    if (nameEl && diff) {
-      if (diff === 'easy') nameEl.textContent = t('easy');
-      else if (diff === 'medium') nameEl.textContent = t('medium');
-      else if (diff === 'hard') nameEl.textContent = t('hard');
-      else if (diff === 'custom') nameEl.textContent = t('custom');
-    }
+  // 1) 所有带 data-i18n 的静态元素
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const val = t(key);
+    if (val != null) el.innerHTML = val;
   });
-  
-  // 更新胜率文字
-  const winrateLabel = document.querySelector('#player-winrate')?.previousElementSibling;
-  if (winrateLabel) winrateLabel.textContent = t('winrate');
-  
-  // 更新按钮提示
-  $('#btn-shop-open')?.setAttribute('title', t('shop'));
-  $('#btn-achievements')?.setAttribute('title', t('achievements'));
-  $('#btn-settings')?.setAttribute('title', t('settings'));
-  $('#btn-stats')?.setAttribute('title', t('statistics'));
-  $('#btn-music')?.setAttribute('title', t('music'));
-  $('#btn-daily-checkin')?.setAttribute('title', t('dailyCheckIn'));
-  
-  // 重新渲染当前屏幕
+  // 2) 所有带 data-i18n-title 的元素（更新 title 属性）
+  document.querySelectorAll('[data-i18n-title]').forEach(el => {
+    el.setAttribute('title', t(el.getAttribute('data-i18n-title')));
+  });
+
+  // 3) 开发者模式按钮文字
+  updateDevModeUI();
+
+  // 4) 自定义难度密度标签
+  if ($('#density-tag')) updateDensityTag();
+
+  // 5) 重新渲染当前动态屏幕
   const activeScreen = document.querySelector('.screen.active');
   if (activeScreen) {
     const screenId = activeScreen.id;
-    if (screenId === 'screen-shop') setTimeout(() => renderShop(), 0);
-    else if (screenId === 'screen-music') setTimeout(() => renderMusicPlayer(), 0);
-    else if (screenId === 'screen-achievements') setTimeout(() => renderAchievements(), 0);
-    else if (screenId === 'screen-statistics') setTimeout(() => renderStats(), 0);
+    if (screenId === 'screen-shop') renderShop();
+    else if (screenId === 'screen-music') renderMusicPlayer();
+    else if (screenId === 'screen-achievements') renderAchievements();
+    else if (screenId === 'screen-stats') renderStats();
+    else if (screenId === 'screen-daily-checkin') renderDailyCheckin();
+    else if (screenId === 'screen-rank') renderRank();
   }
-  
-  // 更新玩家卡片和记录
-  if ($('#screen-home').classList.contains('active')) {
-    updatePlayerCard();
-    renderRecordsBox();
-  }
+
+  // 6) 玩家卡片与首页记录
+  updatePlayerCard();
+  renderRecordsBox();
 }
 
 
 // 商城渲染
+function shopBtnLabel(equipped, owned, price){
+  return equipped ? t('equipped') : (owned ? t('equip') : '🪙 ' + price + ' ' + t('buy'));
+}
+function shopBtnStyle(equipped, owned){
+  return equipped ? 'background:var(--gold);color:#1a1300;'
+    : (owned ? 'background:rgba(255,255,255,0.08);color:var(--text-dim);'
+             : 'background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#0a0d1a;');
+}
+
 function renderShop() {
   refreshCoinDisplays();
   const itemsGrid = $('#shop-items');
@@ -2378,13 +2626,13 @@ function renderShop() {
     card.style.cssText = 'padding:14px;text-align:center;';
     card.innerHTML = `
       <div style="font-size:28px;margin-bottom:6px;">${it.icon}</div>
-      <div style="font-weight:700;font-size:13px;margin-bottom:2px;">${it.name}</div>
-      <div style="font-size:10.5px;color:var(--text-dim);min-height:28px;margin-bottom:8px;">${it.desc}</div>
-      <div style="font-size:11px;color:var(--text-dim);margin-bottom:6px;">已持有 ${owned}</div>
-      <button style="width:100%;padding:8px;border:none;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#0a0d1a;">🪙 ${it.price} 购买</button>
+      <div style="font-weight:700;font-size:13px;margin-bottom:2px;">${L(it,'name')}</div>
+      <div style="font-size:10.5px;color:var(--text-dim);min-height:28px;margin-bottom:8px;">${L(it,'desc')}</div>
+      <div style="font-size:11px;color:var(--text-dim);margin-bottom:6px;">${t('owned')} ${owned}</div>
+      <button style="width:100%;padding:8px;border:none;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#0a0d1a;">🪙 ${it.price} ${t('buy')}</button>
     `;
     card.querySelector('button').onclick = ()=>{
-      if (SAVE.coins < it.price){ toast('金币不够啦'); return; }
+      if (SAVE.coins < it.price){ toast(t('notEnoughCoins')); return; }
       SAVE.coins -= it.price;
       SAVE.ownedItems[key] = (SAVE.ownedItems[key]||0) + 1;
       SAVE.statistics.totalCoinsSpent += it.price;
@@ -2407,16 +2655,16 @@ function renderShop() {
     card.style.cssText = 'padding:14px;text-align:center;';
     card.innerHTML = `
       <div style="font-size:28px;margin-bottom:6px;">${sk.icon}</div>
-      <div style="font-weight:700;font-size:13px;margin-bottom:2px;">${sk.name}</div>
-      <div style="font-size:10.5px;color:var(--text-dim);min-height:28px;margin-bottom:8px;">${key==='classic'?'默认皮肤':'整套界面主题皮肤'}</div>
-      <button style="width:100%;padding:8px;border:none;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer;${equipped?'background:var(--gold);color:#1a1300;':(owned?'background:rgba(255,255,255,0.08);color:var(--text-dim);':'background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#0a0d1a;')}">
-        ${equipped?'✅ 使用中':(owned?'装备':'🪙 '+sk.price+' 购买')}
+      <div style="font-weight:700;font-size:13px;margin-bottom:2px;">${L(sk,'name')}</div>
+      <div style="font-size:10.5px;color:var(--text-dim);min-height:28px;margin-bottom:8px;">${key==='classic'?t('skinDefaultDesc'):t('skinThemeDesc')}</div>
+      <button style="width:100%;padding:8px;border:none;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer;${shopBtnStyle(equipped,owned)}">
+        ${shopBtnLabel(equipped,owned,sk.price)}
       </button>
     `;
     card.querySelector('button').onclick = ()=>{
       if (equipped) return;
       if (!owned){
-        if (SAVE.coins < sk.price){ toast('金币不够啦'); return; }
+        if (SAVE.coins < sk.price){ toast(t('notEnoughCoins')); return; }
         SAVE.coins -= sk.price;
         SAVE.ownedSkins.push(key);
         SAVE.statistics.totalCoinsSpent += sk.price;
@@ -2443,16 +2691,16 @@ function renderShop() {
     card.style.cssText = 'padding:14px;text-align:center;';
     card.innerHTML = `
       <div style="font-size:28px;margin-bottom:6px;">${bg.icon}</div>
-      <div style="font-weight:700;font-size:13px;margin-bottom:2px;">${bg.name}</div>
-      <div style="font-size:10.5px;color:var(--text-dim);min-height:28px;margin-bottom:8px;">${bg.desc}</div>
-      <button style="width:100%;padding:8px;border:none;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer;${equipped?'background:var(--gold);color:#1a1300;':(owned?'background:rgba(255,255,255,0.08);color:var(--text-dim);':'background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#0a0d1a;')}">
-        ${equipped?'✅ 使用中':(owned?'装备':'🪙 '+bg.price+' 购买')}
+      <div style="font-weight:700;font-size:13px;margin-bottom:2px;">${L(bg,'name')}</div>
+      <div style="font-size:10.5px;color:var(--text-dim);min-height:28px;margin-bottom:8px;">${L(bg,'desc')}</div>
+      <button style="width:100%;padding:8px;border:none;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer;${shopBtnStyle(equipped,owned)}">
+        ${shopBtnLabel(equipped,owned,bg.price)}
       </button>
     `;
     card.querySelector('button').onclick = ()=>{
       if (equipped) return;
       if (!owned){
-        if (SAVE.coins < bg.price){ toast('金币不够啦'); return; }
+        if (SAVE.coins < bg.price){ toast(t('notEnoughCoins')); return; }
         SAVE.coins -= bg.price;
         SAVE.ownedBackgrounds.push(key);
         SAVE.statistics.totalCoinsSpent += bg.price;
@@ -2479,16 +2727,16 @@ function renderShop() {
     card.style.cssText = 'padding:14px;text-align:center;';
     card.innerHTML = `
       <div style="font-size:28px;margin-bottom:6px;">${snd.icon}</div>
-      <div style="font-weight:700;font-size:13px;margin-bottom:2px;">${snd.name}</div>
-      <div style="font-size:10.5px;color:var(--text-dim);min-height:28px;margin-bottom:8px;">${snd.desc}</div>
-      <button style="width:100%;padding:8px;border:none;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer;${equipped?'background:var(--gold);color:#1a1300;':(owned?'background:rgba(255,255,255,0.08);color:var(--text-dim);':'background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#0a0d1a;')}">
-        ${equipped?'✅ 使用中':(owned?'装备':'🪙 '+snd.price+' 购买')}
+      <div style="font-weight:700;font-size:13px;margin-bottom:2px;">${L(snd,'name')}</div>
+      <div style="font-size:10.5px;color:var(--text-dim);min-height:28px;margin-bottom:8px;">${L(snd,'desc')}</div>
+      <button style="width:100%;padding:8px;border:none;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer;${shopBtnStyle(equipped,owned)}">
+        ${shopBtnLabel(equipped,owned,snd.price)}
       </button>
     `;
     card.querySelector('button').onclick = ()=>{
       if (equipped) return;
       if (!owned){
-        if (SAVE.coins < snd.price){ toast('金币不够啦'); return; }
+        if (SAVE.coins < snd.price){ toast(t('notEnoughCoins')); return; }
         SAVE.coins -= snd.price;
         SAVE.ownedSounds.push(key);
         SAVE.statistics.totalCoinsSpent += snd.price;
@@ -2513,16 +2761,16 @@ function renderShop() {
     card.style.cssText = 'padding:14px;text-align:center;';
     card.innerHTML = `
       <div style="font-size:28px;margin-bottom:6px;">${eff.icon}</div>
-      <div style="font-weight:700;font-size:13px;margin-bottom:2px;">${eff.name}</div>
-      <div style="font-size:10.5px;color:var(--text-dim);min-height:28px;margin-bottom:8px;">${eff.desc}</div>
-      <button style="width:100%;padding:8px;border:none;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer;${equipped?'background:var(--gold);color:#1a1300;':(owned?'background:rgba(255,255,255,0.08);color:var(--text-dim);':'background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#0a0d1a;')}">
-        ${equipped?'✅ 使用中':(owned?'装备':'🪙 '+eff.price+' 购买')}
+      <div style="font-weight:700;font-size:13px;margin-bottom:2px;">${L(eff,'name')}</div>
+      <div style="font-size:10.5px;color:var(--text-dim);min-height:28px;margin-bottom:8px;">${L(eff,'desc')}</div>
+      <button style="width:100%;padding:8px;border:none;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer;${shopBtnStyle(equipped,owned)}">
+        ${shopBtnLabel(equipped,owned,eff.price)}
       </button>
     `;
     card.querySelector('button').onclick = ()=>{
       if (equipped) return;
       if (!owned){
-        if (SAVE.coins < eff.price){ toast('金币不够啦'); return; }
+        if (SAVE.coins < eff.price){ toast(t('notEnoughCoins')); return; }
         SAVE.coins -= eff.price;
         SAVE.ownedEffects.push(key);
         SAVE.statistics.totalCoinsSpent += eff.price;
@@ -2553,7 +2801,7 @@ function renderStats() {
   $('#stat-total-spent').textContent = stats.totalCoinsSpent;
   $('#stat-max-earn').textContent = stats.maxSingleEarn || 0;
   
-  $('#stat-total-time').textContent = totalTimeMin + '分钟';
+  $('#stat-total-time').textContent = totalTimeMin + t('minutes');
   $('#stat-easy-best').textContent = SAVE.best.easy.time ? fmtTime(SAVE.best.easy.time) : '--';
   $('#stat-medium-best').textContent = SAVE.best.medium.time ? fmtTime(SAVE.best.medium.time) : '--';
   $('#stat-hard-best').textContent = SAVE.best.hard.time ? fmtTime(SAVE.best.hard.time) : '--';
@@ -2572,8 +2820,8 @@ function renderMusicPlayer() {
   if (BGM_TRACKS[activeBGM]) {
     const track = BGM_TRACKS[activeBGM];
     $('#music-cover').textContent = track.icon;
-    $('#music-title').textContent = track.name;
-    $('#music-artist').textContent = `${track.style} · ${track.bpm > 0 ? track.bpm + ' BPM' : '氛围音乐'}`;
+    $('#music-title').textContent = L(track,'name');
+    $('#music-artist').textContent = `${L(track,'style')} · ${track.bpm > 0 ? track.bpm + ' BPM' : t('musicAmbient')}`;
   }
   
   // 更新音量显示
@@ -2608,10 +2856,10 @@ function renderMusicPlayer() {
       <div style="font-size:24px;">${track.icon}</div>
       <div style="flex:1;">
         <div style="font-weight:700;display:flex;align-items:center;gap:8px;">
-          ${track.name}
-          ${isActive ? '<span style="font-size:11px;background:var(--accent);color:#fff;padding:2px 6px;border-radius:8px;">播放中</span>' : ''}
+          ${L(track,'name')}
+          ${isActive ? `<span style="font-size:11px;background:var(--accent);color:#fff;padding:2px 6px;border-radius:8px;">${t('musicPlaying')}</span>` : ''}
         </div>
-        <div style="font-size:11px;color:var(--text-dim);">${track.style} ${track.bpm > 0 ? '· ' + track.bpm + ' BPM' : ''}</div>
+        <div style="font-size:11px;color:var(--text-dim);">${L(track,'style')} ${track.bpm > 0 ? '· ' + track.bpm + ' BPM' : ''}</div>
       </div>
       <div style="font-weight:800;color:var(--gold);">
         ${isOwned ? (isActive ? '♪' : '▶') : '🪙 ' + track.price}
@@ -2623,12 +2871,15 @@ function renderMusicPlayer() {
         SAVE.activeBGM = key;
         saveState(SAVE);
         renderMusicPlayer();
-        toast(`正在播放：${track.name}`);
+        toast(`${t('musicNowPlaying')}${L(track,'name')}`);
       };
     } else if (!isOwned) {
       item.onclick = () => {
         if (SAVE.coins >= track.price) {
-          if (confirm(`购买《${track.name}》需要 ${track.price} 金币，确定购买？`)) {
+          const msg = (SAVE.language === 'en')
+            ? `Buy "${L(track,'name')}" for ${track.price} coins?`
+            : `购买《${L(track,'name')}》需要 ${track.price} 金币，确定购买？`;
+          if (confirm(msg)) {
             SAVE.coins -= track.price;
             SAVE.ownedBGM.push(key);
             SAVE.statistics.totalCoinsSpent += track.price;
@@ -2638,7 +2889,7 @@ function renderMusicPlayer() {
             Sound.buy();
           }
         } else {
-          toast('金币不足');
+          toast(t('musicNotEnough'));
         }
       };
     }
@@ -2679,13 +2930,50 @@ function renderMusicPlayer() {
     }
     saveState(SAVE);
     renderMusicPlayer();
-    toast(isMuted ? '已取消静音' : '已全部静音');
+    toast(isMuted ? t('musicUnmuted') : t('musicMuted'));
   };
 }
 
 // 段位渲染
 function renderRank() {
-  toast('段位系统开发中');
+  const score = calculateRankScore();
+  let curKey = 'bronze';
+  const keys = Object.keys(RANKS);
+  for (const k of keys) { if (score >= RANKS[k].minScore) curKey = k; }
+  const cur = RANKS[curKey];
+
+  const iconEl = $('#current-rank-icon');
+  if (iconEl) { iconEl.className = 'rank-icon rank-' + curKey; iconEl.textContent = cur.icon; }
+  if ($('#current-rank-name')) $('#current-rank-name').textContent = L(cur, 'name');
+  if ($('#current-rank-score')) $('#current-rank-score').textContent = t('rankScoreLabel') + Math.round(score);
+
+  // 下一段位进度
+  const idx = keys.indexOf(curKey);
+  const nextKey = keys[idx + 1];
+  const bar = $('#rank-progress-bar');
+  const progText = $('#rank-progress-text');
+  if (nextKey) {
+    const nextMin = RANKS[nextKey].minScore;
+    const curMin = cur.minScore;
+    const pct = Math.min(100, Math.round(((score - curMin) / (nextMin - curMin)) * 100));
+    if (bar) bar.style.width = pct + '%';
+    if (progText) progText.textContent = `${Math.round(score)} / ${nextMin}`;
+  } else {
+    if (bar) bar.style.width = '100%';
+    if (progText) progText.textContent = `${Math.round(score)} (MAX)`;
+  }
+
+  if ($('#rank-wins')) $('#rank-wins').textContent = SAVE.rank.wins;
+  const winrate = SAVE.statistics.totalGames > 0
+    ? Math.round((SAVE.statistics.totalWins / SAVE.statistics.totalGames) * 100) : 0;
+  if ($('#rank-winrate')) $('#rank-winrate').textContent = winrate + '%';
+
+  // 段位等级列表里的名称（保证语言正确）
+  const tierNames = document.querySelectorAll('#screen-rank .rank-tier-name');
+  tierNames.forEach(el => {
+    const k = el.getAttribute('data-rank');
+    if (k && RANKS[k]) el.textContent = L(RANKS[k], 'name');
+  });
 }
 
 // 成就渲染
@@ -2716,7 +3004,7 @@ function renderAchievements() {
       <div style="flex:1;">
         <div style="font-weight:800;margin-bottom:2px;">${ach.name[lang]}</div>
         <div style="font-size:12px;color:var(--text-dim);">${ach.desc[lang]}</div>
-        <div style="font-size:11px;margin-top:4px;color:var(--gold);">🪙 ${ach.reward} 金币</div>
+        <div style="font-size:11px;margin-top:4px;color:var(--gold);">🪙 ${ach.reward} ${t('coins')}</div>
       </div>
       ${isUnlocked ? '<div style="color:var(--success);font-size:20px;">✓</div>' : ''}
     `;
@@ -2742,7 +3030,7 @@ function checkAchievements() {
         
         // 显示通知
         const lang = SAVE.language || 'zh';
-        toast(`🎉 成就解锁: ${ach.name[lang]} (+${ach.reward} 🪙)`);
+        toast(`🎉 ${t('achUnlockToast')}: ${ach.name[lang]} (+${ach.reward} 🪙)`);
         Sound.achievement();
       }
     }
@@ -2769,7 +3057,7 @@ function renderDailyCheckin() {
   
   if (canCheckin) {
     btn.disabled = false;
-    btn.textContent = '立即签到';
+    btn.textContent = t('checkinNow');
     btn.onclick = () => {
       SAVE.daily.lastCheckIn = today;
       SAVE.daily.consecutiveDays++;
@@ -2782,22 +3070,26 @@ function renderDailyCheckin() {
       SAVE.coins += reward;
       saveState(SAVE);
       refreshCoinDisplays();
-      toast(`✅ 签到成功！获得 ${reward} 金币`);
+      toast(SAVE.language === 'en' ? `✅ Check-in successful! Got ${reward} coins` : `✅ 签到成功！获得 ${reward} 金币`);
       Sound.coin();
       renderDailyCheckin();
     };
     status.textContent = '';
   } else {
     btn.disabled = true;
-    btn.textContent = '今日已签到';
-    status.textContent = '✅ 明天再来吧';
+    btn.textContent = t('checkinDone');
+    status.textContent = t('checkinComeback');
   }
 }
 
 // 显示复盘分析界面
+function posText(r, c) {
+  return `${t('position')}: ${t('row')}${r + 1} ${t('col')}${c + 1}`;
+}
+
 function showReviewScreen() {
   if (!G || !G.mistakes || G.mistakes.length === 0) {
-    toast('没有失误记录');
+    toast(t('noMistakeRecord'));
     return;
   }
   
@@ -2832,9 +3124,9 @@ function showReviewScreen() {
             <div style="font-size:12px;color:var(--text-dim);">${fmtTime(fatalMistake.time)}</div>
           </div>
         </div>
-        <div style="font-size:13px;color:var(--text-main);">${fatalMistake.description}</div>
-        <div style="font-size:12px;color:var(--text-dim);margin-top:4px;">${t('position')}：${t('row')}${fatalMistake.r + 1} ${t('col')}${fatalMistake.c + 1}</div>
-        <button class="secondary-btn" onclick="highlightCell(${fatalMistake.r}, ${fatalMistake.c}, true)" style="margin-top:8px;padding:6px 12px;font-size:12px;">📍 ${t('highlight')}</button>
+        <div style="font-size:13px;color:var(--text-main);">${t('fatalDesc')}</div>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:4px;">${posText(fatalMistake.r, fatalMistake.c)}</div>
+        <button class="secondary-btn" onclick="highlightCell(${fatalMistake.r}, ${fatalMistake.c}, true)" style="margin-top:8px;padding:6px 12px;font-size:12px;">${t('highlight')}</button>
       </div>
     `;
   }
@@ -2847,13 +3139,13 @@ function showReviewScreen() {
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
             <span style="font-size:24px;">⚠️</span>
             <div>
-              <div style="font-weight:800;color:var(--warning);">漏标地雷</div>
-              <div style="font-size:12px;color:var(--text-dim);">第 ${fmtTime(mistake.time)}</div>
+              <div style="font-weight:800;color:var(--warning);">${t('shouldFlagTitle')}</div>
+              <div style="font-size:12px;color:var(--text-dim);">${fmtTime(mistake.time)}</div>
             </div>
           </div>
-          <div style="font-size:13px;color:var(--text-main);">${mistake.description}</div>
-          <div style="font-size:12px;color:var(--text-dim);margin-top:4px;">位置：行${mistake.r + 1} 列${mistake.c + 1}</div>
-          <button class="secondary-btn" onclick="highlightMistakeArea(${mistake.r}, ${mistake.c}, 'should-flag')" style="margin-top:8px;padding:6px 12px;font-size:12px;">📍 高亮显示区域</button>
+          <div style="font-size:13px;color:var(--text-main);">${t('shouldFlagDesc')}</div>
+          <div style="font-size:12px;color:var(--text-dim);margin-top:4px;">${posText(mistake.r, mistake.c)}</div>
+          <button class="secondary-btn" onclick="highlightMistakeArea(${mistake.r}, ${mistake.c}, 'should-flag')" style="margin-top:8px;padding:6px 12px;font-size:12px;">${t('highlightArea')}</button>
         </div>
       `;
     });
@@ -2866,13 +3158,13 @@ function showReviewScreen() {
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
           <span style="font-size:24px;">🚩</span>
           <div>
-            <div style="font-weight:800;color:#FF9800;">错误标旗</div>
-            <div style="font-size:12px;color:var(--text-dim);">共 ${wrongFlags.length} 处</div>
+            <div style="font-weight:800;color:#FF9800;">${t('wrongFlagTitle')}</div>
+            <div style="font-size:12px;color:var(--text-dim);">${t('wrongFlagCount')} ${wrongFlags.length}${t('wrongFlagCountUnit')}</div>
           </div>
         </div>
-        <div style="font-size:13px;color:var(--text-main);">标记了非地雷位置，可能干扰判断</div>
+        <div style="font-size:13px;color:var(--text-main);">${t('wrongFlagDesc')}</div>
         <div style="font-size:12px;color:var(--text-dim);margin-top:6px;">
-          ${wrongFlags.map(m => `行${m.r+1} 列${m.c+1}`).join('、')}
+          ${wrongFlags.map(m => `${t('row')}${m.r+1} ${t('col')}${m.c+1}`).join('  ')}
         </div>
       </div>
     `;
@@ -2886,55 +3178,55 @@ function showReviewScreen() {
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
             <span style="font-size:24px;">💡</span>
             <div>
-              <div style="font-weight:800;color:var(--success);">漏掉的安全格</div>
-              <div style="font-size:12px;color:var(--text-dim);">第 ${fmtTime(mistake.time)}</div>
+              <div style="font-weight:800;color:var(--success);">${t('missedSafeTitle')}</div>
+              <div style="font-size:12px;color:var(--text-dim);">${fmtTime(mistake.time)}</div>
             </div>
           </div>
-          <div style="font-size:13px;color:var(--text-main);">${mistake.description}</div>
-          <div style="font-size:12px;color:var(--text-dim);margin-top:4px;">位置：行${mistake.r + 1} 列${mistake.c + 1}</div>
-          <button class="secondary-btn" onclick="highlightMistakeArea(${mistake.r}, ${mistake.c}, 'missed-safe')" style="margin-top:8px;padding:6px 12px;font-size:12px;">📍 高亮显示区域</button>
+          <div style="font-size:13px;color:var(--text-main);">${t('missedSafeDesc')}</div>
+          <div style="font-size:12px;color:var(--text-dim);margin-top:4px;">${posText(mistake.r, mistake.c)}</div>
+          <button class="secondary-btn" onclick="highlightMistakeArea(${mistake.r}, ${mistake.c}, 'missed-safe')" style="margin-top:8px;padding:6px 12px;font-size:12px;">${t('highlightArea')}</button>
         </div>
       `;
     });
   }
   
   if (!mistakesList) {
-    mistakesList = '<div style="text-align:center;color:var(--text-dim);padding:20px;">没有发现明显失误</div>';
+    mistakesList = `<div style="text-align:center;color:var(--text-dim);padding:20px;">${t('noMistakes')}</div>`;
   }
   
   reviewModal.innerHTML = `
     <div class="modal-card glass-modal" style="max-width:500px;max-height:80vh;overflow-y:auto;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-        <div style="font-size:20px;font-weight:900;">🔍 失误分析</div>
+        <div style="font-size:20px;font-weight:900;">${t('reviewTitle')}</div>
         <button class="icon-btn" id="btn-close-review" style="width:36px;height:36px;">✕</button>
       </div>
       
       <div class="glass-card" style="padding:12px;margin-bottom:16px;text-align:center;">
-        <div style="font-size:13px;color:var(--text-dim);margin-bottom:6px;">本局统计</div>
+        <div style="font-size:13px;color:var(--text-dim);margin-bottom:6px;">${t('reviewStats')}</div>
         <div style="display:flex;justify-content:space-around;">
           <div>
             <div style="font-size:20px;font-weight:900;color:var(--accent);">${G.moveHistory.length}</div>
-            <div style="font-size:11px;color:var(--text-dim);">总操作</div>
+            <div style="font-size:11px;color:var(--text-dim);">${t('reviewTotalOps')}</div>
           </div>
           <div>
             <div style="font-size:20px;font-weight:900;color:var(--danger);">${mistakes.length}</div>
-            <div style="font-size:11px;color:var(--text-dim);">失误数</div>
+            <div style="font-size:11px;color:var(--text-dim);">${t('reviewMistakeCount')}</div>
           </div>
           <div>
             <div style="font-size:20px;font-weight:900;color:var(--warning);">${fmtTime(G.timer)}</div>
-            <div style="font-size:11px;color:var(--text-dim);">用时</div>
+            <div style="font-size:11px;color:var(--text-dim);">${t('reviewTimeUsed')}</div>
           </div>
         </div>
       </div>
       
-      <div style="font-weight:800;margin-bottom:12px;font-size:15px;">失误列表</div>
+      <div style="font-weight:800;margin-bottom:12px;font-size:15px;">${t('reviewListTitle')}</div>
       <div id="mistakes-list">
         ${mistakesList}
       </div>
       
       <div class="modal-btns" style="margin-top:16px;">
-        <button class="primary-btn" id="btn-back-to-game">返回游戏画面</button>
-        <button class="secondary-btn" id="btn-close-review2">关闭复盘</button>
+        <button class="primary-btn" id="btn-back-to-game">${t('reviewBackGame')}</button>
+        <button class="secondary-btn" id="btn-close-review2">${t('reviewClose')}</button>
       </div>
     </div>
   `;
@@ -2997,7 +3289,7 @@ function highlightCell(r, c, isLastMove = false) {
   }, 4000);
   
   const moveLabel = isLastMove ? ` (${t('lastMove')})` : '';
-  toast(`${t('position')}：${t('row')}${r+1} ${t('col')}${c+1}${moveLabel}`);
+  toast(`${posText(r, c)}${moveLabel}`);
 }
 
 // 高亮区域
@@ -3031,6 +3323,6 @@ function highlightMistakeArea(r, c, type) {
     });
   }, 3000);
   
-  toast(`查看行${r+1} 列${c+1} 周围区域`);
+  toast(`${t('reviewAreaToast')}: ${t('row')}${r+1} ${t('col')}${c+1}`);
 }
 </script>
