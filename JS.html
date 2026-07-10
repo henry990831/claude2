@@ -531,7 +531,7 @@ function createDefaultSave() {
     },
     eyeProtection: { enabled:false, intensity:'off', reminderInterval:0 },
     musicPlayer: { volume:0.7, bgmVolume:0.8, sfxVolume:0.6, playing:false, mode:'loop' },
-    settings: { vibration:false, particles:true },
+    settings: { vibration:false, particles:true, noGuess:true },
     devMode: false,
     devModeBackupCoins: null
   };
@@ -554,6 +554,8 @@ function loadState() {
     if (!s.musicPlayer) s.musicPlayer = defaults.musicPlayer;
     if (!s.ownedBGM) s.ownedBGM = ['calm'];
     if (!s.activeBGM) s.activeBGM = 'calm';
+    if (!s.settings) s.settings = defaults.settings;
+    if (typeof s.settings.noGuess === 'undefined') s.settings.noGuess = true;
   }
   return s;
 }
@@ -1087,6 +1089,167 @@ function placeMines(board, rows, cols, mines, safeR, safeC, isSpecialMode) {
   return m;
 }
 
+/* =========================================================
+   无猜模式（No-Guess）：布雷 + 逻辑求解器
+   目标：保证每一局都能纯靠推理通关，不需要赌雷。
+   做法：随机布雷 -> 用求解器模拟 -> 若能全解则采用，
+        否则重新布雷；在时间预算内取"可推理覆盖最多"的盘面。
+========================================================= */
+function clearBoardMines(board, rows, cols) {
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      board[r][c].mine = false;
+      board[r][c].adj = 0;
+      board[r][c].specialType = null;
+    }
+  }
+}
+
+function computeAdjacency(board, rows, cols) {
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      if (board[r][c].mine) { board[r][c].adj = 0; continue; }
+      let n = 0;
+      neighborsOf(r, c, rows, cols).forEach(([nr, nc]) => { if (board[nr][nc].mine) n++; });
+      board[r][c].adj = n;
+    }
+  }
+}
+
+function snapshotMines(board, rows, cols) {
+  const arr = [];
+  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) if (board[r][c].mine) arr.push(r * cols + c);
+  return arr;
+}
+
+function applyMineSnapshot(board, rows, cols, mineIdxs) {
+  clearBoardMines(board, rows, cols);
+  for (const idx of mineIdxs) board[Math.floor(idx / cols)][idx % cols].mine = true;
+  computeAdjacency(board, rows, cols);
+}
+
+// 逻辑求解器：返回纯推理能揭开的安全格数量
+function boardSolveCoverage(board, rows, cols, sr, sc) {
+  // state: 0 未知, 1 已揭开(安全), 2 已确定为雷
+  const state = [];
+  for (let r = 0; r < rows; r++) state.push(new Array(cols).fill(0));
+
+  const revealFlood = (r, c) => {
+    const st = [[r, c]];
+    while (st.length) {
+      const [cr, cc] = st.pop();
+      if (state[cr][cc] !== 0) continue;
+      if (board[cr][cc].mine) continue;
+      state[cr][cc] = 1;
+      if (board[cr][cc].adj === 0) {
+        neighborsOf(cr, cc, rows, cols).forEach(([nr, nc]) => { if (state[nr][nc] === 0) st.push([nr, nc]); });
+      }
+    }
+  };
+
+  revealFlood(sr, sc);
+
+  let changed = true;
+  while (changed) {
+    changed = false;
+    // 基础规则：满足数字则周围安全 / 剩余全是雷
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        if (state[r][c] !== 1) continue;
+        const adj = board[r][c].adj;
+        if (adj === 0) continue;
+        const nbrs = neighborsOf(r, c, rows, cols);
+        const hidden = [];
+        let flagged = 0;
+        for (const [nr, nc] of nbrs) {
+          if (state[nr][nc] === 0) hidden.push([nr, nc]);
+          else if (state[nr][nc] === 2) flagged++;
+        }
+        if (hidden.length === 0) continue;
+        const remaining = adj - flagged;
+        if (remaining === 0) {
+          for (const [nr, nc] of hidden) revealFlood(nr, nc);
+          changed = true;
+        } else if (remaining === hidden.length) {
+          for (const [nr, nc] of hidden) state[nr][nc] = 2;
+          changed = true;
+        }
+      }
+    }
+    if (changed) continue;
+
+    // 子集规则（能解 1-2-1 等更复杂图案）
+    const cons = [];
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        if (state[r][c] !== 1) continue;
+        const adj = board[r][c].adj;
+        if (adj === 0) continue;
+        const nbrs = neighborsOf(r, c, rows, cols);
+        const hidden = [];
+        let flagged = 0;
+        for (const [nr, nc] of nbrs) {
+          if (state[nr][nc] === 0) hidden.push(nr * cols + nc);
+          else if (state[nr][nc] === 2) flagged++;
+        }
+        if (hidden.length > 0) cons.push({ cells: hidden, set: new Set(hidden), rem: adj - flagged });
+      }
+    }
+    for (let i = 0; i < cons.length && !changed; i++) {
+      for (let j = 0; j < cons.length; j++) {
+        if (i === j) continue;
+        const A = cons[i], B = cons[j];
+        if (A.cells.length >= B.cells.length) continue;
+        let subset = true;
+        for (const x of A.cells) { if (!B.set.has(x)) { subset = false; break; } }
+        if (!subset) continue;
+        const diffRem = B.rem - A.rem;
+        const diffCount = B.cells.length - A.cells.length;
+        if (diffRem === 0) {
+          for (const x of B.cells) if (!A.set.has(x)) { const rr = Math.floor(x / cols), cc = x % cols; if (state[rr][cc] === 0) { revealFlood(rr, cc); changed = true; } }
+        } else if (diffRem === diffCount) {
+          for (const x of B.cells) if (!A.set.has(x)) { const rr = Math.floor(x / cols), cc = x % cols; if (state[rr][cc] === 0) { state[rr][cc] = 2; changed = true; } }
+        }
+        if (changed) break;
+      }
+    }
+  }
+
+  let revealed = 0;
+  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) if (state[r][c] === 1) revealed++;
+  return revealed;
+}
+
+function generateSolvableBoard(board, rows, cols, mines, sr, sc, isSpecial) {
+  // 特殊地雷模式本身就是"混沌玩法"，不强制无猜
+  const wantNoGuess = !isSpecial && !(SAVE.settings && SAVE.settings.noGuess === false);
+  let placed = placeMines(board, rows, cols, mines, sr, sc, isSpecial);
+  if (!wantNoGuess) return placed;
+
+  const total = rows * cols;
+  const safeTotal = total - placed;
+  let cov = boardSolveCoverage(board, rows, cols, sr, sc);
+  if (cov >= safeTotal) return placed; // 首次就完全可解
+
+  let best = { coverage: cov, mines: snapshotMines(board, rows, cols) };
+  const deadline = Date.now() + 500; // 时间预算，避免第一下卡死
+  let attempts = 0;
+  const maxAttempts = 600;
+
+  while (Date.now() < deadline && attempts < maxAttempts) {
+    attempts++;
+    clearBoardMines(board, rows, cols);
+    placeMines(board, rows, cols, mines, sr, sc, isSpecial);
+    cov = boardSolveCoverage(board, rows, cols, sr, sc);
+    if (cov >= safeTotal) return placed; // 找到完全可解盘面
+    if (cov > best.coverage) best = { coverage: cov, mines: snapshotMines(board, rows, cols) };
+  }
+
+  // 时间/次数用尽：采用"可推理覆盖最多"的盘面（把要赌的地方降到最少）
+  applyMineSnapshot(board, rows, cols, best.mines);
+  return best.mines.length;
+}
+
 function startGame(diffKey, customCfg, isZen = false, isSurvival = false, isSpecial = false) {
   let rows, cols, mines, base, par;
 
@@ -1262,7 +1425,7 @@ function handlePrimaryAction(r, c) {
 
   if (G.firstClick) {
     snapshotBoard();
-    const placed = placeMines(G.board, G.rows, G.cols, G.mines, r, c, G.isSpecial);
+    const placed = generateSolvableBoard(G.board, G.rows, G.cols, G.mines, r, c, G.isSpecial);
     G.mines = placed;
     $('#mine-count').textContent = Math.max(0, G.mines - G.flagCount);
     G.firstClick = false;
@@ -1646,7 +1809,7 @@ function useItem(key) {
     if (!hiddenSafe.length) { toast(t('noSafeCell')); return; }
     const [r, c] = hiddenSafe[Math.floor(Math.random() * hiddenSafe.length)];
     if (G.firstClick) {
-      placeMines(G.board, G.rows, G.cols, G.mines, r, c, G.isSpecial);
+      G.mines = generateSolvableBoard(G.board, G.rows, G.cols, G.mines, r, c, G.isSpecial);
       G.firstClick = false;
       G.started = true;
       startTimer();
@@ -2185,6 +2348,17 @@ function setupSettings() {
       }
     });
   }
+
+  // 无猜模式开关
+  const noguessToggle = $('#noguess-toggle');
+  if (noguessToggle) {
+    noguessToggle.checked = SAVE.settings.noGuess !== false;
+    noguessToggle.addEventListener('change', (e) => {
+      SAVE.settings.noGuess = e.target.checked;
+      saveState(SAVE);
+      toast(e.target.checked ? t('noGuessOn') : t('noGuessOff'));
+    });
+  }
   
   // 导出数据
   $('#btn-export-data')?.addEventListener('click', () => {
@@ -2456,6 +2630,10 @@ const TRANSLATIONS = {
   setVibrationDesc: { zh: '触碰时提供触觉反馈', en: 'Haptic feedback on touch' },
   setParticles: { zh: '✨ 粒子特效', en: '✨ Particle Effects' },
   setParticlesDesc: { zh: '背景动态粒子效果', en: 'Dynamic background particles' },
+  setNoGuess: { zh: '🧠 无猜模式', en: '🧠 No-Guess Mode' },
+  setNoGuessDesc: { zh: '保证每局都能纯靠推理通关，不用赌雷', en: 'Guarantees every board is solvable by logic — no guessing' },
+  noGuessOn: { zh: '无猜模式已开启', en: 'No-guess mode on' },
+  noGuessOff: { zh: '无猜模式已关闭', en: 'No-guess mode off' },
   setData: { zh: '数据管理', en: 'Data Management' },
   setExport: { zh: '导出存档数据', en: 'Export Save Data' },
   setImport: { zh: '导入存档数据', en: 'Import Save Data' },
