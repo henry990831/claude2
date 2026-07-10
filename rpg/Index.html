@@ -41,6 +41,8 @@
   <div id="monster-labels"></div>
   <!-- 伤害飘字 -->
   <div id="damage-numbers"></div>
+  <!-- 升级弹窗容器 -->
+  <div id="levelup-wrap"></div>
 
   <!-- ===================== HUD ===================== -->
   <div id="hud" class="hidden">
@@ -64,6 +66,11 @@
 
     <!-- 右上：小地图 -->
     <div id="minimap-wrap"><canvas id="minimap" width="160" height="160"></canvas></div>
+
+    <!-- 右上角控制：音效 -->
+    <div id="top-controls">
+      <button class="ctrl-btn" id="btn-sound" title="音效开关">🔊</button>
+    </div>
 
     <!-- 交互提示 -->
     <div id="interact-hint" class="hidden"></div>
@@ -115,6 +122,28 @@
           <div id="stat-list" class="stat-list"></div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- ===================== 熔炉 (E 靠近熔炉) ===================== -->
+  <div id="forge-panel" class="panel-overlay hidden">
+    <div class="panel-card wide">
+      <div class="panel-header"><h2>🔥 熔炉</h2><button class="panel-close" id="btn-forge-close">✕</button></div>
+      <div class="forge-tabs">
+        <button class="forge-tab active" data-ftab="synth">⚗️ 合成</button>
+        <button class="forge-tab" data-ftab="affix">🔮 词缀</button>
+        <button class="forge-tab" data-ftab="enhance">🔨 强化</button>
+      </div>
+      <div id="forge-body"></div>
+    </div>
+  </div>
+
+  <!-- ===================== 星球传送门 (E 靠近传送门) ===================== -->
+  <div id="planet-panel" class="panel-overlay hidden">
+    <div class="panel-card">
+      <div class="panel-header"><h2>🌀 星球传送门</h2><button class="panel-close" id="btn-planet-close">✕</button></div>
+      <p class="forge-desc">每颗星球由独立<b>种子</b>生成，编号越大越危险、怪等级越高、掉落越好。传送将返回该星球出生城镇。</p>
+      <div id="planet-list" class="planet-list"></div>
     </div>
   </div>
 
