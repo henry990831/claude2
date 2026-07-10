@@ -785,6 +785,12 @@ input[type="checkbox"]:checked + span + span {
   animation: mineExplode 0.4s ease;
 }
 
+/* 开发者模式：偷看未翻开的地雷 */
+.cell.dev-peek {
+  box-shadow: inset 0 0 0 2px rgba(255, 80, 80, 0.7), 0 0 8px rgba(255, 80, 80, 0.4);
+  opacity: 0.72;
+}
+
 @keyframes mineExplode {
   0% { transform: scale(0); opacity: 0; }
   50% { transform: scale(1.5); opacity: 1; }

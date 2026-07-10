@@ -50,10 +50,11 @@
 
     <!-- 游戏模式切换 -->
     <div class="mode-tabs" style="display:flex;gap:6px;margin-bottom:20px;background:var(--glass-bg);padding:6px;border-radius:16px;backdrop-filter:blur(10px);">
-      <button class="mode-tab active" data-mode="classic" data-i18n="tab_classic" style="flex:1;padding:12px 8px;border:none;border-radius:12px;background:transparent;color:var(--text-dim);font-weight:700;font-size:13px;cursor:pointer;transition:all 0.3s ease;">经典模式</button>
-      <button class="mode-tab" data-mode="survival" data-i18n="tab_survival" style="flex:1;padding:12px 8px;border:none;border-radius:12px;background:transparent;color:var(--text-dim);font-weight:700;font-size:13px;cursor:pointer;transition:all 0.3s ease;">生存模式</button>
-      <button class="mode-tab" data-mode="zen" data-i18n="tab_zen" style="flex:1;padding:12px 8px;border:none;border-radius:12px;background:transparent;color:var(--text-dim);font-weight:700;font-size:13px;cursor:pointer;transition:all 0.3s ease;">禅模式</button>
-      <button class="mode-tab" data-mode="special" data-i18n="tab_special" style="flex:1;padding:12px 8px;border:none;border-radius:12px;background:transparent;color:var(--text-dim);font-weight:700;font-size:13px;cursor:pointer;transition:all 0.3s ease;">特殊地雷</button>
+      <button class="mode-tab active" data-mode="classic" data-i18n="tab_classic" style="flex:1;padding:12px 6px;border:none;border-radius:12px;background:transparent;color:var(--text-dim);font-weight:700;font-size:12.5px;cursor:pointer;transition:all 0.3s ease;white-space:nowrap;">经典模式</button>
+      <button class="mode-tab" data-mode="ranked" data-i18n="tab_ranked" style="flex:1;padding:12px 6px;border:none;border-radius:12px;background:transparent;color:var(--text-dim);font-weight:700;font-size:12.5px;cursor:pointer;transition:all 0.3s ease;white-space:nowrap;">段位赛</button>
+      <button class="mode-tab" data-mode="survival" data-i18n="tab_survival" style="flex:1;padding:12px 6px;border:none;border-radius:12px;background:transparent;color:var(--text-dim);font-weight:700;font-size:12.5px;cursor:pointer;transition:all 0.3s ease;white-space:nowrap;">生存模式</button>
+      <button class="mode-tab" data-mode="zen" data-i18n="tab_zen" style="flex:1;padding:12px 6px;border:none;border-radius:12px;background:transparent;color:var(--text-dim);font-weight:700;font-size:12.5px;cursor:pointer;transition:all 0.3s ease;white-space:nowrap;">禅模式</button>
+      <button class="mode-tab" data-mode="special" data-i18n="tab_special" style="flex:1;padding:12px 6px;border:none;border-radius:12px;background:transparent;color:var(--text-dim);font-weight:700;font-size:12.5px;cursor:pointer;transition:all 0.3s ease;white-space:nowrap;">特殊地雷</button>
     </div>
 
     <!-- 经典模式 -->
@@ -103,6 +104,51 @@
       </div>
     </div>
 
+
+    <!-- 段位赛 -->
+    <div id="ranked-mode-panel" class="mode-panel hidden">
+      <div class="glass-card" style="padding:20px;margin-bottom:16px;text-align:center;">
+        <div style="font-size:48px;margin-bottom:8px;">🏆</div>
+        <div style="font-size:18px;font-weight:800;margin-bottom:8px;" data-i18n="ranked_title">🏆 段位赛</div>
+        <div style="font-size:13px;color:var(--text-dim);line-height:1.6;" data-i18n="ranked_desc">
+          禁用道具，凭实力上分！<br>
+          胜利按速度加分（越快越多）<br>
+          失败会扣分，只有稳定又快才能晋级
+        </div>
+      </div>
+
+      <div class="glass-card" style="padding:18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span id="ranked-rank-icon" class="rank-icon rank-bronze" style="font-size:34px;">◆</span>
+          <div>
+            <div id="ranked-rank-name" style="font-weight:800;font-size:16px;">青铜</div>
+            <div style="font-size:11px;color:var(--text-dim);" data-i18n="ranked_curScore">当前段位分</div>
+          </div>
+        </div>
+        <div id="ranked-score" style="font-weight:900;font-size:26px;color:var(--gold);">0</div>
+      </div>
+
+      <div class="diff-grid">
+        <button class="diff-card glass-card" data-diff="ranked-easy">
+          <div class="diff-emoji">🌱</div>
+          <div class="diff-name" data-i18n="diff_easy">简单</div>
+          <div class="diff-meta" data-i18n="meta_9x9">9×9 · 10 雷</div>
+          <div class="diff-reward" data-i18n="reward_rankedEasy">⚡ 快速通关得分更高</div>
+        </button>
+        <button class="diff-card glass-card" data-diff="ranked-medium">
+          <div class="diff-emoji">🔥</div>
+          <div class="diff-name" data-i18n="diff_medium">中等</div>
+          <div class="diff-meta" data-i18n="meta_16x16">16×16 · 40 雷</div>
+          <div class="diff-reward" data-i18n="reward_rankedMedium">⚡ 快速通关得分更高</div>
+        </button>
+        <button class="diff-card glass-card" data-diff="ranked-hard">
+          <div class="diff-emoji">💀</div>
+          <div class="diff-name" data-i18n="diff_hard">困难</div>
+          <div class="diff-meta" data-i18n="meta_30x16">30×16 · 99 雷</div>
+          <div class="diff-reward" data-i18n="reward_rankedHard">⚡ 高风险高回报</div>
+        </button>
+      </div>
+    </div>
 
     <!-- 生存模式 -->
     <div id="survival-mode-panel" class="mode-panel hidden">
