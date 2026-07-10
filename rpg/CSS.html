@@ -160,10 +160,60 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);
 #toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);z-index:95;background:rgba(8,12,22,.96);border:1px solid rgba(245,166,35,.4);border-radius:10px;padding:12px 22px;font-size:14px;max-width:80%;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.5);animation:toastIn .3s ease;}
 @keyframes toastIn{from{opacity:0;transform:translate(-50%,20px)}to{opacity:1;transform:translate(-50%,0)}}
 
+/* ============ 右上控制 / 音效 ============ */
+#top-controls{position:absolute;top:184px;right:16px;display:flex;flex-direction:column;gap:8px;pointer-events:auto;}
+.ctrl-btn{width:44px;height:44px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(8,12,22,.7);color:#fff;font-size:20px;cursor:pointer;transition:.2s;}
+.ctrl-btn:hover{background:rgba(255,255,255,.16);}
+.ctrl-btn.off{opacity:.5;}
+
+/* ============ 熔炉 ============ */
+.forge-tabs{display:flex;gap:8px;margin-bottom:14px;}
+.forge-tab{flex:1;background:rgba(255,255,255,.06);border:none;color:#c3cad8;padding:10px;border-radius:10px;font-size:14px;cursor:pointer;font-weight:700;}
+.forge-tab.active{background:linear-gradient(90deg,#f97316,#f5a623);color:#1a0f04;}
+.forge-desc{font-size:12px;color:#9aa4b8;line-height:1.6;margin-bottom:14px;}
+.forge-desc b{color:var(--accent);}
+.forge-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.forge-slot{width:82px;height:82px;background:rgba(0,0,0,.35);border:2px dashed rgba(255,255,255,.2);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;padding:4px;text-align:center;}
+.forge-slot.filled{border-style:solid;background:rgba(255,255,255,.06);}
+.forge-slot.result{border-color:rgba(245,166,35,.6);cursor:default;}
+.forge-slot .fi{font-size:28px;}
+.forge-slot .fn{font-size:9px;font-weight:700;line-height:1.15;margin-top:2px;}
+.forge-empty{color:#5a6478;font-size:11px;}
+.forge-op{font-size:22px;color:#8a94a8;}
+.forge-info{text-align:center;font-size:13px;color:#c3cad8;margin:10px 0;min-height:20px;line-height:1.6;}
+.forge-info b{color:var(--accent);}
+.forge-opts{display:flex;gap:14px;justify-content:center;margin:10px 0;font-size:12px;flex-wrap:wrap;}
+.forge-opts label{display:flex;align-items:center;gap:5px;cursor:pointer;background:rgba(255,255,255,.05);padding:6px 10px;border-radius:8px;}
+.forge-prob{display:flex;gap:6px;justify-content:center;margin:8px 0;flex-wrap:wrap;font-size:11px;}
+.forge-prob span{background:rgba(255,255,255,.05);padding:4px 8px;border-radius:7px;font-weight:700;}
+.forge-btn{display:block;width:100%;padding:13px;margin-top:8px;border:none;border-radius:11px;font-size:15px;font-weight:800;cursor:pointer;background:linear-gradient(90deg,#f97316,#f5a623);color:#1a0f04;}
+.forge-btn:disabled{opacity:.4;cursor:not-allowed;}
+.affix-mats{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px;margin-top:8px;}
+.affix-mat{background:rgba(255,255,255,.05);border:1.5px solid transparent;border-radius:9px;padding:8px 4px;text-align:center;cursor:pointer;font-size:10px;}
+.affix-mat.sel{border-color:var(--accent);}
+.affix-mat.dim{opacity:.35;}
+.affix-mat .fi{font-size:22px;}
+
+/* ============ 星球 ============ */
+.planet-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;}
+.planet-card{background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:12px;padding:12px;text-align:center;cursor:pointer;transition:.15s;}
+.planet-card:hover{background:rgba(255,255,255,.12);transform:translateY(-2px);}
+.planet-card.cur{border-color:#7b4dff;box-shadow:0 0 12px rgba(123,77,255,.4);}
+.planet-emoji{font-size:34px;}
+.planet-name{font-weight:800;font-size:13px;margin:4px 0;}
+.planet-meta{font-size:11px;color:#9aa4b8;line-height:1.5;}
+
+/* ============ 升级弹窗 ============ */
+#levelup{position:absolute;top:30%;left:50%;transform:translateX(-50%);z-index:70;text-align:center;pointer-events:none;animation:luPop 2.2s ease forwards;}
+#levelup .lu-title{font-size:40px;font-weight:900;background:linear-gradient(90deg,#ffd24a,#f97316);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 20px rgba(249,115,22,.4);}
+#levelup .lu-sub{font-size:15px;color:#ffe9a8;margin-top:6px;text-shadow:0 2px 4px #000;}
+@keyframes luPop{0%{opacity:0;transform:translate(-50%,20px) scale(.6)}18%{opacity:1;transform:translate(-50%,0) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-30px) scale(1)}}
+
 @media(max-width:600px){
   #player-stats{min-width:180px;padding:9px 10px;}
   .hotbar-slot{width:76px;height:54px;}
   #minimap-wrap{transform:scale(.82);transform-origin:top right;}
+  #top-controls{top:150px;}
   .char-body{flex-direction:column;}
 }
 </style>
