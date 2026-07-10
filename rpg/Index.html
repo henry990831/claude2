@@ -11,27 +11,25 @@
   <!-- ===================== 加载画面 ===================== -->
   <div id="loading-screen">
     <div class="loading-content">
-      <div class="loading-logo">⚔️</div>
-      <h1 class="loading-title">开放世界 RPG</h1>
-      <div class="loading-bar-wrap">
-        <div class="loading-bar" id="loading-bar"></div>
-      </div>
-      <div class="loading-text" id="loading-text">加载中...</div>
+      <div class="loading-logo">🌍</div>
+      <h1 class="loading-title">无限世界 RPG</h1>
+      <div class="loading-bar-wrap"><div class="loading-bar" id="loading-bar"></div></div>
+      <div class="loading-text" id="loading-text">生成世界...</div>
     </div>
   </div>
 
   <!-- ===================== 开始菜单 ===================== -->
   <div id="start-menu" class="overlay hidden">
     <div class="menu-card">
-      <div class="menu-logo">⚔️</div>
-      <h1 class="menu-title">开放世界 RPG</h1>
-      <p class="menu-subtitle">新手村 · 野外 · 城市 — 打怪 · 爆装 · 合成</p>
+      <div class="menu-logo">🌍</div>
+      <h1 class="menu-title">无限世界 RPG</h1>
+      <p class="menu-subtitle">程序化生成 · 越深入越危险越富饶 · 打怪爆装 · 熔炉锻造</p>
       <div class="menu-stats" id="menu-save-info"></div>
       <button class="menu-btn primary" id="btn-start">▶ 进入世界</button>
       <button class="menu-btn" id="btn-reset-save">🗑 重置存档</button>
       <div class="menu-controls">
-        <div class="control-hint">操作：<b>WASD</b> 移动 · <b>鼠标</b> 视角 · <b>左键</b> 攻击 · <b>空格</b> 跳跃</div>
-        <div class="control-hint"><b>E</b> 交互 · <b>I</b> 背包 · <b>F</b> 熔炉(城镇内) · <b>ESC</b> 释放鼠标</div>
+        <div class="control-hint"><b>WASD</b> 移动 · <b>鼠标</b> 转视角 · <b>左键</b> 攻击 · <b>空格</b> 跳跃 · <b>Shift</b> 疾跑</div>
+        <div class="control-hint"><b>B</b> 背包 · <b>P</b> 人物 · <b>E</b> 交互 · <b>ESC</b> 释放鼠标</div>
       </div>
     </div>
   </div>
@@ -39,99 +37,84 @@
   <!-- ===================== 3D 画布 ===================== -->
   <canvas id="game-canvas"></canvas>
 
+  <!-- 怪物悬浮标签(名字/等级/血条) -->
+  <div id="monster-labels"></div>
+  <!-- 伤害飘字 -->
+  <div id="damage-numbers"></div>
+
   <!-- ===================== HUD ===================== -->
   <div id="hud" class="hidden">
-    <!-- 准星 -->
-    <div id="crosshair">+</div>
+    <div id="crosshair"><span></span><span></span></div>
 
     <!-- 左上：玩家状态 -->
     <div id="player-stats">
       <div class="stat-row">
         <span class="stat-label">Lv.<b id="hud-level">1</b></span>
-        <span class="stat-name" id="hud-zone">新手村</span>
+        <span class="biome-tag" id="hud-biome">🌱 草原</span>
       </div>
-      <div class="bar hp-bar">
-        <div class="bar-fill" id="hud-hp-fill"></div>
-        <span class="bar-text" id="hud-hp-text">100/100</span>
-      </div>
-      <div class="bar xp-bar">
-        <div class="bar-fill" id="hud-xp-fill"></div>
-        <span class="bar-text" id="hud-xp-text">0/100 XP</span>
-      </div>
+      <div class="bar hp-bar"><div class="bar-fill" id="hud-hp-fill"></div><span class="bar-text" id="hud-hp-text">100/100</span></div>
+      <div class="bar xp-bar"><div class="bar-fill" id="hud-xp-fill"></div><span class="bar-text" id="hud-xp-text">0/100</span></div>
       <div class="combat-stats">
         <span title="攻击力">⚔️ <b id="hud-atk">10</b></span>
         <span title="防御力">🛡️ <b id="hud-def">0</b></span>
         <span title="金币">🪙 <b id="hud-gold">0</b></span>
       </div>
+      <div class="depth-row">深度 <b id="hud-depth">0</b> m · 危险层 <b id="hud-tier">T1</b></div>
     </div>
 
-    <!-- 右上：小地图 / 区域指示 -->
-    <div id="minimap-wrap">
-      <canvas id="minimap" width="150" height="150"></canvas>
-    </div>
+    <!-- 右上：小地图 -->
+    <div id="minimap-wrap"><canvas id="minimap" width="160" height="160"></canvas></div>
 
-    <!-- 中下：交互提示 -->
+    <!-- 交互提示 -->
     <div id="interact-hint" class="hidden"></div>
 
-    <!-- 底部：快捷栏 -->
+    <!-- 底部快捷栏 -->
     <div id="hotbar">
-      <div class="hotbar-slot" data-slot="weapon"><span class="slot-key">武器</span><div class="slot-content" id="slot-weapon">—</div></div>
-      <div class="hotbar-slot" data-slot="armor"><span class="slot-key">护甲</span><div class="slot-content" id="slot-armor">—</div></div>
-      <div class="hotbar-btn" id="btn-open-bag"><span>🎒</span><small>I</small></div>
+      <div class="hotbar-slot"><span class="slot-key">武器</span><div class="slot-content" id="slot-weapon">—</div></div>
+      <div class="hotbar-slot"><span class="slot-key">战甲</span><div class="slot-content" id="slot-armor">—</div></div>
+      <div class="hotbar-btn" id="btn-open-bag"><span>🎒</span><small>B</small></div>
+      <div class="hotbar-btn" id="btn-open-char"><span>👤</span><small>P</small></div>
     </div>
-
-    <!-- 目标怪物血条 -->
-    <div id="target-hp" class="hidden">
-      <div class="target-name" id="target-name">怪物</div>
-      <div class="bar target-bar"><div class="bar-fill" id="target-hp-fill"></div></div>
-    </div>
-
-    <!-- 伤害飘字容器 -->
-    <div id="damage-numbers"></div>
   </div>
 
-  <!-- ===================== 背包 / 装备面板 ===================== -->
+  <!-- ===================== 背包 (B) ===================== -->
   <div id="bag-panel" class="panel-overlay hidden">
     <div class="panel-card">
-      <div class="panel-header">
-        <h2>🎒 背包与装备</h2>
-        <button class="panel-close" id="btn-bag-close">✕</button>
+      <div class="panel-header"><h2>🎒 背包</h2><button class="panel-close" id="btn-bag-close">✕</button></div>
+      <div class="bag-cats" id="bag-cats">
+        <button class="bag-cat active" data-cat="all">全部</button>
+        <button class="bag-cat" data-cat="equip">装备</button>
+        <button class="bag-cat" data-cat="material">材料</button>
+        <button class="bag-cat" data-cat="consumable">消耗</button>
       </div>
-      <div class="equip-section">
-        <div class="equip-slot" id="equip-weapon">
-          <div class="equip-label">⚔️ 武器</div>
-          <div class="equip-item empty" id="equip-weapon-item">空</div>
-        </div>
-        <div class="equip-slot" id="equip-armor">
-          <div class="equip-label">🛡️ 护甲</div>
-          <div class="equip-item empty" id="equip-armor-item">空</div>
-        </div>
-      </div>
-      <div class="bag-divider">背包物品</div>
       <div id="bag-grid" class="bag-grid"></div>
-      <div class="bag-tip">点击物品：装备 / 查看 · 右键或长按：丢弃</div>
+      <div class="bag-tip">点击装备穿戴 · 点击药水使用 · 右键丢弃</div>
     </div>
   </div>
 
-  <!-- ===================== 熔炉合成面板 ===================== -->
-  <div id="forge-panel" class="panel-overlay hidden">
-    <div class="panel-card">
-      <div class="panel-header">
-        <h2>🔥 熔炉 · 装备合成</h2>
-        <button class="panel-close" id="btn-forge-close">✕</button>
+  <!-- ===================== 人物面板 (P) ===================== -->
+  <div id="char-panel" class="panel-overlay hidden">
+    <div class="panel-card wide">
+      <div class="panel-header"><h2>👤 人物</h2><button class="panel-close" id="btn-char-close">✕</button></div>
+      <div class="char-body">
+        <!-- 左：6装备栏 + 角色预览 -->
+        <div class="char-left">
+          <div class="equip-slots">
+            <div class="eq-slot" data-slot="helmet"><div class="eq-icon">⛑️</div><div class="eq-info" id="eq-helmet">头盔</div></div>
+            <div class="eq-slot" data-slot="weapon"><div class="eq-icon">⚔️</div><div class="eq-info" id="eq-weapon">武器</div></div>
+            <div class="eq-slot" data-slot="armor"><div class="eq-icon">🛡️</div><div class="eq-info" id="eq-armor">战甲</div></div>
+            <div class="eq-slot" data-slot="cape"><div class="eq-icon">🧣</div><div class="eq-info" id="eq-cape">披风</div></div>
+            <div class="eq-slot" data-slot="boots"><div class="eq-icon">🥾</div><div class="eq-info" id="eq-boots">战靴</div></div>
+            <div class="eq-slot" data-slot="ring"><div class="eq-icon">💍</div><div class="eq-info" id="eq-ring">戒指</div></div>
+          </div>
+          <canvas id="char-preview" width="220" height="260"></canvas>
+        </div>
+        <!-- 右：完整属性栏 -->
+        <div class="char-right">
+          <h3>📊 属性总览</h3>
+          <div id="stat-list" class="stat-list"></div>
+        </div>
       </div>
-      <p class="forge-desc">放入 2 件<b>同类型</b>装备，熔炼出更强的装备。稀有度越高，成功强化越多。</p>
-      <div class="forge-slots">
-        <div class="forge-slot" id="forge-slot-0"><div class="forge-empty">+ 材料 1</div></div>
-        <div class="forge-plus">+</div>
-        <div class="forge-slot" id="forge-slot-1"><div class="forge-empty">+ 材料 2</div></div>
-        <div class="forge-eq">=</div>
-        <div class="forge-slot result" id="forge-result"><div class="forge-empty">?</div></div>
-      </div>
-      <div class="forge-cost" id="forge-cost"></div>
-      <button class="menu-btn primary" id="btn-forge-craft" disabled>🔥 开始熔炼</button>
-      <div class="bag-divider">选择材料（从背包）</div>
-      <div id="forge-bag-grid" class="bag-grid"></div>
     </div>
   </div>
 
@@ -140,21 +123,16 @@
     <div class="death-card">
       <div class="death-icon">💀</div>
       <h1 class="death-title">你被击败了</h1>
-      <p class="death-msg" id="death-msg">损失了一些金币，在新手村复活。</p>
-      <button class="menu-btn primary" id="btn-respawn">🕊 在新手村复活</button>
+      <p class="death-msg" id="death-msg"></p>
+      <button class="menu-btn primary" id="btn-respawn">🕊 返回出生点复活</button>
     </div>
   </div>
 
-  <!-- 物品详情 tooltip -->
   <div id="item-tooltip" class="hidden"></div>
-
-  <!-- toast 提示 -->
   <div id="toast" class="hidden"></div>
 </div>
 
-<!-- Three.js（跑在浏览器，GAS 仅托管页面） -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
 <?!= include('JS'); ?>
 </body>
 </html>
