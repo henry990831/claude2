@@ -1,0 +1,912 @@
+<script>
+/* ============================================================
+   开放世界 RPG — 核心逻辑 (Three.js, 第一人称)
+   区域: 新手村 → 野外(分层) → 城市
+   打怪爆装 · 熔炉合成 · 等级成长 · localStorage 存档
+   ============================================================ */
+'use strict';
+
+/* ---------------- 全局数据 ---------------- */
+const SAVE_KEY = 'rpg_save_v1';
+const RARITY = [
+  {key:'common',    name:'普通', mult:1.0,  cls:'common',    weight:50},
+  {key:'uncommon',  name:'精良', mult:1.35, cls:'uncommon',  weight:26},
+  {key:'rare',      name:'稀有', mult:1.8,  cls:'rare',      weight:14},
+  {key:'epic',      name:'史诗', mult:2.5,  cls:'epic',      weight:7},
+  {key:'legendary', name:'传说', mult:3.6,  cls:'legendary', weight:2.5},
+  {key:'mythic',    name:'神话', mult:5.5,  cls:'mythic',    weight:0.5},
+];
+const WEAPON_NAMES = ['短剑','长剑','战斧','法杖','巨锤','匕首','长枪','弯刀'];
+const ARMOR_NAMES  = ['皮甲','锁子甲','板甲','法袍','龙鳞甲','秘银甲','守护之铠','幽影斗篷'];
+const WEAPON_ICONS = ['🗡️','⚔️','🪓','🔮','🔨','🗡️','🔱','⚔️'];
+const ARMOR_ICONS  = ['🧥','🛡️','🎽','👘','🐉','✨','🛡️','🧣'];
+
+// 区域定义（按距村中心距离 & 玩家等级解锁）
+const ZONES = [
+  {key:'village', name:'新手村',   color:0x4a7c3a, safe:true,  minLvl:1,  monLvl:0},
+  {key:'plains',  name:'翠绿平原', color:0x5a8c4a, safe:false, minLvl:1,  monLvl:1},
+  {key:'forest',  name:'幽暗森林', color:0x2f5a35, safe:false, minLvl:5,  monLvl:6},
+  {key:'wasteland',name:'枯骨荒原',color:0x8a6a3a, safe:false, minLvl:12, monLvl:14},
+  {key:'city',    name:'王国之城', color:0x6a6a7a, safe:true,  minLvl:1,  monLvl:0},
+];
+// 怪物模板（按等级层级）
+const MONSTER_TYPES = [
+  {key:'slime',   name:'史莱姆', color:0x66dd88, tier:1,  size:0.9, icon:'🟢'},
+  {key:'rat',     name:'巨鼠',   color:0x9b7653, tier:1,  size:0.8, icon:'🐀'},
+  {key:'wolf',    name:'野狼',   color:0x8a8a8a, tier:2,  size:1.1, icon:'🐺'},
+  {key:'goblin',  name:'哥布林', color:0x77aa55, tier:2,  size:1.2, icon:'👺'},
+  {key:'bear',    name:'棕熊',   color:0x7a5230, tier:3,  size:1.6, icon:'🐻'},
+  {key:'skeleton',name:'骷髅兵', color:0xdddddd, tier:3,  size:1.3, icon:'💀'},
+  {key:'ogre',    name:'食人魔', color:0xaa6644, tier:4,  size:2.0, icon:'👹'},
+  {key:'demon',   name:'恶魔',   color:0xcc3355, tier:4,  size:1.8, icon:'😈'},
+];
+
+/* ---------------- 游戏状态 ---------------- */
+let G = null; // 存档数据
+function defaultSave(){
+  return {
+    level:1, xp:0, gold:0,
+    hp:100, maxHp:100,
+    baseAtk:10, baseDef:0,
+    equip:{weapon:null, armor:null},
+    bag:[],
+    unlockedZones:['village','plains','city'],
+    itemSeq:1,
+    kills:0,
+  };
+}
+function loadSave(){
+  try{ const s=JSON.parse(localStorage.getItem(SAVE_KEY)); if(s&&s.level){G=Object.assign(defaultSave(),s);return;} }catch(e){}
+  G=defaultSave();
+}
+function persist(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(G)); }catch(e){} }
+function resetSave(){ localStorage.removeItem(SAVE_KEY); G=defaultSave(); }
+
+/* ---------------- 派生属性 ---------------- */
+function xpForLevel(lv){ return Math.floor(80 * Math.pow(lv,1.5)); }
+function totalAtk(){ return G.baseAtk + (G.level-1)*2 + (G.equip.weapon?G.equip.weapon.atk:0); }
+function totalDef(){ return G.baseDef + (G.equip.armor?G.equip.armor.def:0); }
+function totalMaxHp(){ return 100 + (G.level-1)*15 + (G.equip.armor?G.equip.armor.hp:0); }
+
+/* ---------------- 物品生成 ---------------- */
+function rollRarity(luck=0){
+  const total = RARITY.reduce((s,r)=>s+r.weight,0);
+  let x = Math.random()*total;
+  for(const r of RARITY){ if(x<r.weight) return r; x-=r.weight; }
+  return RARITY[0];
+}
+function makeItem(type, lvl, rarityKey){
+  const rar = rarityKey ? RARITY.find(r=>r.key===rarityKey) : rollRarity();
+  const idx = Math.floor(Math.random()*WEAPON_NAMES.length);
+  const base = 4 + lvl*2.2;
+  const item = {
+    id: G.itemSeq++,
+    type, lvl,
+    rarity: rar.key,
+    rarityName: rar.name,
+    rarityCls: rar.cls,
+  };
+  if(type==='weapon'){
+    item.name = rar.name+WEAPON_NAMES[idx];
+    item.icon = WEAPON_ICONS[idx];
+    item.atk = Math.round(base*rar.mult);
+    item.def = 0; item.hp = 0;
+  }else{
+    item.name = rar.name+ARMOR_NAMES[idx];
+    item.icon = ARMOR_ICONS[idx];
+    item.def = Math.round((2+lvl*1.4)*rar.mult);
+    item.hp  = Math.round((10+lvl*4)*rar.mult);
+    item.atk = 0;
+  }
+  return item;
+}
+
+/* ============================================================
+   Three.js 场景
+   ============================================================ */
+let scene, camera, renderer, clock;
+let player = {
+  pos: new THREE.Vector3(0,1.7,0),
+  vel: new THREE.Vector3(),
+  yaw:0, pitch:0,
+  onGround:true,
+  height:1.7,
+};
+const keys = {};
+let monsters = [];   // {mesh, hp, maxHp, lvl, type, name, state, ...}
+let furnaces = [];   // 熔炉位置 THREE.Vector3
+let raycaster;
+let started=false, paused=true;
+let fallbackLook=false; // true = 指针锁定不可用（如 GAS iframe），改用拖拽转视角
+let lastAttack=0, lastMonHit=0;
+
+function look(mx,my){
+  player.yaw -= mx*0.0025;
+  player.pitch -= my*0.0025;
+  player.pitch=Math.max(-1.4,Math.min(1.4,player.pitch));
+}
+let targetMonster=null, targetTimer=0;
+
+function initThree(){
+  const canvas = document.getElementById('game-canvas');
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x87b4d8);
+  scene.fog = new THREE.Fog(0x87b4d8, 60, 260);
+
+  camera = new THREE.PerspectiveCamera(72, innerWidth/innerHeight, 0.1, 1000);
+
+  renderer = new THREE.WebGLRenderer({canvas, antialias:true});
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+  clock = new THREE.Clock();
+  raycaster = new THREE.Raycaster();
+
+  // 光照
+  const hemi = new THREE.HemisphereLight(0xbfd8ff, 0x556644, 0.9);
+  scene.add(hemi);
+  const sun = new THREE.DirectionalLight(0xffffff, 1.1);
+  sun.position.set(60,120,40);
+  sun.castShadow = true;
+  sun.shadow.mapSize.set(2048,2048);
+  sun.shadow.camera.near=1; sun.shadow.camera.far=400;
+  sun.shadow.camera.left=-200; sun.shadow.camera.right=200;
+  sun.shadow.camera.top=200; sun.shadow.camera.bottom=-200;
+  scene.add(sun);
+
+  buildWorld();
+  // 菜单背景视角（正式游戏开始后由 updatePlayer 接管）
+  camera.position.set(14,6,26);
+  camera.lookAt(0,2,-10);
+  addEventListeners();
+  updateHUD();
+  animate();
+}
+
+/* ---------------- 世界构建 ---------------- */
+function buildWorld(){
+  // 主地面
+  const groundMat = new THREE.MeshLambertMaterial({color:0x4a7c3a});
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(500,500,1,1), groundMat);
+  ground.rotation.x = -Math.PI/2;
+  ground.receiveShadow = true;
+  scene.add(ground);
+
+  // 区域地砖（视觉区分）
+  addZoneDisc(0,0,26, 0x6a9e54);       // 新手村
+  addZoneDisc(0,-70,40, 0x5a8c4a);     // 平原
+  addZoneDisc(0,-150,44, 0x2f5a35);    // 森林
+  addZoneDisc(90,-150,40, 0x8a6a3a);   // 荒原
+  addCityGround(120,60);               // 城市
+
+  // 新手村：栅栏 + 小屋 + 熔炉
+  buildVillage();
+  // 城市：高楼群 + 熔炉
+  buildCity(120,60);
+  // 散布树木/岩石点缀野外
+  scatterTrees();
+
+  // 出生点
+  player.pos.set(0,player.height,8);
+}
+
+function addZoneDisc(x,z,r,color){
+  const disc = new THREE.Mesh(
+    new THREE.CircleGeometry(r,48),
+    new THREE.MeshLambertMaterial({color})
+  );
+  disc.rotation.x=-Math.PI/2; disc.position.set(x,0.02,z);
+  disc.receiveShadow=true; scene.add(disc);
+}
+function addCityGround(x,z){
+  const g = new THREE.Mesh(new THREE.PlaneGeometry(70,70),
+    new THREE.MeshLambertMaterial({color:0x777788}));
+  g.rotation.x=-Math.PI/2; g.position.set(x,0.03,z); g.receiveShadow=true; scene.add(g);
+}
+
+function boxMesh(w,h,d,color,x,y,z){
+  const m = new THREE.Mesh(new THREE.BoxGeometry(w,h,d),
+    new THREE.MeshLambertMaterial({color}));
+  m.position.set(x,y,z); m.castShadow=true; m.receiveShadow=true; scene.add(m); return m;
+}
+
+function buildVillage(){
+  // 熔炉（石台 + 火焰方块）
+  const furnaceGrp = new THREE.Group();
+  const base = boxMesh(3,1.6,3,0x555555,0,0.8,-14); furnaceGrp.add(base);
+  const fire = new THREE.Mesh(new THREE.BoxGeometry(1.4,1.4,1.4),
+    new THREE.MeshBasicMaterial({color:0xff7722}));
+  fire.position.set(0,2.1,-14); scene.add(fire);
+  fire.userData.flicker=true; scene.add(furnaceGrp);
+  furnaces.push(new THREE.Vector3(0,0,-14));
+  scene._furnaceFire = scene._furnaceFire||[]; scene._furnaceFire.push(fire);
+
+  // 几间小屋
+  const huts=[[-12,0,-2],[-10,0,-14],[12,0,-4],[10,0,-16],[14,0,8]];
+  huts.forEach(([x,,z])=>{
+    boxMesh(5,4,5, 0xba8f5a, x,2,z);
+    const roof=new THREE.Mesh(new THREE.ConeGeometry(4,2.4,4),
+      new THREE.MeshLambertMaterial({color:0x8a4b2a}));
+    roof.position.set(x,5.2,z); roof.rotation.y=Math.PI/4; roof.castShadow=true; scene.add(roof);
+  });
+  // 村口牌坊
+  boxMesh(1,6,1,0x8a5a2a,-6,3,20); boxMesh(1,6,1,0x8a5a2a,6,3,20);
+  boxMesh(14,1.2,1,0x8a5a2a,0,6.4,20);
+}
+
+function buildCity(cx,cz){
+  // 熔炉
+  const fire = new THREE.Mesh(new THREE.BoxGeometry(1.6,1.6,1.6),
+    new THREE.MeshBasicMaterial({color:0xff8833}));
+  boxMesh(3.4,1.8,3.4,0x444455,cx,0.9,cz+8);
+  fire.position.set(cx,2.3,cz+8); scene.add(fire);
+  scene._furnaceFire.push(fire);
+  furnaces.push(new THREE.Vector3(cx,0,cz+8));
+  // 高楼群
+  const cols=[0xaab,0x99a,0x8899aa,0x778,0x99aabb];
+  for(let i=0;i<14;i++){
+    const bx = cx + (Math.random()-0.5)*56;
+    const bz = cz + (Math.random()-0.5)*56;
+    if(Math.abs(bx-cx)<6 && Math.abs(bz-(cz+8))<6) continue;
+    const h = 8+Math.random()*22;
+    const b = boxMesh(5+Math.random()*4,h,5+Math.random()*4,
+      cols[i%cols.length], bx,h/2,bz);
+    b.userData.solid=true;
+  }
+}
+
+function scatterTrees(){
+  for(let i=0;i<120;i++){
+    const ang=Math.random()*Math.PI*2, dist=30+Math.random()*180;
+    const x=Math.cos(ang)*dist, z=-40+Math.sin(ang)*dist*0.9;
+    if(Math.abs(x-120)<40 && Math.abs(z-60)<40) continue; // 避开城市
+    if(Math.hypot(x,z)<24) continue; // 避开村中心
+    const trunk=boxMesh(0.6,3,0.6,0x5a3a1a,x,1.5,z);
+    const leaf=new THREE.Mesh(new THREE.ConeGeometry(2,4,7),
+      new THREE.MeshLambertMaterial({color:0x2f6a2f}));
+    leaf.position.set(x,5,z); leaf.castShadow=true; scene.add(leaf);
+  }
+}
+
+/* ---------------- 区域判定 ---------------- */
+function currentZone(){
+  const p=player.pos;
+  if(Math.hypot(p.x-120,p.z-60) < 40) return ZONES.find(z=>z.key==='city');
+  const d = Math.hypot(p.x,p.z);
+  if(d < 24) return ZONES.find(z=>z.key==='village');
+  // 按 z 深度分层野外
+  if(p.z < -110 && p.x > 55) return ZONES.find(z=>z.key==='wasteland');
+  if(p.z < -110) return ZONES.find(z=>z.key==='forest');
+  return ZONES.find(z=>z.key==='plains');
+}
+function nearFurnace(){
+  return furnaces.some(f=>f.distanceTo(player.pos) < 5);
+}
+
+/* ============================================================
+   怪物系统
+   ============================================================ */
+function spawnMonster(zone){
+  const tierMax = zone.key==='forest'?3 : zone.key==='wasteland'?4 : 2;
+  const pool = MONSTER_TYPES.filter(m=>m.tier<=tierMax);
+  const t = pool[Math.floor(Math.random()*pool.length)];
+  const lvl = Math.max(1, zone.monLvl + Math.floor((Math.random()-0.3)*3));
+
+  const grp = new THREE.Group();
+  const body = new THREE.Mesh(new THREE.BoxGeometry(t.size,t.size,t.size),
+    new THREE.MeshLambertMaterial({color:t.color}));
+  body.position.y=t.size/2; body.castShadow=true; grp.add(body);
+  // 眼睛
+  const eyeMat=new THREE.MeshBasicMaterial({color:0x000000});
+  [-.22,.22].forEach(dx=>{
+    const e=new THREE.Mesh(new THREE.SphereGeometry(t.size*0.09,8,8),eyeMat);
+    e.position.set(dx*t.size, t.size*0.7, t.size*0.5); grp.add(e);
+  });
+
+  // 在区域内随机位置
+  let sx,sz;
+  if(zone.key==='city'){ sx=120+(Math.random()-.5)*40; sz=60+(Math.random()-.5)*40; }
+  else if(zone.key==='wasteland'){ sx=90+(Math.random()-.5)*60; sz=-150+(Math.random()-.5)*60; }
+  else if(zone.key==='forest'){ sx=(Math.random()-.5)*70; sz=-150+(Math.random()-.5)*60; }
+  else { sx=(Math.random()-.5)*70; sz=-70+(Math.random()-.5)*70; }
+  grp.position.set(sx, 0, sz);
+  scene.add(grp);
+
+  const maxHp = Math.round(28 * Math.pow(1.28, lvl) * t.size);
+  const m = {
+    grp, body, type:t, name:t.name, lvl,
+    hp:maxHp, maxHp,
+    atk: Math.round(6*Math.pow(1.22,lvl)),
+    xp: Math.round(14*Math.pow(1.2,lvl)),
+    gold: Math.round(3+lvl*2*Math.random()+lvl),
+    speed: 2.2 + t.tier*0.35,
+    state:'wander', wanderDir:Math.random()*Math.PI*2, wanderT:0,
+    home:new THREE.Vector3(sx,0,sz), hitFlash:0,
+  };
+  monsters.push(m);
+  return m;
+}
+
+function maintainMonsters(){
+  const zone = currentZone();
+  const cap = zone.safe ? 0 : 10;
+  // 清理太远的怪
+  monsters = monsters.filter(m=>{
+    if(m.grp.position.distanceTo(player.pos) > 220){ scene.remove(m.grp); return false; }
+    return true;
+  });
+  if(zone.safe) return;
+  const near = monsters.filter(m=>m.grp.position.distanceTo(player.pos)<120).length;
+  if(near < cap && Math.random()<0.04){ spawnMonster(zone); }
+}
+
+function updateMonsters(dt){
+  for(let i=monsters.length-1;i>=0;i--){
+    const m=monsters[i];
+    const toPlayer = new THREE.Vector3().subVectors(player.pos,m.grp.position);
+    toPlayer.y=0; const dist=toPlayer.length();
+
+    if(m.hitFlash>0){ m.hitFlash-=dt; m.body.material.emissive = new THREE.Color(m.hitFlash>0?0x882222:0x000000); }
+
+    // AI
+    if(dist<16){ m.state='chase'; }
+    else if(dist>26){ m.state='wander'; }
+
+    if(m.state==='chase'){
+      toPlayer.normalize();
+      m.grp.position.addScaledVector(toPlayer, m.speed*dt);
+      m.grp.lookAt(player.pos.x, m.grp.position.y, player.pos.z);
+      // 攻击玩家
+      if(dist<2.2 && performance.now()-lastMonHit>900){
+        lastMonHit=performance.now();
+        const dmg=Math.max(1, m.atk - Math.floor(totalDef()*0.6));
+        damagePlayer(dmg);
+      }
+    }else{
+      // 游荡
+      m.wanderT-=dt;
+      if(m.wanderT<=0){ m.wanderDir=Math.random()*Math.PI*2; m.wanderT=1.5+Math.random()*2; }
+      const dir=new THREE.Vector3(Math.cos(m.wanderDir),0,Math.sin(m.wanderDir));
+      // 回家倾向
+      const toHome=new THREE.Vector3().subVectors(m.home,m.grp.position); toHome.y=0;
+      if(toHome.length()>18) dir.copy(toHome.normalize());
+      m.grp.position.addScaledVector(dir, m.speed*0.4*dt);
+      m.grp.lookAt(m.grp.position.x+dir.x, m.grp.position.y, m.grp.position.z+dir.z);
+    }
+    // 轻微上下浮动
+    m.body.position.y = m.type.size/2 + Math.sin(performance.now()*0.004+i)*0.08;
+  }
+}
+
+/* ---------------- 战斗 ---------------- */
+function attack(){
+  if(performance.now()-lastAttack < 420) return;
+  lastAttack=performance.now();
+  // 从屏幕中心发射
+  raycaster.setFromCamera({x:0,y:0}, camera);
+  const bodies = monsters.map(m=>m.body);
+  const hits = raycaster.intersectObjects(bodies, false);
+  let hitM=null, hitDist=Infinity;
+  if(hits.length){
+    const b=hits[0].object;
+    hitM = monsters.find(m=>m.body===b);
+    hitDist = hits[0].distance;
+  }
+  // 近战范围也可命中最近的怪
+  if(!hitM){
+    let best=Infinity;
+    monsters.forEach(m=>{
+      const d=m.grp.position.distanceTo(player.pos);
+      if(d<3.2 && d<best){ best=d; hitM=m; hitDist=d; }
+    });
+  }
+  if(!hitM || hitDist>6){ swingFx(); return; }
+  swingFx();
+  const crit = Math.random()<0.18;
+  let dmg = totalAtk()*(0.85+Math.random()*0.3);
+  if(crit) dmg*=2;
+  dmg=Math.max(1,Math.round(dmg));
+  hitM.hp-=dmg;
+  hitM.hitFlash=0.18;
+  showDamage(dmg, crit, hitM);
+  setTarget(hitM);
+  if(hitM.hp<=0) killMonster(hitM);
+}
+
+function killMonster(m){
+  scene.remove(m.grp);
+  monsters = monsters.filter(x=>x!==m);
+  if(targetMonster===m){ targetMonster=null; document.getElementById('target-hp').classList.add('hidden'); }
+  // 奖励
+  G.kills++;
+  G.gold += m.gold;
+  gainXp(m.xp);
+  // 掉落装备（概率随等级/tier 提升）
+  const dropChance = 0.45 + m.type.tier*0.08;
+  if(Math.random()<dropChance){
+    const type = Math.random()<0.5?'weapon':'armor';
+    const item = makeItem(type, m.lvl);
+    addToBag(item);
+    toast(`⚔️ ${m.name} 掉落 <span class="r-${item.rarityCls}">${item.name}</span>！`);
+  }else{
+    toast(`击败 ${m.name}！ +${m.xp} XP · +${m.gold} 🪙`);
+  }
+  persist(); updateHUD();
+}
+
+function damagePlayer(dmg){
+  G.hp -= dmg;
+  showPlayerHurt(dmg);
+  flashScreen();
+  if(G.hp<=0){ G.hp=0; playerDie(); }
+  updateHUD();
+}
+function playerDie(){
+  paused=true; document.exitPointerLock&&document.exitPointerLock();
+  const lost=Math.floor(G.gold*0.2);
+  G.gold-=lost;
+  document.getElementById('death-msg').innerHTML=`损失了 <b>${lost}</b> 🪙，在新手村复活。`;
+  document.getElementById('death-screen').classList.remove('hidden');
+  persist();
+}
+function respawn(){
+  G.hp=totalMaxHp();
+  player.pos.set(0,player.height,8);
+  player.vel.set(0,0,0);
+  document.getElementById('death-screen').classList.add('hidden');
+  updateHUD(); persist();
+  resumeGame();
+}
+
+function gainXp(amt){
+  G.xp+=amt;
+  while(G.xp >= xpForLevel(G.level)){
+    G.xp-=xpForLevel(G.level);
+    G.level++;
+    G.maxHp=totalMaxHp(); G.hp=G.maxHp;
+    toast(`🎉 升到 Lv.${G.level}！属性提升，生命回满`);
+    checkZoneUnlock();
+  }
+}
+function checkZoneUnlock(){
+  ZONES.forEach(z=>{
+    if(!G.unlockedZones.includes(z.key) && G.level>=z.minLvl){
+      G.unlockedZones.push(z.key);
+      toast(`🗺️ 解锁新区域：${z.name}！`);
+    }
+  });
+}
+
+/* ============================================================
+   背包 / 装备
+   ============================================================ */
+function addToBag(item){
+  if(G.bag.length>=40){ toast('背包已满！'); return false; }
+  G.bag.push(item); persist(); return true;
+}
+function equipItem(item){
+  const slot=item.type;
+  const old=G.equip[slot];
+  G.equip[slot]=item;
+  G.bag=G.bag.filter(i=>i.id!==item.id);
+  if(old) G.bag.push(old);
+  G.maxHp=totalMaxHp();
+  if(G.hp>G.maxHp)G.hp=G.maxHp;
+  persist(); updateHUD(); renderBag();
+  toast(`已装备 <span class="r-${item.rarityCls}">${item.name}</span>`);
+}
+function dropItem(item){
+  G.bag=G.bag.filter(i=>i.id!==item.id);
+  persist(); renderBag(); toast('已丢弃物品');
+}
+
+function rarityRank(k){ return RARITY.findIndex(r=>r.key===k); }
+
+function renderBag(){
+  // 装备槽
+  const w=G.equip.weapon, a=G.equip.armor;
+  const we=document.getElementById('equip-weapon-item');
+  const ae=document.getElementById('equip-armor-item');
+  if(w){ we.className='equip-item r-'+w.rarityCls; we.innerHTML=`${w.icon} ${w.name}<small>⚔️+${w.atk} · Lv.${w.lvl}</small>`; we.onclick=()=>showItemInfo(w); }
+  else { we.className='equip-item empty'; we.textContent='空'; we.onclick=null; }
+  if(a){ ae.className='equip-item r-'+a.rarityCls; ae.innerHTML=`${a.icon} ${a.name}<small>🛡️+${a.def} ❤️+${a.hp} · Lv.${a.lvl}</small>`; ae.onclick=()=>showItemInfo(a); }
+  else { ae.className='equip-item empty'; ae.textContent='空'; ae.onclick=null; }
+
+  const grid=document.getElementById('bag-grid');
+  grid.innerHTML='';
+  if(!G.bag.length){ grid.innerHTML='<div class="bag-empty-tip">背包空空如也，去野外打怪吧！</div>'; return; }
+  G.bag.slice().sort((x,y)=>rarityRank(y.rarity)-rarityRank(x.rarity)).forEach(item=>{
+    const el=document.createElement('div');
+    el.className='bag-item b-'+item.rarityCls;
+    el.innerHTML=`<span class="item-lvl">Lv${item.lvl}</span><div class="item-icon">${item.icon}</div><div class="item-name r-${item.rarityCls}">${item.name}</div>`;
+    el.onclick=()=>equipItem(item);
+    el.oncontextmenu=(e)=>{e.preventDefault();dropItem(item);};
+    el.onmouseenter=(e)=>showTooltip(item,e);
+    el.onmousemove=(e)=>moveTooltip(e);
+    el.onmouseleave=hideTooltip;
+    grid.appendChild(el);
+  });
+}
+
+function showTooltip(item,e){
+  const tt=document.getElementById('item-tooltip');
+  let stats = item.type==='weapon'
+    ? `<div class="tt-stat">⚔️ 攻击 +${item.atk}</div>`
+    : `<div class="tt-stat">🛡️ 防御 +${item.def}</div><div class="tt-stat">❤️ 生命 +${item.hp}</div>`;
+  tt.innerHTML=`<div class="tt-name r-${item.rarityCls}">${item.icon} ${item.name}</div>
+    <div class="tt-type">${item.rarityName} · ${item.type==='weapon'?'武器':'护甲'} · Lv.${item.lvl}</div>${stats}
+    <div class="tt-type" style="margin-top:6px">点击装备 · 右键丢弃</div>`;
+  tt.classList.remove('hidden'); moveTooltip(e);
+}
+function moveTooltip(e){ const tt=document.getElementById('item-tooltip');
+  tt.style.left=Math.min(e.clientX+14,innerWidth-250)+'px'; tt.style.top=(e.clientY+14)+'px'; }
+function hideTooltip(){ document.getElementById('item-tooltip').classList.add('hidden'); }
+function showItemInfo(item){ toast(`<span class="r-${item.rarityCls}">${item.name}</span> ${item.type==='weapon'?'⚔️+'+item.atk:'🛡️+'+item.def+' ❤️+'+item.hp}`); }
+
+/* ============================================================
+   熔炉合成
+   ============================================================ */
+let forgeSlots=[null,null];
+function openForge(){
+  if(!nearFurnace()){ toast('需要靠近熔炉（新手村 / 城市）'); return; }
+  paused=true; document.exitPointerLock&&document.exitPointerLock();
+  forgeSlots=[null,null];
+  document.getElementById('forge-panel').classList.remove('hidden');
+  renderForge();
+}
+function closeForge(){ document.getElementById('forge-panel').classList.add('hidden'); resumeGame(); }
+
+function forgePreview(){
+  const [a,b]=forgeSlots;
+  if(!a||!b) return null;
+  if(a.type!==b.type) return {error:'两件材料类型必须相同'};
+  // 结果：更高等级 + 稀有度可能提升
+  const higher = a.lvl>=b.lvl?a:b;
+  const newLvl = higher.lvl + 1 + Math.floor((a.lvl+b.lvl)/8);
+  let rank = Math.max(rarityRank(a.rarity), rarityRank(b.rarity));
+  // 同稀有度合成有几率升阶
+  if(a.rarity===b.rarity && Math.random()<0.6 && rank<RARITY.length-1) rank++;
+  const result = makeItem(a.type, newLvl, RARITY[rank].key);
+  return {result};
+}
+function forgeCost(){ const [a,b]=forgeSlots; if(!a||!b)return 0;
+  return 20 + (a.lvl+b.lvl)*6; }
+
+function renderForge(){
+  [0,1].forEach(i=>{
+    const el=document.getElementById('forge-slot-'+i);
+    const it=forgeSlots[i];
+    if(it){ el.className='forge-slot filled'; el.innerHTML=`<div class="item-icon">${it.icon}</div><div class="item-name r-${it.rarityCls}">${it.name}</div>`;
+      el.onclick=()=>{forgeSlots[i]=null;renderForge();}; }
+    else { el.className='forge-slot'; el.innerHTML='<div class="forge-empty">+ 材料 '+(i+1)+'</div>'; el.onclick=null; }
+  });
+  const res=document.getElementById('forge-result');
+  const prev=forgePreview();
+  const btn=document.getElementById('btn-forge-craft');
+  const costEl=document.getElementById('forge-cost');
+  if(prev&&prev.result){
+    const r=prev.result;
+    res.className='forge-slot result filled';
+    res.innerHTML=`<div class="item-icon">${r.icon}</div><div class="item-name r-${r.rarityCls}">${r.name}</div>`;
+    const cost=forgeCost();
+    costEl.innerHTML=`熔炼花费 <b>${cost}</b> 🪙　预览：<span class="r-${r.rarityCls}">${r.rarityName} Lv.${r.lvl}</span>`;
+    btn.disabled = G.gold<cost;
+    G._forgePreview=r;
+  }else if(prev&&prev.error){
+    res.className='forge-slot result'; res.innerHTML='<div class="forge-empty">✕</div>';
+    costEl.innerHTML=`<span style="color:#ef4444">${prev.error}</span>`; btn.disabled=true;
+  }else{
+    res.className='forge-slot result'; res.innerHTML='<div class="forge-empty">?</div>';
+    costEl.innerHTML=''; btn.disabled=true;
+  }
+  // 背包材料
+  const grid=document.getElementById('forge-bag-grid');
+  grid.innerHTML='';
+  const used=forgeSlots.filter(Boolean).map(i=>i.id);
+  const avail=G.bag.filter(i=>!used.includes(i.id));
+  if(!avail.length){ grid.innerHTML='<div class="bag-empty-tip">背包没有可熔炼的装备</div>'; return; }
+  avail.sort((x,y)=>rarityRank(y.rarity)-rarityRank(x.rarity)).forEach(item=>{
+    const el=document.createElement('div');
+    el.className='bag-item b-'+item.rarityCls;
+    el.innerHTML=`<span class="item-lvl">Lv${item.lvl}</span><div class="item-icon">${item.icon}</div><div class="item-name r-${item.rarityCls}">${item.name}</div>`;
+    el.onclick=()=>{ const slot=forgeSlots[0]?(forgeSlots[1]?null:1):0; if(slot===null){toast('材料槽已满');return;} forgeSlots[slot]=item; renderForge(); };
+    grid.appendChild(el);
+  });
+}
+function doCraft(){
+  const [a,b]=forgeSlots;
+  const prev=forgePreview();
+  if(!prev||!prev.result) return;
+  const cost=forgeCost();
+  if(G.gold<cost){ toast('金币不足'); return; }
+  G.gold-=cost;
+  // 用固定结果（已预览）
+  const result=G._forgePreview;
+  G.bag=G.bag.filter(i=>i.id!==a.id && i.id!==b.id);
+  G.bag.push(result);
+  forgeSlots=[null,null];
+  persist(); updateHUD(); renderForge();
+  toast(`🔥 熔炼成功！获得 <span class="r-${result.rarityCls}">${result.name}</span>`);
+}
+
+/* ============================================================
+   UI / HUD
+   ============================================================ */
+function updateHUD(){
+  G.maxHp=totalMaxHp();
+  document.getElementById('hud-level').textContent=G.level;
+  document.getElementById('hud-zone').textContent=currentZone().name;
+  const hpPct=Math.max(0,G.hp/G.maxHp*100);
+  document.getElementById('hud-hp-fill').style.width=hpPct+'%';
+  document.getElementById('hud-hp-text').textContent=`${Math.max(0,Math.round(G.hp))}/${G.maxHp}`;
+  const need=xpForLevel(G.level);
+  document.getElementById('hud-xp-fill').style.width=(G.xp/need*100)+'%';
+  document.getElementById('hud-xp-text').textContent=`${G.xp}/${need} XP`;
+  document.getElementById('hud-atk').textContent=totalAtk();
+  document.getElementById('hud-def').textContent=totalDef();
+  document.getElementById('hud-gold').textContent=G.gold;
+  const w=G.equip.weapon,a=G.equip.armor;
+  document.getElementById('slot-weapon').innerHTML=w?`<span class="r-${w.rarityCls}">${w.icon}${w.name}</span>`:'—';
+  document.getElementById('slot-armor').innerHTML=a?`<span class="r-${a.rarityCls}">${a.icon}${a.name}</span>`:'—';
+}
+
+function setTarget(m){ targetMonster=m; targetTimer=3; updateTargetBar(); }
+function updateTargetBar(){
+  const el=document.getElementById('target-hp');
+  if(!targetMonster||targetMonster.hp<=0){ el.classList.add('hidden'); return; }
+  el.classList.remove('hidden');
+  document.getElementById('target-name').textContent=`${targetMonster.name} Lv.${targetMonster.lvl}`;
+  document.getElementById('target-hp-fill').style.width=Math.max(0,targetMonster.hp/targetMonster.maxHp*100)+'%';
+}
+
+function showDamage(dmg,crit,m){
+  const v=m.grp.position.clone(); v.y+=m.type.size+0.5;
+  v.project(camera);
+  const x=(v.x*0.5+0.5)*innerWidth, y=(-v.y*0.5+0.5)*innerHeight;
+  const el=document.createElement('div');
+  el.className='dmg-num'+(crit?' crit':'');
+  el.textContent=(crit?'暴击 ':'')+dmg;
+  el.style.left=x+'px'; el.style.top=y+'px';
+  document.getElementById('damage-numbers').appendChild(el);
+  setTimeout(()=>el.remove(),1000);
+}
+function showPlayerHurt(dmg){
+  const el=document.createElement('div');
+  el.className='dmg-num player-hurt';
+  el.textContent='-'+dmg;
+  el.style.left=(innerWidth/2+ (Math.random()-.5)*80)+'px';
+  el.style.top=(innerHeight/2+60)+'px';
+  document.getElementById('damage-numbers').appendChild(el);
+  setTimeout(()=>el.remove(),1000);
+}
+let screenFlash=0;
+function flashScreen(){ screenFlash=0.4; }
+function swingFx(){ /* 简单准星脉冲 */ const c=document.getElementById('crosshair'); c.style.transform='translate(-50%,-50%) scale(1.6)'; setTimeout(()=>c.style.transform='translate(-50%,-50%) scale(1)',90); }
+
+let toastTimer;
+function toast(html){
+  const t=document.getElementById('toast');
+  t.innerHTML=html; t.classList.remove('hidden');
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.add('hidden'),2600);
+}
+
+/* ---------------- 小地图 ---------------- */
+function drawMinimap(){
+  const c=document.getElementById('minimap'); const ctx=c.getContext('2d');
+  const S=150, cx=S/2, cy=S/2, scale=0.32;
+  ctx.clearRect(0,0,S,S);
+  ctx.fillStyle='rgba(20,28,44,.85)'; ctx.fillRect(0,0,S,S);
+  // 区域点
+  const zonesPos=[[0,0,'#6a9e54'],[0,-70,'#5a8c4a'],[0,-150,'#2f5a35'],[90,-150,'#8a6a3a'],[120,60,'#8899aa']];
+  zonesPos.forEach(([zx,zz,col])=>{
+    const dx=(zx-player.pos.x)*scale, dz=(zz-player.pos.z)*scale;
+    ctx.fillStyle=col; ctx.beginPath(); ctx.arc(cx+dx,cy+dz,7,0,7); ctx.fill();
+  });
+  // 怪物
+  ctx.fillStyle='#ef4444';
+  monsters.forEach(m=>{
+    const dx=(m.grp.position.x-player.pos.x)*scale, dz=(m.grp.position.z-player.pos.z)*scale;
+    if(Math.abs(dx)<cx&&Math.abs(dz)<cy){ ctx.fillRect(cx+dx-1.5,cy+dz-1.5,3,3); }
+  });
+  // 玩家（中心+朝向）
+  ctx.save(); ctx.translate(cx,cy); ctx.rotate(player.yaw);
+  ctx.fillStyle='#f59e0b'; ctx.beginPath();
+  ctx.moveTo(0,-6); ctx.lineTo(4,5); ctx.lineTo(-4,5); ctx.closePath(); ctx.fill();
+  ctx.restore();
+}
+
+/* ============================================================
+   控制 / 输入
+   ============================================================ */
+function addEventListeners(){
+  addEventListener('resize',()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
+  addEventListener('keydown',e=>{
+    keys[e.code]=true;
+    if(e.code==='KeyI'){ toggleBag(); }
+    if(e.code==='KeyF'){ if(document.getElementById('forge-panel').classList.contains('hidden')) openForge(); else closeForge(); }
+    if(e.code==='KeyE'){ interact(); }
+    if(e.code==='Escape'){ /* 浏览器自动释放指针 */ }
+  });
+  addEventListener('keyup',e=>{ keys[e.code]=false; });
+
+  const canvas=document.getElementById('game-canvas');
+  // 尝试指针锁定（首选 FPS 体验）
+  canvas.addEventListener('click',()=>{ if(started && document.pointerLockElement!==canvas && !anyPanelOpen() && !fallbackLook){ requestPointerLock(); } });
+
+  // 鼠标按下：记录用于区分“点击攻击”和“拖拽转视角”（拖拽是 GAS iframe 内指针锁定被禁用时的后备方案）
+  let downX=0,downY=0,downT=0,dragging=false;
+  canvas.addEventListener('mousedown',e=>{
+    if(anyPanelOpen()) return;
+    if(document.pointerLockElement){ if(e.button===0) attack(); return; }
+    // 后备：记录起点
+    if(e.button===0){ dragging=true; downX=e.clientX; downY=e.clientY; downT=performance.now(); moved=0; }
+  });
+  let moved=0;
+  document.addEventListener('mousemove',e=>{
+    if(document.pointerLockElement){
+      look(e.movementX, e.movementY);
+    }else if(dragging){
+      fallbackLook=true;               // 一旦拖拽成功，说明指针锁定不可用，切到后备模式
+      look(e.movementX||0, e.movementY||0);
+      moved += Math.abs(e.movementX||0)+Math.abs(e.movementY||0);
+    }
+  });
+  document.addEventListener('mouseup',e=>{
+    if(!document.pointerLockElement && dragging){
+      dragging=false;
+      // 位移很小且很快 => 视为一次攻击
+      if(moved<6 && performance.now()-downT<250 && started && !anyPanelOpen()){ attack(); }
+    }
+  });
+  document.addEventListener('pointerlockchange',()=>{
+    if(document.pointerLockElement===null && !fallbackLook){ paused=true; }
+    else if(document.pointerLockElement){ paused=false; }
+  });
+
+  // 按钮
+  document.getElementById('btn-start').onclick=startGame;
+  document.getElementById('btn-reset-save').onclick=()=>{ if(confirm('确定重置存档？')){ resetSave(); refreshMenu(); } };
+  document.getElementById('btn-respawn').onclick=respawn;
+  document.getElementById('btn-bag-close').onclick=toggleBag;
+  document.getElementById('btn-open-bag').onclick=toggleBag;
+  document.getElementById('btn-forge-close').onclick=closeForge;
+  document.getElementById('btn-forge-craft').onclick=doCraft;
+}
+function anyPanelOpen(){
+  return !document.getElementById('bag-panel').classList.contains('hidden')
+      || !document.getElementById('forge-panel').classList.contains('hidden')
+      || !document.getElementById('death-screen').classList.contains('hidden');
+}
+function requestPointerLock(){ const c=document.getElementById('game-canvas'); c.requestPointerLock&&c.requestPointerLock(); }
+// 恢复游戏：指针锁定模式下请求锁定（事件会解除暂停）；后备模式下直接解除暂停
+function resumeGame(){ if(!started)return; hideTooltip(); if(fallbackLook){ paused=false; } else { paused=false; requestPointerLock(); } }
+
+function toggleBag(){
+  const p=document.getElementById('bag-panel');
+  if(p.classList.contains('hidden')){ p.classList.remove('hidden'); renderBag(); paused=true; document.exitPointerLock&&document.exitPointerLock(); }
+  else { p.classList.add('hidden'); hideTooltip(); resumeGame(); }
+}
+function interact(){
+  if(nearFurnace()){ openForge(); return; }
+}
+
+/* ---------------- 移动 / 物理 ---------------- */
+function updatePlayer(dt){
+  if(paused) return;
+  const speed = (keys['ShiftLeft']?9:5.5);
+  const forward=new THREE.Vector3(-Math.sin(player.yaw),0,-Math.cos(player.yaw));
+  const right=new THREE.Vector3(Math.cos(player.yaw),0,-Math.sin(player.yaw));
+  const move=new THREE.Vector3();
+  if(keys['KeyW'])move.add(forward);
+  if(keys['KeyS'])move.sub(forward);
+  if(keys['KeyD'])move.add(right);
+  if(keys['KeyA'])move.sub(right);
+  if(move.lengthSq()>0){ move.normalize(); player.pos.addScaledVector(move, speed*dt); }
+  // 跳跃 / 重力
+  if(keys['Space'] && player.onGround){ player.vel.y=6.5; player.onGround=false; }
+  player.vel.y-=18*dt;
+  player.pos.y+=player.vel.y*dt;
+  if(player.pos.y<=player.height){ player.pos.y=player.height; player.vel.y=0; player.onGround=true; }
+  // 世界边界
+  const R=240;
+  player.pos.x=Math.max(-R,Math.min(R,player.pos.x));
+  player.pos.z=Math.max(-R,Math.min(R,player.pos.z));
+
+  // 相机
+  camera.position.copy(player.pos);
+  const dir=new THREE.Vector3(
+    -Math.sin(player.yaw)*Math.cos(player.pitch),
+    Math.sin(player.pitch),
+    -Math.cos(player.yaw)*Math.cos(player.pitch)
+  );
+  camera.lookAt(camera.position.clone().add(dir));
+
+  // 安全区回血
+  if(currentZone().safe && G.hp<G.maxHp){ G.hp=Math.min(G.maxHp,G.hp+8*dt); }
+}
+
+/* ---------------- 交互提示 ---------------- */
+let lastZoneName='';
+function updateHints(){
+  const hint=document.getElementById('interact-hint');
+  if(nearFurnace() && !anyPanelOpen()){ hint.classList.remove('hidden'); hint.innerHTML='按 <b>E</b> 或 <b>F</b> 打开熔炉'; }
+  else hint.classList.add('hidden');
+  const zn=currentZone().name;
+  if(zn!==lastZoneName){ lastZoneName=zn; if(started) toast('🗺️ 进入 '+zn); }
+}
+
+/* ============================================================
+   主循环
+   ============================================================ */
+let hudTick=0, saveTick=0;
+function animate(){
+  requestAnimationFrame(animate);
+  const dt=Math.min(clock.getDelta(),0.05);
+
+  // 熔炉火焰闪烁
+  if(scene._furnaceFire){ scene._furnaceFire.forEach(f=>{ f.material.color.setHSL(0.06+Math.random()*0.03,1,0.55); f.rotation.y+=dt; }); }
+
+  if(started && !paused){
+    updatePlayer(dt);
+    updateMonsters(dt);
+    maintainMonsters();
+    // 目标血条计时
+    if(targetMonster){ targetTimer-=dt; updateTargetBar(); if(targetTimer<=0)targetMonster=null; }
+    // 屏幕受伤闪红
+    if(screenFlash>0){ screenFlash-=dt; document.body.style.boxShadow=`inset 0 0 ${120*screenFlash}px rgba(239,68,68,${screenFlash})`; }
+    else document.body.style.boxShadow='none';
+
+    hudTick+=dt; if(hudTick>0.15){ hudTick=0; updateHUD(); drawMinimap(); updateHints(); }
+    saveTick+=dt; if(saveTick>8){ saveTick=0; persist(); }
+  }
+  renderer.render(scene,camera);
+}
+
+/* ============================================================
+   启动流程
+   ============================================================ */
+function startGame(){
+  document.getElementById('start-menu').classList.add('hidden');
+  document.getElementById('hud').classList.remove('hidden');
+  started=true; paused=false;
+  G.hp=totalMaxHp();
+  updateHUD();
+  requestPointerLock();
+  toast('🗺️ 欢迎来到新手村！去村外打怪吧（若鼠标未锁定，按住左键拖动可转视角）');
+}
+function refreshMenu(){
+  const info=document.getElementById('menu-save-info');
+  const w=G.equip.weapon,a=G.equip.armor;
+  info.innerHTML = `等级 <b>Lv.${G.level}</b>　金币 <b>${G.gold}</b> 🪙　击杀 <b>${G.kills}</b><br>
+    武器：${w?`<span class="r-${w.rarityCls}">${w.name}</span>`:'无'}　护甲：${a?`<span class="r-${a.rarityCls}">${a.name}</span>`:'无'}<br>
+    背包物品：${G.bag.length} 件`;
+}
+
+function boot(){
+  loadSave();
+  // 假加载进度
+  let p=0; const bar=document.getElementById('loading-bar'), txt=document.getElementById('loading-text');
+  const steps=['初始化世界...','生成新手村...','铸造熔炉...','唤醒怪物...','准备就绪！'];
+  const iv=setInterval(()=>{
+    p+=20; bar.style.width=p+'%'; txt.textContent=steps[Math.min(steps.length-1,p/20-1)]||'加载中...';
+    if(p>=100){
+      clearInterval(iv);
+      setTimeout(()=>{
+        document.getElementById('loading-screen').classList.add('hidden');
+        document.getElementById('start-menu').classList.remove('hidden');
+        refreshMenu();
+      },300);
+    }
+  },220);
+
+  if(typeof THREE==='undefined'){
+    txt.textContent='Three.js 加载失败，请检查网络';
+    return;
+  }
+  initThree();
+}
+
+window.addEventListener('load', boot);
+</script>
