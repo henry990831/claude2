@@ -1,0 +1,397 @@
+// ============================================================
+//  无限世界 RPG — GitHub Pages 版 (真实 3D)
+//  真实 GLTF 模型 + PBR + IBL环境光 + 阴影 + 泛光后处理 + 昼夜
+// ============================================================
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+const $ = id => document.getElementById(id);
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const lerp=(a,b,t)=>a+(b-a)*t;
+
+// ---------------- 噪声地形 ----------------
+function hash(x,z){ const n=Math.sin(x*127.1+z*311.7)*43758.5453; return n-Math.floor(n); }
+function vnoise(x,z){ const xi=Math.floor(x),zi=Math.floor(z),xf=x-xi,zf=z-zi;
+  const a=hash(xi,zi),b=hash(xi+1,zi),c=hash(xi,zi+1),d=hash(xi+1,zi+1);
+  const u=xf*xf*(3-2*xf),v=zf*zf*(3-2*zf);
+  return a*(1-u)*(1-v)+b*u*(1-v)+c*(1-u)*v+d*u*v; }
+function terrainH(x,z){
+  let h=(vnoise(x*0.018,z*0.018)-0.5)*18 + (vnoise(x*0.06,z*0.06)-0.5)*4.5 + (vnoise(x*0.15,z*0.15)-0.5)*1.2;
+  const d=Math.hypot(x,z); if(d<26) h*=clamp((d-6)/20,0,1); // 出生点压平
+  return h;
+}
+
+// ---------------- 全局 ----------------
+let scene,camera,renderer,composer,clock,raycaster;
+let sun,hemi,sky,skyMat,stars,pmrem;
+const WORLD=420, PR=0.55;
+const player={x:0,y:2,z:6,vy:0,yaw:0,pitch:0,onGround:true,eye:1.7};
+const keys={};
+let colliders=[];
+let started=false,paused=true,pointerLocked=false;
+let lastMX=innerWidth/2,lastMY=innerHeight/2,mouseX=innerWidth/2,mouseY=innerHeight/2;
+let lastAttack=0,lastMobHit=0,gameTime=480,timeStr='08:00';
+
+// 玩家数值
+const G={level:1,xp:0,gold:0,hp:120,maxHp:120,atk:12,def:2,kills:0};
+function xpNeed(l){ return Math.floor(80*Math.pow(l,1.5)); }
+
+// ---------------- 渲染管线 ----------------
+function initRenderer(){
+  const canvas=$('game-canvas');
+  renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'});
+  renderer.setSize(innerWidth,innerHeight);
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+  renderer.outputColorSpace=THREE.SRGBColorSpace;
+  renderer.toneMapping=THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure=1.0;
+
+  scene=new THREE.Scene();
+  scene.fog=new THREE.FogExp2(0xbcd4ee,0.0075);
+
+  camera=new THREE.PerspectiveCamera(72,innerWidth/innerHeight,0.05,1200);
+  camera.position.set(player.x,3,player.z);
+  clock=new THREE.Clock(); raycaster=new THREE.Raycaster();
+
+  // 环境光照(IBL) — 让 PBR 材质有真实反射
+  pmrem=new THREE.PMREMGenerator(renderer);
+  scene.environment=pmrem.fromScene(new RoomEnvironment(),0.04).texture;
+
+  // 天空球(渐变)
+  const skyGeo=new THREE.SphereGeometry(600,32,16);
+  skyMat=new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,
+    uniforms:{top:{value:new THREE.Color(0x2f6fc4)},bot:{value:new THREE.Color(0xcfe6ff)}},
+    vertexShader:'varying vec3 vp;void main(){vp=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
+    fragmentShader:'varying vec3 vp;uniform vec3 top;uniform vec3 bot;void main(){float h=normalize(vp).y*0.5+0.5;gl_FragColor=vec4(mix(bot,top,pow(h,0.65)),1.0);}'});
+  sky=new THREE.Mesh(skyGeo,skyMat); scene.add(sky);
+
+  // 星空
+  const sg=new THREE.BufferGeometry(),arr=[];
+  for(let i=0;i<700;i++){const th=Math.random()*6.28,ph=Math.acos(Math.random());const r=560;arr.push(r*Math.sin(ph)*Math.cos(th),r*Math.cos(ph)+30,r*Math.sin(ph)*Math.sin(th));}
+  sg.setAttribute('position',new THREE.Float32BufferAttribute(arr,3));
+  stars=new THREE.Points(sg,new THREE.PointsMaterial({color:0xffffff,size:1.6,sizeAttenuation:false,transparent:true,opacity:0,depthWrite:false}));
+  scene.add(stars);
+
+  // 光照
+  hemi=new THREE.HemisphereLight(0xbfe0ff,0x55603f,0.5); scene.add(hemi);
+  sun=new THREE.DirectionalLight(0xfff1d0,2.4);
+  sun.position.set(60,120,40); sun.castShadow=true;
+  sun.shadow.mapSize.set(2048,2048);
+  sun.shadow.camera.near=1; sun.shadow.camera.far=400;
+  sun.shadow.camera.left=-90; sun.shadow.camera.right=90; sun.shadow.camera.top=90; sun.shadow.camera.bottom=-90;
+  sun.shadow.bias=-0.0003; sun.shadow.normalBias=0.03;
+  scene.add(sun); scene.add(sun.target);
+
+  // 后处理：泛光
+  composer=new EffectComposer(renderer);
+  composer.addPass(new RenderPass(scene,camera));
+  const bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0.5,0.6,0.85);
+  composer.addPass(bloom);
+  composer.addPass(new OutputPass()); // 正确的色调映射/色彩空间输出
+
+  addEventListener('resize',()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); composer.setSize(innerWidth,innerHeight); });
+}
+
+
+// ---------------- 程序化贴图 ----------------
+function grassTexture(){
+  const c=document.createElement('canvas'); c.width=c.height=256; const x=c.getContext('2d');
+  x.fillStyle='#4f8a3f'; x.fillRect(0,0,256,256);
+  for(let i=0;i<9000;i++){ const g=90+Math.random()*90; x.fillStyle=`rgba(${40+Math.random()*40},${g},${40+Math.random()*30},.5)`; const s=1+Math.random()*2.5; x.fillRect(Math.random()*256,Math.random()*256,s,s); }
+  const t=new THREE.CanvasTexture(c); t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(WORLD/6,WORLD/6); t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=4; return t;
+}
+
+// ---------------- 地形 ----------------
+function buildTerrain(){
+  const seg=200;
+  const geo=new THREE.PlaneGeometry(WORLD,WORLD,seg,seg); geo.rotateX(-Math.PI/2);
+  const pos=geo.attributes.position, cols=[];
+  const cGrass=new THREE.Color(0x4f8a3f),cDark=new THREE.Color(0x3a6a2e),cRock=new THREE.Color(0x7d7266),cSnow=new THREE.Color(0xeef4f7);
+  for(let i=0;i<pos.count;i++){
+    const wx=pos.getX(i),wz=pos.getZ(i),h=terrainH(wx,wz); pos.setY(i,h);
+    let c=cGrass.clone().lerp(cDark,clamp((0.5-vnoise(wx*0.05,wz*0.05)),0,1)*0.6);
+    if(h>10) c.lerp(cRock,clamp((h-10)/8,0,1)); if(h>17) c.lerp(cSnow,clamp((h-17)/6,0,1));
+    cols.push(c.r,c.g,c.b);
+  }
+  geo.setAttribute('color',new THREE.Float32BufferAttribute(cols,3)); geo.computeVertexNormals();
+  const mat=new THREE.MeshStandardMaterial({map:grassTexture(),vertexColors:true,roughness:0.95,metalness:0.0});
+  const mesh=new THREE.Mesh(geo,mat); mesh.receiveShadow=true; scene.add(mesh);
+}
+
+// ---------------- 树木 / 岩石 ----------------
+const barkMat=()=>new THREE.MeshStandardMaterial({color:0x5c3a1e,roughness:0.9,metalness:0});
+function leafMat(c){ return new THREE.MeshStandardMaterial({color:c,roughness:0.85,metalness:0,flatShading:true}); }
+function makeTree(x,z){
+  const g=new THREE.Group(); const h=terrainH(x,z); const th=3+Math.random()*2.5;
+  const trunk=new THREE.Mesh(new THREE.CylinderGeometry(0.28,0.42,th,8),barkMat()); trunk.position.y=th/2; trunk.castShadow=true; g.add(trunk);
+  const col=new THREE.Color().setHSL(0.28+Math.random()*0.06,0.5,0.32+Math.random()*0.1).getHex();
+  const puffs=[[0,th+0.5,0,1.9],[-1.1,th+0.1,0.4,1.3],[1.0,th+0.2,-0.3,1.35],[0.2,th+1.5,0.1,1.25]];
+  puffs.forEach(([px,py,pz,r])=>{ const m=new THREE.Mesh(new THREE.IcosahedronGeometry(r,1),leafMat(col)); m.position.set(px,py,pz); m.scale.y=0.92; m.castShadow=true; g.add(m); });
+  g.position.set(x,h,z); g.rotation.y=Math.random()*6.28; scene.add(g);
+  colliders.push({x,z,r:0.8});
+}
+function makeRock(x,z){
+  const h=terrainH(x,z); const s=0.8+Math.random()*1.6;
+  const m=new THREE.Mesh(new THREE.DodecahedronGeometry(s,0),new THREE.MeshStandardMaterial({color:0x8a8378,roughness:1,metalness:0,flatShading:true}));
+  m.position.set(x,h+s*0.4,z); m.rotation.set(Math.random()*3,Math.random()*3,Math.random()*3); m.castShadow=true; m.receiveShadow=true; scene.add(m);
+  colliders.push({x,z,r:s*0.9});
+}
+function scatterWorld(){
+  for(let i=0;i<180;i++){ const a=Math.random()*6.28,d=18+Math.random()*(WORLD/2-30); const x=Math.cos(a)*d,z=Math.sin(a)*d; if(Math.hypot(x,z)<16)continue; if(Math.random()<0.7) makeTree(x,z); else makeRock(x,z); }
+}
+
+
+// ============================================================
+//  怪物：真实动画 GLTF 模型 (RobotExpressive)
+// ============================================================
+const MODEL_URL='https://cdn.jsdelivr.net/gh/mrdoob/three.js@r160/examples/models/gltf/RobotExpressive/RobotExpressive.glb';
+let monsterBase=null, baseScale=1;
+let enemies=[];
+
+function loadMonsterModel(){
+  return new Promise(res=>{
+    const loader=new GLTFLoader();
+    loader.load(MODEL_URL, gltf=>{
+      gltf.scene.traverse(o=>{ if(o.isMesh){ o.castShadow=true; o.receiveShadow=true; if(o.material)o.material.envMapIntensity=0.8; } });
+      const box=new THREE.Box3().setFromObject(gltf.scene); const sz=box.getSize(new THREE.Vector3());
+      baseScale=2.0/(sz.y||2);
+      monsterBase={scene:gltf.scene,animations:gltf.animations};
+      res(true);
+    }, undefined, err=>{ console.warn('模型加载失败，使用回退',err); monsterBase=null; res(false); });
+  });
+}
+function findClip(anims,names){ for(const n of names){ const c=anims.find(a=>a.name===n); if(c)return c; } return anims[0]; }
+
+function makeFallbackEnemy(color){
+  const g=new THREE.Group(); const m=new THREE.MeshStandardMaterial({color,roughness:0.6,metalness:0.1});
+  const body=new THREE.Mesh(new THREE.CapsuleGeometry(0.5,1.0,6,12),m); body.position.y=1.0; body.castShadow=true; g.add(body);
+  const head=new THREE.Mesh(new THREE.SphereGeometry(0.42,16,14),m); head.position.y=2.0; head.castShadow=true; g.add(head);
+  return {group:g,anim:false};
+}
+function makeEnemyMesh(){
+  if(monsterBase){
+    const g=SkeletonUtils.clone(monsterBase.scene); g.scale.setScalar(baseScale);
+    const mixer=new THREE.AnimationMixer(g);
+    const A={};
+    ['Idle','Walking','Running','Death','Punch','Jump'].forEach(n=>{ const c=findClip(monsterBase.animations,[n]); if(c)A[n]=mixer.clipAction(c); });
+    return {group:g,anim:true,mixer,actions:A};
+  }
+  return makeFallbackEnemy(0x8899aa);
+}
+function playAction(e,name){
+  if(!e.anim||!e.actions[name]||e.cur===name)return;
+  const next=e.actions[name]; if(!next)return;
+  if(name==='Death'){ next.setLoop(THREE.LoopOnce,1); next.clampWhenFinished=true; }
+  next.reset().fadeIn(0.2).play();
+  if(e.curAction) e.curAction.fadeOut(0.2);
+  e.curAction=next; e.cur=name;
+}
+function spawnEnemy(){
+  if(enemies.length>=8)return;
+  const a=Math.random()*6.28,d=26+Math.random()*70; const x=player.x+Math.cos(a)*d,z=player.z+Math.sin(a)*d;
+  if(Math.abs(x)>WORLD/2-4||Math.abs(z)>WORLD/2-4)return; if(Math.hypot(x,z)<16)return;
+  const lvl=Math.max(1,Math.round(1+Math.hypot(x,z)/40));
+  let variant='normal',sc=1,hpM=1,lootM=1; const r=Math.random();
+  if(r<0.08){variant='boss';sc=1.7;hpM=4;lootM=3;} else if(r<0.26){variant='elite';sc=1.28;hpM=2;lootM=1.7;}
+  const em=makeEnemyMesh(); const g=em.group; g.scale.multiplyScalar(sc);
+  g.position.set(x,terrainH(x,z),z); scene.add(g);
+  if(variant!=='normal'){ g.traverse(o=>{ if(o.isMesh&&o.material){ o.material=o.material.clone(); o.material.emissive=new THREE.Color(variant==='boss'?0xff2200:0xffaa00); o.material.emissiveIntensity=0.5; } }); }
+  const hp=Math.round(40*Math.pow(1.25,lvl)*sc*hpM);
+  const e={...em,variant,lvl,hp,maxHp:hp,atk:Math.round(6*Math.pow(1.18,lvl)*(variant==='boss'?1.5:1)),
+    xp:Math.round(16*Math.pow(1.18,lvl)*(variant==='boss'?3:variant==='elite'?1.6:1)),
+    gold:Math.round((3+lvl*2)*(variant==='boss'?4:1)),lootM,
+    speed:2.2+Math.random()*1.0,state:'idle',wt:0,wdir:Math.random()*6.28,home:new THREE.Vector3(x,0,z),
+    dead:false,deadT:0,name:(variant==='boss'?'⭐首领':variant==='elite'?'✦精英':'机械兽'),label:makeLabel(variant)};
+  g.userData.eref=e; playAction(e,'Idle'); enemies.push(e);
+}
+function makeLabel(v){ const d=document.createElement('div'); d.className='mlabel'; d.innerHTML='<div class="mn"><span class="nm"></span> <span class="lv"></span></div><div class="hpb"><div></div></div>'; if(v!=='normal')d.querySelector('.mn').style.color=v==='boss'?'#ef4444':'#fbbf24'; $('labels').appendChild(d); return d; }
+function removeEnemy(e,i){ scene.remove(e.group); if(e.label)e.label.remove(); enemies.splice(i,1); }
+
+function updateEnemies(dt){
+  for(let i=enemies.length-1;i>=0;i--){ const e=enemies[i]; if(e.mixer)e.mixer.update(dt);
+    if(e.dead){ e.deadT-=dt; if(e.deadT<=0)removeEnemy(e,i); else updateLabel(e,true); continue; }
+    const dx=player.x-e.group.position.x,dz=player.z-e.group.position.z,dist=Math.hypot(dx,dz);
+    if(dist>150){ removeEnemy(e,i); continue; }
+    if(dist<13){ // 追击
+      const nx=dx/dist,nz=dz/dist;
+      if(dist>2.3){ e.group.position.x+=nx*e.speed*dt; e.group.position.z+=nz*e.speed*dt; playAction(e, e.speed>2.8?'Running':'Walking'); }
+      else { playAction(e,'Punch'); if(performance.now()-lastMobHit>1000){ lastMobHit=performance.now(); hitPlayer(e); } }
+      e.group.rotation.y=Math.atan2(nx,nz);
+    } else { // 游荡
+      e.wt-=dt; if(e.wt<=0){ e.wdir=Math.random()*6.28; e.wt=2+Math.random()*3; e.moving=Math.random()<0.6; }
+      if(e.moving){ const dxr=Math.cos(e.wdir),dzr=Math.sin(e.wdir); e.group.position.x+=dxr*e.speed*0.4*dt; e.group.position.z+=dzr*e.speed*0.4*dt; e.group.rotation.y=Math.atan2(dxr,dzr); playAction(e,'Walking'); }
+      else playAction(e,'Idle');
+    }
+    e.group.position.y=terrainH(e.group.position.x,e.group.position.z);
+    updateLabel(e,false);
+  }
+}
+function updateLabel(e,dead){
+  const v=new THREE.Vector3(e.group.position.x,e.group.position.y+2.6,e.group.position.z).project(camera);
+  if(v.z>1||dead&&e.deadT<1||v.x<-1.1||v.x>1.1||v.y<-1.1||v.y>1.1){ e.label.style.display='none'; return; }
+  e.label.style.display='block'; e.label.style.left=((v.x*0.5+0.5)*innerWidth)+'px'; e.label.style.top=((-v.y*0.5+0.5)*innerHeight)+'px';
+  e.label.querySelector('.nm').textContent=e.name; e.label.querySelector('.lv').textContent='Lv.'+e.lvl; e.label.querySelector('.hpb>div').style.width=Math.max(0,e.hp/e.maxHp*100)+'%';
+}
+
+
+// ============================================================
+//  第一人称武器视图（PBR 金属）
+// ============================================================
+let vmGroup,vmArm,vmSwing=0;
+function buildViewModel(){
+  vmGroup=new THREE.Group(); camera.add(vmGroup); scene.add(camera);
+  vmArm=new THREE.Group();
+  const steel=new THREE.MeshStandardMaterial({color:0xd8dde6,metalness:0.95,roughness:0.22});
+  const gold=new THREE.MeshStandardMaterial({color:0xd9a441,metalness:1.0,roughness:0.3});
+  const grip=new THREE.MeshStandardMaterial({color:0x3a2416,metalness:0.1,roughness:0.9});
+  const handle=new THREE.Mesh(new THREE.CylinderGeometry(0.035,0.04,0.26,10),grip); handle.rotation.x=Math.PI/2; handle.position.set(0,0,-0.7); vmArm.add(handle);
+  const pommel=new THREE.Mesh(new THREE.SphereGeometry(0.05,12,12),gold); pommel.position.set(0,0,-0.83); vmArm.add(pommel);
+  const guard=new THREE.Mesh(new THREE.BoxGeometry(0.26,0.06,0.08),gold); guard.position.set(0,0,-0.56); vmArm.add(guard);
+  const blade=new THREE.Mesh(new THREE.BoxGeometry(0.07,0.02,0.85),steel); blade.position.set(0,0,-1.0); vmArm.add(blade);
+  const tip=new THREE.Mesh(new THREE.ConeGeometry(0.05,0.16,4),steel); tip.rotation.x=-Math.PI/2; tip.position.set(0,0,-1.5); vmArm.add(tip);
+  vmArm.position.set(0.28,-0.26,-0.25); vmArm.rotation.set(0.06,-0.12,0.05);
+  vmGroup.add(vmArm);
+}
+
+// ============================================================
+//  控制 / 相机
+// ============================================================
+function look(mx,my){ player.yaw-=mx*0.0022; player.pitch=clamp(player.pitch-my*0.0022,-1.45,1.45); }
+function requestLock(){ const c=$('game-canvas'); if(c.requestPointerLock)c.requestPointerLock(); }
+function addControls(){
+  addEventListener('keydown',e=>{ keys[e.code]=true; });
+  addEventListener('keyup',e=>{ keys[e.code]=false; });
+  const canvas=$('game-canvas');
+  canvas.addEventListener('mousedown',e=>{ if(!started)return; if(e.button===0)attack(); if(!pointerLocked)requestLock(); });
+  addEventListener('mousemove',e=>{ if(!started||paused)return;
+    if(pointerLocked){ look(e.movementX,e.movementY); }
+    else { const dx=clamp(e.clientX-lastMX,-60,60),dy=clamp(e.clientY-lastMY,-60,60); look(dx,dy); lastMX=e.clientX; lastMY=e.clientY; }
+  });
+  document.addEventListener('pointerlockchange',()=>{ pointerLocked=!!document.pointerLockElement; paused=!pointerLocked; if(!pointerLocked)$('hint').textContent='点击画面继续（ESC 释放鼠标）'; else $('hint').textContent='WASD 移动 · 鼠标 转视角 · 左键 攻击 · 空格 跳'; });
+  $('start').addEventListener('click',startGame);
+}
+
+function updatePlayer(dt){
+  if(paused)return;
+  const spd=(keys['ShiftLeft']?9:5.5);
+  const fx=-Math.sin(player.yaw),fz=-Math.cos(player.yaw),rx=Math.cos(player.yaw),rz=-Math.sin(player.yaw);
+  let mx=0,mz=0;
+  if(keys['KeyW']){mx+=fx;mz+=fz;} if(keys['KeyS']){mx-=fx;mz-=fz;} if(keys['KeyD']){mx+=rx;mz+=rz;} if(keys['KeyA']){mx-=rx;mz-=rz;}
+  const ml=Math.hypot(mx,mz); if(ml>0){ mx/=ml;mz/=ml; player.x+=mx*spd*dt; player.z+=mz*spd*dt; }
+  // 碰撞
+  for(let i=0;i<colliders.length;i++){ const c=colliders[i]; const dx=player.x-c.x; if(dx>5||dx<-5)continue; const dz=player.z-c.z; if(dz>5||dz<-5)continue; const d=Math.hypot(dx,dz),min=c.r+PR; if(d<min&&d>0.001){ const p=(min-d)/d; player.x+=dx*p; player.z+=dz*p; } }
+  player.x=clamp(player.x,-WORLD/2+2,WORLD/2-2); player.z=clamp(player.z,-WORLD/2+2,WORLD/2-2);
+  // 地形贴合 + 跳跃
+  const gY=terrainH(player.x,player.z)+player.eye;
+  if(keys['Space']&&player.onGround){ player.vy=6.4; player.onGround=false; }
+  player.vy-=19*dt; player.y+=player.vy*dt;
+  if(player.y<=gY){ player.y=gY; player.vy=0; player.onGround=true; }
+  camera.position.set(player.x,player.y,player.z);
+  const dir=new THREE.Vector3(-Math.sin(player.yaw)*Math.cos(player.pitch),Math.sin(player.pitch),-Math.cos(player.yaw)*Math.cos(player.pitch));
+  camera.lookAt(camera.position.clone().add(dir));
+  if(G.hp<G.maxHp) G.hp=Math.min(G.maxHp,G.hp+3*dt);
+}
+
+
+// ============================================================
+//  战斗 / 成长
+// ============================================================
+function findEnemyFromObj(o){ while(o){ if(o.userData&&o.userData.eref)return o.userData.eref; o=o.parent; } return null; }
+function attack(){
+  const cd=380; if(performance.now()-lastAttack<cd)return; lastAttack=performance.now(); vmSwing=1;
+  const cr=$('crosshair'); cr.style.transform='translate(-50%,-50%) scale(1.7)'; setTimeout(()=>cr.style.transform='translate(-50%,-50%) scale(1)',90);
+  raycaster.setFromCamera({x:0,y:0},camera);
+  const live=enemies.filter(e=>!e.dead);
+  let target=null,hd=Infinity;
+  const hits=raycaster.intersectObjects(live.map(e=>e.group),true);
+  if(hits.length){ target=findEnemyFromObj(hits[0].object); hd=hits[0].distance; }
+  if(!target){ let best=Infinity; live.forEach(e=>{ const d=Math.hypot(player.x-e.group.position.x,player.z-e.group.position.z); if(d<3.6&&d<best){best=d;target=e;hd=d;} }); }
+  if(!target||hd>7)return;
+  const gap=G.level-target.lvl, mul=clamp(1+gap*0.06,0.2,2);
+  const crit=Math.random()<0.2; let dmg=G.atk*(0.85+Math.random()*0.3)*mul; if(crit)dmg*=2; dmg=Math.max(1,Math.round(dmg));
+  target.hp-=dmg; floatDmg(dmg,crit,target.group.position);
+  if(target.hp<=0) killEnemy(target);
+}
+function killEnemy(e){
+  e.dead=true; e.deadT=2.0; if(e.label)e.label.style.display='none';
+  if(e.anim){ playAction(e,'Death'); } else { e.group.rotation.z=Math.PI/2; }
+  G.kills++; G.gold+=e.gold; gainXp(e.xp);
+  if(Math.random()<0.5+ (e.lootM-1)*0.2) toast(`击败 ${e.name}！+${e.xp} XP · +${e.gold} 🪙 · 掉落装备`);
+  else toast(`击败 ${e.name}！+${e.xp} XP · +${e.gold} 🪙`);
+  updateHUD();
+}
+function hitPlayer(e){
+  const gap=G.level-e.lvl, mul=clamp(1-gap*0.05,0.3,2.4);
+  const dmg=Math.max(1,Math.round((e.atk-G.def*0.5)*mul)); G.hp-=dmg; hurtDmg(dmg); flash();
+  if(G.hp<=0){ G.hp=G.maxHp; player.x=0; player.z=6; player.vy=0; G.gold=Math.floor(G.gold*0.85); toast('💀 你被击败了，在出生点复活'); }
+  updateHUD();
+}
+function gainXp(a){ G.xp+=a; while(G.xp>=xpNeed(G.level)){ G.xp-=xpNeed(G.level); G.level++; G.maxHp+=18; G.atk+=3; G.def+=1; G.hp=G.maxHp; toast(`🎉 升级到 Lv.${G.level}！攻击/防御/生命提升`); } updateHUD(); }
+
+// 特效
+function floatDmg(d,crit,pos){ const v=new THREE.Vector3(pos.x,pos.y+2.4,pos.z).project(camera); if(v.z>1)return; const el=document.createElement('div'); el.className='dn'+(crit?' crit':''); el.textContent=(crit?'暴击 ':'')+d; el.style.left=((v.x*.5+.5)*innerWidth)+'px'; el.style.top=((-v.y*.5+.5)*innerHeight)+'px'; $('dmg').appendChild(el); setTimeout(()=>el.remove(),1000); }
+function hurtDmg(d){ const el=document.createElement('div'); el.className='dn hurt'; el.textContent='-'+d; el.style.left=(innerWidth/2+(Math.random()-.5)*80)+'px'; el.style.top=(innerHeight/2+60)+'px'; $('dmg').appendChild(el); setTimeout(()=>el.remove(),1000); }
+let flashT=0; function flash(){ flashT=0.4; }
+let toastTimer; function toast(t){ const el=$('toast'); el.textContent=t; el.classList.remove('hidden'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.classList.add('hidden'),2600); }
+
+// HUD
+function updateHUD(){
+  $('lvl').textContent=G.level; $('hpf').style.width=clamp(G.hp/G.maxHp*100,0,100)+'%'; $('hpt').textContent=Math.max(0,Math.round(G.hp))+'/'+G.maxHp;
+  const need=xpNeed(G.level); $('xpf').style.width=(G.xp/need*100)+'%'; $('xpt').textContent=G.xp+'/'+need;
+  $('atk').textContent=G.atk; $('def').textContent=G.def; $('gold').textContent=G.gold;
+  const t=Math.floor(Math.hypot(player.x,player.z)/60)+1; $('zone').textContent='🌍 旷野 · 危险T'+t;
+}
+
+// ============================================================
+//  昼夜
+// ============================================================
+function updateDayNight(dt){
+  gameTime=(gameTime+dt*0.5)%1440; const f=gameTime/1440, el=Math.sin((f-0.25)*Math.PI*2), day=clamp(el*1.4+0.35,0,1);
+  const az=(f-0.25)*Math.PI*2;
+  sun.position.set(player.x+Math.cos(az)*120,20+el*150,player.z+Math.sin(az)*90); sun.target.position.set(player.x,0,player.z);
+  sun.intensity=0.15+Math.max(0,el)*2.6; hemi.intensity=0.1+day*0.5; renderer.toneMappingExposure=0.65+day*0.5;
+  const dayTop=new THREE.Color(0x2f6fc4),dayBot=new THREE.Color(0xcfe6ff),nightTop=new THREE.Color(0x060a1a),nightBot=new THREE.Color(0x141d38),duskTop=new THREE.Color(0x33305e),duskBot=new THREE.Color(0xff9450);
+  const dusk=clamp(1-Math.abs(el)*3,0,1);
+  const top=nightTop.clone().lerp(dayTop,day).lerp(duskTop,dusk*0.5), bot=nightBot.clone().lerp(dayBot,day).lerp(duskBot,dusk*0.55);
+  skyMat.uniforms.top.value.copy(top); skyMat.uniforms.bot.value.copy(bot); scene.fog.color.copy(bot);
+  stars.material.opacity=clamp(1-day*1.6,0,1); stars.position.set(player.x,0,player.z); sky.position.set(player.x,player.y,player.z);
+  const hh=String(Math.floor(gameTime/60)).padStart(2,'0'),mm=String(Math.floor(gameTime%60)).padStart(2,'0'); timeStr=hh+':'+mm; $('clock').textContent='🕐 '+timeStr;
+}
+
+// ============================================================
+//  主循环 / 启动
+// ============================================================
+let spawnT=0;
+function animate(){
+  requestAnimationFrame(animate); const dt=Math.min(clock.getDelta(),0.05);
+  updateDayNight(dt);
+  if(vmSwing>0){ vmSwing-=dt*4; if(vmArm)vmArm.rotation.x=0.06-Math.sin(Math.max(0,vmSwing)*Math.PI)*1.2; } else if(vmArm)vmArm.rotation.x=0.06;
+  if(started&&!paused){
+    updatePlayer(dt); updateEnemies(dt);
+    spawnT+=dt; if(spawnT>1.4){ spawnT=0; spawnEnemy(); }
+    if(flashT>0){ flashT-=dt; document.body.style.boxShadow=`inset 0 0 ${160*flashT}px rgba(239,68,68,${flashT})`; } else document.body.style.boxShadow='none';
+  } else { enemies.forEach(e=>{ if(e.mixer)e.mixer.update(dt); updateLabel(e,e.dead); }); }
+  composer.render();
+}
+function startGame(){ $('start').classList.add('hidden'); $('hud').classList.remove('hidden'); started=true; paused=false; player.y=terrainH(player.x,player.z)+player.eye; updateHUD(); requestLock(); }
+
+async function boot(){
+  const bar=$('lbar'),txt=$('ltext');
+  try{
+    txt.textContent='初始化渲染引擎...'; bar.style.width='20%'; initRenderer();
+    txt.textContent='生成地形与植被...'; bar.style.width='45%'; buildTerrain(); scatterWorld(); buildViewModel(); addControls();
+    animate();
+    txt.textContent='加载 3D 模型...'; bar.style.width='70%';
+    await loadMonsterModel();
+    bar.style.width='100%'; txt.textContent=monsterBase?'准备就绪！':'模型加载失败，使用简易怪物';
+    setTimeout(()=>{ $('loading').classList.add('hidden'); $('start').classList.remove('hidden'); },400);
+  }catch(err){ txt.textContent='出错: '+err.message; console.error(err); }
+}
+boot();
