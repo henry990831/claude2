@@ -15,6 +15,7 @@ import { Sky } from 'three/addons/objects/Sky.js';
 const $ = id => document.getElementById(id);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const lerp=(a,b,t)=>a+(b-a)*t;
+const choice=a=>a[Math.floor(Math.random()*a.length)];
 
 // ---------------- 噪声地形 ----------------
 function hash(x,z){ const n=Math.sin(x*127.1+z*311.7)*43758.5453; return n-Math.floor(n); }
@@ -35,6 +36,7 @@ const WORLD=420, PR=0.55;
 const player={x:0,y:2,z:6,vy:0,yaw:0,pitch:0,onGround:true,eye:1.7};
 const keys={};
 let colliders=[];
+let water=null; const WATER_Y=-2.6; let wildlife=[];
 let started=false,paused=true,pointerLocked=false;
 let lastMX=innerWidth/2,lastMY=innerHeight/2,mouseX=innerWidth/2,mouseY=innerHeight/2;
 let lastAttack=0,lastMobHit=0,gameTime=480,timeStr='08:00';
@@ -149,22 +151,65 @@ function makeRock(x,z){
   m.position.set(x,h+s*0.4,z); m.rotation.set(Math.random()*3,Math.random()*3,Math.random()*3); m.castShadow=true; m.receiveShadow=true; scene.add(m);
   colliders.push({x,z,r:s*0.9});
 }
+// 松树(针叶)
+function makePine(x,z){ const g=new THREE.Group(); const h=terrainH(x,z); const th=5+Math.random()*4;
+  const trunk=new THREE.Mesh(new THREE.CylinderGeometry(0.22,0.4,th,8),barkMat()); trunk.position.y=th/2; trunk.castShadow=true; g.add(trunk);
+  const col=new THREE.Color().setHSL(0.33+Math.random()*0.04,0.45,0.22+Math.random()*0.06).getHex(); const layers=4+Math.floor(Math.random()*3);
+  for(let i=0;i<layers;i++){ const r=2.6*(1-i/layers)+0.5; const cone=new THREE.Mesh(new THREE.ConeGeometry(r,2.2,9),leafMat(col)); cone.position.y=th*0.5+i*1.5+1; cone.castShadow=true; cone.receiveShadow=true; g.add(cone); }
+  g.position.set(x,h,z); scene.add(g); colliders.push({x,z,r:0.8}); }
+// 灌木丛
+function makeBush(x,z){ const g=new THREE.Group(); const h=terrainH(x,z); const col=new THREE.Color().setHSL(0.28,0.5,0.26+Math.random()*0.08).getHex();
+  for(let i=0;i<4;i++){ const r=0.5+Math.random()*0.5; const m=new THREE.Mesh(new THREE.IcosahedronGeometry(r,2),leafMat(col)); m.position.set((Math.random()-0.5)*0.9,0.4+Math.random()*0.3,(Math.random()-0.5)*0.9); m.castShadow=true; g.add(m); }
+  g.position.set(x,h,z); scene.add(g); }
+// 蕨类
+function makeFern(x,z){ const g=new THREE.Group(); const h=terrainH(x,z);
+  for(let i=0;i<6;i++){ const bl=new THREE.Mesh(new THREE.ConeGeometry(0.13,1.0+Math.random()*0.6,4),leafMat(0x3f8f3a)); const a=i/6*6.28; bl.position.set(Math.cos(a)*0.15,0.55,Math.sin(a)*0.15); bl.rotation.set(Math.cos(a)*0.6,a,Math.sin(a)*0.6); bl.castShadow=true; g.add(bl); }
+  g.position.set(x,h,z); scene.add(g); }
+// 蘑菇
+function makeMushroom(x,z){ const g=new THREE.Group(); const h=terrainH(x,z); const s=0.9+Math.random()*1.1;
+  const stem=new THREE.Mesh(new THREE.CylinderGeometry(0.12*s,0.15*s,0.55*s,8),new THREE.MeshStandardMaterial({color:0xeee3cf,roughness:0.9})); stem.position.y=0.28*s; g.add(stem);
+  const cap=new THREE.Mesh(new THREE.SphereGeometry(0.42*s,14,8,0,6.28,0,1.7),new THREE.MeshStandardMaterial({color:choice([0xd23b3b,0xe0863b,0xc23bd2,0xf0d040]),roughness:0.55})); cap.position.y=0.55*s; cap.castShadow=true; g.add(cap);
+  g.position.set(x,h,z); scene.add(g); }
+// 倒木
+function makeLog(x,z){ const h=terrainH(x,z); const len=2+Math.random()*2.4; const m=new THREE.Mesh(new THREE.CylinderGeometry(0.34,0.4,len,10),barkMat()); m.rotation.z=Math.PI/2; m.rotation.y=Math.random()*6.28; m.position.set(x,h+0.35,z); m.castShadow=true; m.receiveShadow=true; scene.add(m); colliders.push({x,z,r:0.6}); }
+// 芦苇(水边)
+function makeReeds(x,z){ const g=new THREE.Group(); const h=terrainH(x,z);
+  for(let i=0;i<9;i++){ const bl=new THREE.Mesh(new THREE.CylinderGeometry(0.02,0.035,1.2+Math.random()*0.9,4),new THREE.MeshStandardMaterial({color:0x8aa14a,roughness:1})); bl.position.set((Math.random()-0.5)*0.7,0.7,(Math.random()-0.5)*0.7); bl.rotation.set((Math.random()-0.5)*0.3,0,(Math.random()-0.5)*0.3); g.add(bl); }
+  g.position.set(x,h,z); scene.add(g); }
+// 睡莲(水面)
+function makeLilyPad(x,z){ const pad=new THREE.Mesh(new THREE.CircleGeometry(0.5+Math.random()*0.4,14),new THREE.MeshStandardMaterial({color:0x2f7a3a,roughness:0.7,side:THREE.DoubleSide})); pad.rotation.x=-Math.PI/2; pad.position.set(x,WATER_Y+0.06,z); scene.add(pad); }
+// 湖水
+function buildWater(){ const geo=new THREE.PlaneGeometry(WORLD,WORLD); geo.rotateX(-Math.PI/2); const mat=new THREE.MeshStandardMaterial({color:0x2f6b9e,metalness:0.5,roughness:0.12,transparent:true,opacity:0.86}); water=new THREE.Mesh(geo,mat); water.position.y=WATER_Y; scene.add(water); }
+
 function scatterWorld(){
-  for(let i=0;i<300;i++){ const a=Math.random()*6.28,d=18+Math.random()*(WORLD/2-30); const x=Math.cos(a)*d,z=Math.sin(a)*d; if(Math.hypot(x,z)<15)continue; const h=terrainH(x,z); if(h>15)continue; if(Math.random()<0.72) makeTree(x,z); else makeRock(x,z); }
+  for(let i=0;i<480;i++){
+    const a=Math.random()*6.28,d=15+Math.random()*(WORLD/2-24); const x=Math.cos(a)*d,z=Math.sin(a)*d;
+    if(Math.hypot(x,z)<13)continue; const h=terrainH(x,z);
+    if(h<WATER_Y+0.5){ if(h<WATER_Y-0.4){ if(Math.random()<0.5)makeLilyPad(x,z); } else makeReeds(x,z); continue; }
+    if(h>16)continue;
+    const r=Math.random();
+    if(r<0.28) makeTree(x,z);
+    else if(r<0.46) makePine(x,z);
+    else if(r<0.60) makeRock(x,z);
+    else if(r<0.73) makeBush(x,z);
+    else if(r<0.84) makeFern(x,z);
+    else if(r<0.92) makeMushroom(x,z);
+    else makeLog(x,z);
+  }
 }
 // 草地(实例化) — 大幅提升"茂密真实"感
 function buildGrass(){
   const blade=new THREE.PlaneGeometry(0.14,0.9); blade.translate(0,0.45,0);
   const mat=new THREE.MeshStandardMaterial({color:0xffffff,roughness:1,metalness:0,side:THREE.DoubleSide});
   const N=22000; const im=new THREE.InstancedMesh(blade,mat,N); const d=new THREE.Object3D(); const col=new THREE.Color(); let c=0;
-  for(let i=0;i<N;i++){ const x=(Math.random()-0.5)*360,z=(Math.random()-0.5)*360,h=terrainH(x,z); if(h>13)continue;
+  for(let i=0;i<N;i++){ const x=(Math.random()-0.5)*360,z=(Math.random()-0.5)*360,h=terrainH(x,z); if(h>13||h<WATER_Y+0.2)continue;
     d.position.set(x,h,z); d.rotation.set((Math.random()-0.5)*0.35,Math.random()*6.28,(Math.random()-0.5)*0.35); const s=0.7+Math.random()*1.0; d.scale.set(s,s,s); d.updateMatrix(); im.setMatrixAt(c,d.matrix);
     col.setHSL(0.24+Math.random()*0.09,0.55,0.30+Math.random()*0.14); im.setColorAt(c,col); c++; }
   im.count=c; im.instanceMatrix.needsUpdate=true; if(im.instanceColor)im.instanceColor.needsUpdate=true; im.receiveShadow=true; scene.add(im);
 }
 function buildFlowers(){
   const cols=[0xff5a7a,0xffd23f,0xffffff,0xa66bff,0xff8f3f];
-  for(let i=0;i<280;i++){ const x=(Math.random()-0.5)*330,z=(Math.random()-0.5)*330,h=terrainH(x,z); if(h>12)continue;
+  for(let i=0;i<280;i++){ const x=(Math.random()-0.5)*330,z=(Math.random()-0.5)*330,h=terrainH(x,z); if(h>12||h<WATER_Y+0.2)continue;
     const g=new THREE.Group();
     const stem=new THREE.Mesh(new THREE.CylinderGeometry(0.02,0.02,0.4,4),new THREE.MeshStandardMaterial({color:0x4a8a3a,roughness:1})); stem.position.y=0.2; g.add(stem);
     const cc=cols[i%cols.length]; const head=new THREE.Mesh(new THREE.SphereGeometry(0.11,10,8),new THREE.MeshStandardMaterial({color:cc,emissive:cc,emissiveIntensity:0.12,roughness:0.6})); head.position.y=0.44; g.add(head);
@@ -264,6 +309,46 @@ function updateLabel(e,dead){
   e.label.querySelector('.nm').textContent=e.name; e.label.querySelector('.lv').textContent='Lv.'+e.lvl; e.label.querySelector('.hpb>div').style.width=Math.max(0,e.hp/e.maxHp*100)+'%';
 }
 
+
+// ============================================================
+//  野生动物：真实动画模型（鸟群飞行 + 地面动物漫游）
+// ============================================================
+function loadWildlife(){
+  const loader=new GLTFLoader(); const base='https://cdn.jsdelivr.net/gh/mrdoob/three.js@r160/examples/models/gltf/';
+  const list=[
+    {f:'Parrot.glb',   k:'bird',   n:8, t:4.0, sp:9},
+    {f:'Flamingo.glb', k:'bird',   n:5, t:5.0, sp:7},
+    {f:'Stork.glb',    k:'bird',   n:4, t:4.5, sp:10},
+    {f:'Horse.glb',    k:'ground', n:6, t:3.0, sp:2.6},
+  ];
+  return Promise.all(list.map(item=>new Promise(res=>{
+    loader.load(base+item.f, gltf=>{
+      const box=new THREE.Box3().setFromObject(gltf.scene); const sz=box.getSize(new THREE.Vector3());
+      const scale=item.t/Math.max(sz.x,sz.y,sz.z,0.001);
+      gltf.scene.traverse(o=>{ if(o.isMesh){ o.castShadow=item.k==='ground'; o.frustumCulled=false; } });
+      for(let i=0;i<item.n;i++) spawnWild(gltf,scale,item.k,item.sp);
+      res(true);
+    }, undefined, ()=>{ console.warn('野生动物加载失败:',item.f); res(false); });
+  })));
+}
+function spawnWild(gltf,scale,kind,sp){
+  const g=SkeletonUtils.clone(gltf.scene); g.scale.setScalar(scale);
+  const mixer=new THREE.AnimationMixer(g); if(gltf.animations&&gltf.animations[0]) mixer.clipAction(gltf.animations[0]).play();
+  const w={group:g,mixer,kind,speed:sp};
+  if(kind==='bird'){ w.cx=(Math.random()-0.5)*WORLD*0.7; w.cz=(Math.random()-0.5)*WORLD*0.7; w.rad=25+Math.random()*55; w.h=22+Math.random()*30; w.ang=Math.random()*6.28; }
+  else { const x=(Math.random()-0.5)*WORLD*0.6,z=(Math.random()-0.5)*WORLD*0.6; g.position.set(x,terrainH(x,z),z); w.wt=0; w.wdir=Math.random()*6.28; w.moving=true; }
+  scene.add(g); wildlife.push(w);
+}
+function updateWildlife(dt){
+  for(const w of wildlife){ if(w.mixer)w.mixer.update(dt);
+    if(w.kind==='bird'){ w.ang+=w.speed/w.rad*dt; const x=w.cx+Math.cos(w.ang)*w.rad,z=w.cz+Math.sin(w.ang)*w.rad,y=w.h+Math.sin(w.ang*2)*2.5; w.group.position.set(x,y,z); w.group.rotation.y=-w.ang; }
+    else { w.wt-=dt; if(w.wt<=0){ w.wdir=Math.random()*6.28; w.wt=3+Math.random()*4; w.moving=Math.random()<0.7; }
+      const dx=w.group.position.x-player.x,dz=w.group.position.z-player.z,pd=Math.hypot(dx,dz); let s=w.speed*0.4;
+      if(pd<15){ w.wdir=Math.atan2(dz,dx); s=w.speed*1.8; w.moving=true; }
+      if(w.moving){ const nx=Math.cos(w.wdir),nz=Math.sin(w.wdir); w.group.position.x=clamp(w.group.position.x+nx*s*dt,-WORLD/2+3,WORLD/2-3); w.group.position.z=clamp(w.group.position.z+nz*s*dt,-WORLD/2+3,WORLD/2-3); w.group.rotation.y=Math.atan2(nx,nz); }
+      w.group.position.y=terrainH(w.group.position.x,w.group.position.z); }
+  }
+}
 
 // ============================================================
 //  第一人称武器视图（PBR 金属）
@@ -398,7 +483,7 @@ function updateDayNight(dt){
 let spawnT=0;
 function animate(){
   requestAnimationFrame(animate); const dt=Math.min(clock.getDelta(),0.05);
-  updateDayNight(dt);
+  updateDayNight(dt); updateWildlife(dt);
   if(vmSwing>0){ vmSwing-=dt*4; if(vmArm)vmArm.rotation.x=0.06-Math.sin(Math.max(0,vmSwing)*Math.PI)*1.2; } else if(vmArm)vmArm.rotation.x=0.06;
   if(started&&!paused){
     updatePlayer(dt); updateEnemies(dt);
@@ -413,11 +498,13 @@ async function boot(){
   const bar=$('lbar'),txt=$('ltext');
   try{
     txt.textContent='初始化渲染引擎...'; bar.style.width='20%'; initRenderer();
-    txt.textContent='生成地形与植被...'; bar.style.width='45%'; buildTerrain(); scatterWorld(); buildGrass(); buildFlowers(); buildViewModel(); addControls();
+    txt.textContent='生成地形与植被...'; bar.style.width='40%'; buildTerrain(); buildWater(); scatterWorld(); buildGrass(); buildFlowers(); buildViewModel(); addControls();
     animate();
-    txt.textContent='加载 3D 模型...'; bar.style.width='70%';
+    txt.textContent='加载怪物模型...'; bar.style.width='65%';
     await loadMonsterModel();
-    bar.style.width='100%'; txt.textContent=monsterBase?'准备就绪！':'模型加载失败，使用简易怪物';
+    txt.textContent='召唤野生动物...'; bar.style.width='85%';
+    await loadWildlife();
+    bar.style.width='100%'; txt.textContent='准备就绪！';
     setTimeout(()=>{ $('loading').classList.add('hidden'); $('start').classList.remove('hidden'); },400);
   }catch(err){ txt.textContent='出错: '+err.message; console.error(err); }
 }
