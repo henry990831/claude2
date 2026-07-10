@@ -10,6 +10,7 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { Sky } from 'three/addons/objects/Sky.js';
 
 const $ = id => document.getElementById(id);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -56,7 +57,7 @@ function initRenderer(){
   scene=new THREE.Scene();
   scene.fog=new THREE.FogExp2(0xbcd4ee,0.0075);
 
-  camera=new THREE.PerspectiveCamera(72,innerWidth/innerHeight,0.05,1200);
+  camera=new THREE.PerspectiveCamera(70,innerWidth/innerHeight,0.3,100000);
   camera.position.set(player.x,3,player.z);
   clock=new THREE.Clock(); raycaster=new THREE.Raycaster();
 
@@ -64,13 +65,9 @@ function initRenderer(){
   pmrem=new THREE.PMREMGenerator(renderer);
   scene.environment=pmrem.fromScene(new RoomEnvironment(),0.04).texture;
 
-  // 天空球(渐变)
-  const skyGeo=new THREE.SphereGeometry(600,32,16);
-  skyMat=new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,
-    uniforms:{top:{value:new THREE.Color(0x2f6fc4)},bot:{value:new THREE.Color(0xcfe6ff)}},
-    vertexShader:'varying vec3 vp;void main(){vp=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
-    fragmentShader:'varying vec3 vp;uniform vec3 top;uniform vec3 bot;void main(){float h=normalize(vp).y*0.5+0.5;gl_FragColor=vec4(mix(bot,top,pow(h,0.65)),1.0);}'});
-  sky=new THREE.Mesh(skyGeo,skyMat); scene.add(sky);
+  // 真实大气天空(散射) — Sky addon
+  sky=new Sky(); sky.scale.setScalar(45000); scene.add(sky);
+  const su=sky.material.uniforms; su.turbidity.value=6; su.rayleigh.value=1.8; su.mieCoefficient.value=0.005; su.mieDirectionalG.value=0.8;
 
   // 星空
   const sg=new THREE.BufferGeometry(),arr=[];
@@ -92,7 +89,7 @@ function initRenderer(){
   // 后处理：泛光
   composer=new EffectComposer(renderer);
   composer.addPass(new RenderPass(scene,camera));
-  const bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0.5,0.6,0.85);
+  const bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0.35,0.55,1.05);
   composer.addPass(bloom);
   composer.addPass(new OutputPass()); // 正确的色调映射/色彩空间输出
 
@@ -127,15 +124,24 @@ function buildTerrain(){
 
 // ---------------- 树木 / 岩石 ----------------
 const barkMat=()=>new THREE.MeshStandardMaterial({color:0x5c3a1e,roughness:0.9,metalness:0});
-function leafMat(c){ return new THREE.MeshStandardMaterial({color:c,roughness:0.85,metalness:0,flatShading:true}); }
+function leafMat(c){ return new THREE.MeshStandardMaterial({color:c,roughness:0.82,metalness:0}); }
 function makeTree(x,z){
-  const g=new THREE.Group(); const h=terrainH(x,z); const th=3+Math.random()*2.5;
-  const trunk=new THREE.Mesh(new THREE.CylinderGeometry(0.28,0.42,th,8),barkMat()); trunk.position.y=th/2; trunk.castShadow=true; g.add(trunk);
-  const col=new THREE.Color().setHSL(0.28+Math.random()*0.06,0.5,0.32+Math.random()*0.1).getHex();
-  const puffs=[[0,th+0.5,0,1.9],[-1.1,th+0.1,0.4,1.3],[1.0,th+0.2,-0.3,1.35],[0.2,th+1.5,0.1,1.25]];
-  puffs.forEach(([px,py,pz,r])=>{ const m=new THREE.Mesh(new THREE.IcosahedronGeometry(r,1),leafMat(col)); m.position.set(px,py,pz); m.scale.y=0.92; m.castShadow=true; g.add(m); });
+  const g=new THREE.Group(); const h=terrainH(x,z);
+  const th=4+Math.random()*3, r0=0.32+Math.random()*0.16;
+  const trunk=new THREE.Mesh(new THREE.CylinderGeometry(r0*0.55,r0,th,10),barkMat()); trunk.position.y=th/2; trunk.castShadow=true; g.add(trunk);
+  const nb=3+Math.floor(Math.random()*3);
+  for(let i=0;i<nb;i++){ const bl=1.8+Math.random()*1.6; const br=new THREE.Mesh(new THREE.CylinderGeometry(0.05,0.14,bl,6),barkMat());
+    const ang=Math.random()*6.28,tilt=0.5+Math.random()*0.4; br.position.set(0,th*0.55+i*0.55,0); br.rotation.set(Math.cos(ang)*tilt,ang,Math.sin(ang)*tilt); br.translateY(bl/2); br.castShadow=true; g.add(br); }
+  const baseL=0.3+Math.random()*0.08;
+  const c1=new THREE.Color().setHSL(0.26+Math.random()*0.05,0.5,baseL).getHex();
+  const c2=new THREE.Color().setHSL(0.26+Math.random()*0.05,0.55,baseL+0.12).getHex();
+  const cx=[[0,th+1.0,0,2.4],[-1.4,th+0.3,0.6,1.7],[1.5,th+0.4,-0.4,1.75],[0.3,th+2.1,0.2,1.7],[-0.6,th+1.3,-1.2,1.5],[1.1,th+1.4,1.1,1.5]];
+  cx.forEach((p,i)=>{ const geo=new THREE.IcosahedronGeometry(p[3],3); const pos=geo.attributes.position;
+    for(let k=0;k<pos.count;k++){ const nx=pos.getX(k),ny=pos.getY(k),nz=pos.getZ(k); const n=0.82+vnoise(nx*2+i*3,nz*2+i)*0.34; pos.setXYZ(k,nx*n,ny*n,nz*n); }
+    geo.computeVertexNormals();
+    const m=new THREE.Mesh(geo,leafMat(i%2?c2:c1)); m.position.set(p[0],p[1],p[2]); m.scale.y=0.92; m.castShadow=true; m.receiveShadow=true; g.add(m); });
   g.position.set(x,h,z); g.rotation.y=Math.random()*6.28; scene.add(g);
-  colliders.push({x,z,r:0.8});
+  colliders.push({x,z,r:0.9});
 }
 function makeRock(x,z){
   const h=terrainH(x,z); const s=0.8+Math.random()*1.6;
@@ -144,7 +150,25 @@ function makeRock(x,z){
   colliders.push({x,z,r:s*0.9});
 }
 function scatterWorld(){
-  for(let i=0;i<180;i++){ const a=Math.random()*6.28,d=18+Math.random()*(WORLD/2-30); const x=Math.cos(a)*d,z=Math.sin(a)*d; if(Math.hypot(x,z)<16)continue; if(Math.random()<0.7) makeTree(x,z); else makeRock(x,z); }
+  for(let i=0;i<300;i++){ const a=Math.random()*6.28,d=18+Math.random()*(WORLD/2-30); const x=Math.cos(a)*d,z=Math.sin(a)*d; if(Math.hypot(x,z)<15)continue; const h=terrainH(x,z); if(h>15)continue; if(Math.random()<0.72) makeTree(x,z); else makeRock(x,z); }
+}
+// 草地(实例化) — 大幅提升"茂密真实"感
+function buildGrass(){
+  const blade=new THREE.PlaneGeometry(0.14,0.9); blade.translate(0,0.45,0);
+  const mat=new THREE.MeshStandardMaterial({color:0xffffff,roughness:1,metalness:0,side:THREE.DoubleSide});
+  const N=22000; const im=new THREE.InstancedMesh(blade,mat,N); const d=new THREE.Object3D(); const col=new THREE.Color(); let c=0;
+  for(let i=0;i<N;i++){ const x=(Math.random()-0.5)*360,z=(Math.random()-0.5)*360,h=terrainH(x,z); if(h>13)continue;
+    d.position.set(x,h,z); d.rotation.set((Math.random()-0.5)*0.35,Math.random()*6.28,(Math.random()-0.5)*0.35); const s=0.7+Math.random()*1.0; d.scale.set(s,s,s); d.updateMatrix(); im.setMatrixAt(c,d.matrix);
+    col.setHSL(0.24+Math.random()*0.09,0.55,0.30+Math.random()*0.14); im.setColorAt(c,col); c++; }
+  im.count=c; im.instanceMatrix.needsUpdate=true; if(im.instanceColor)im.instanceColor.needsUpdate=true; im.receiveShadow=true; scene.add(im);
+}
+function buildFlowers(){
+  const cols=[0xff5a7a,0xffd23f,0xffffff,0xa66bff,0xff8f3f];
+  for(let i=0;i<280;i++){ const x=(Math.random()-0.5)*330,z=(Math.random()-0.5)*330,h=terrainH(x,z); if(h>12)continue;
+    const g=new THREE.Group();
+    const stem=new THREE.Mesh(new THREE.CylinderGeometry(0.02,0.02,0.4,4),new THREE.MeshStandardMaterial({color:0x4a8a3a,roughness:1})); stem.position.y=0.2; g.add(stem);
+    const cc=cols[i%cols.length]; const head=new THREE.Mesh(new THREE.SphereGeometry(0.11,10,8),new THREE.MeshStandardMaterial({color:cc,emissive:cc,emissiveIntensity:0.12,roughness:0.6})); head.position.y=0.44; g.add(head);
+    g.position.set(x,h,z); scene.add(g); }
 }
 
 
@@ -353,16 +377,19 @@ function updateHUD(){
 //  昼夜
 // ============================================================
 function updateDayNight(dt){
-  gameTime=(gameTime+dt*0.5)%1440; const f=gameTime/1440, el=Math.sin((f-0.25)*Math.PI*2), day=clamp(el*1.4+0.35,0,1);
-  const az=(f-0.25)*Math.PI*2;
-  sun.position.set(player.x+Math.cos(az)*120,20+el*150,player.z+Math.sin(az)*90); sun.target.position.set(player.x,0,player.z);
-  sun.intensity=0.15+Math.max(0,el)*2.6; hemi.intensity=0.1+day*0.5; renderer.toneMappingExposure=0.65+day*0.5;
-  const dayTop=new THREE.Color(0x2f6fc4),dayBot=new THREE.Color(0xcfe6ff),nightTop=new THREE.Color(0x060a1a),nightBot=new THREE.Color(0x141d38),duskTop=new THREE.Color(0x33305e),duskBot=new THREE.Color(0xff9450);
-  const dusk=clamp(1-Math.abs(el)*3,0,1);
-  const top=nightTop.clone().lerp(dayTop,day).lerp(duskTop,dusk*0.5), bot=nightBot.clone().lerp(dayBot,day).lerp(duskBot,dusk*0.55);
-  skyMat.uniforms.top.value.copy(top); skyMat.uniforms.bot.value.copy(bot); scene.fog.color.copy(bot);
-  stars.material.opacity=clamp(1-day*1.6,0,1); stars.position.set(player.x,0,player.z); sky.position.set(player.x,player.y,player.z);
-  const hh=String(Math.floor(gameTime/60)).padStart(2,'0'),mm=String(Math.floor(gameTime%60)).padStart(2,'0'); timeStr=hh+':'+mm; $('clock').textContent='🕐 '+timeStr;
+  gameTime=(gameTime+dt*0.5)%1440; const f=gameTime/1440;
+  const elev=Math.sin((f-0.25)*Math.PI*2), day=clamp(elev*1.6+0.4,0,1);
+  const phi=THREE.MathUtils.degToRad(90-elev*90), theta=(f-0.25)*Math.PI*2;
+  const sd=new THREE.Vector3().setFromSphericalCoords(1,phi,theta);
+  if(sky) sky.material.uniforms.sunPosition.value.copy(sd);
+  sun.position.set(player.x+sd.x*200,sd.y*200,player.z+sd.z*200); sun.target.position.set(player.x,0,player.z);
+  sun.intensity=0.08+Math.max(0,elev)*2.9; hemi.intensity=0.14+day*0.55;
+  renderer.toneMappingExposure=0.22+day*0.4;
+  const dusk=clamp(1-Math.abs(elev)*3,0,1);
+  const fday=new THREE.Color(0xbcd4ee),fnight=new THREE.Color(0x0a0f22),fdusk=new THREE.Color(0xdb8a52);
+  scene.fog.color.copy(fnight.clone().lerp(fday,day).lerp(fdusk,dusk*0.45));
+  stars.material.opacity=clamp(1-day*1.9,0,1); stars.position.set(player.x,0,player.z);
+  const hh=String(Math.floor(gameTime/60)).padStart(2,'0'),mm=String(Math.floor(gameTime%60)).padStart(2,'0'); $('clock').textContent='🕐 '+hh+':'+mm;
 }
 
 // ============================================================
@@ -386,7 +413,7 @@ async function boot(){
   const bar=$('lbar'),txt=$('ltext');
   try{
     txt.textContent='初始化渲染引擎...'; bar.style.width='20%'; initRenderer();
-    txt.textContent='生成地形与植被...'; bar.style.width='45%'; buildTerrain(); scatterWorld(); buildViewModel(); addControls();
+    txt.textContent='生成地形与植被...'; bar.style.width='45%'; buildTerrain(); scatterWorld(); buildGrass(); buildFlowers(); buildViewModel(); addControls();
     animate();
     txt.textContent='加载 3D 模型...'; bar.style.width='70%';
     await loadMonsterModel();
