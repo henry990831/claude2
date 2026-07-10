@@ -103,6 +103,12 @@
     }
   }
   </script>
-  <script type="module" src="./game.js"></script>
+  <!-- 动态导入并加时间戳，绕过浏览器缓存：以后合并更新后普通刷新即可看到最新版 -->
+  <script type="module">
+    import('./game.js?v=' + Date.now()).catch(e => {
+      const t = document.getElementById('ltext'); if (t) t.textContent = '加载失败: ' + e.message;
+      console.error(e);
+    });
+  </script>
 </body>
 </html>
