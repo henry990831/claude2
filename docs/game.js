@@ -11,6 +11,7 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { Sky } from 'three/addons/objects/Sky.js';
+import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 
 const $ = id => document.getElementById(id);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -37,6 +38,8 @@ const player={x:0,y:2,z:6,vy:0,yaw:0,pitch:0,onGround:true,eye:1.7};
 const keys={};
 let colliders=[];
 let water=null; const WATER_Y=-2.6; let wildlife=[];
+// 真实资源状态（加载失败会自动回退，绝不会让画面比现在更差）
+let hdriLoaded=false, groundMaps=null, TreeLib=null, treeTemplates=[];
 let started=false,paused=true,pointerLocked=false;
 let lastMX=innerWidth/2,lastMY=innerHeight/2,mouseX=innerWidth/2,mouseY=innerHeight/2;
 let lastAttack=0,lastMobHit=0,gameTime=480,timeStr='08:00';
@@ -107,6 +110,78 @@ function grassTexture(){
   const t=new THREE.CanvasTexture(c); t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(WORLD/6,WORLD/6); t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=4; return t;
 }
 
+// ---------------- 真实资源加载（Poly Haven CC0，失败自动回退）----------------
+// 1) 真实 HDRI 天空 + 图像光照(IBL) —— realism 最大杠杆
+function loadHDRI(){
+  return new Promise(res=>{
+    const url='https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/kloofendal_48d_partly_cloudy_puresky_2k.hdr';
+    new RGBELoader().load(url, tex=>{
+      try{
+        tex.mapping=THREE.EquirectangularReflectionMapping;
+        const envRT=pmrem.fromEquirectangular(tex);
+        scene.environment=envRT.texture;   // 真实环境反射光
+        scene.background=tex;               // 真实照片天空
+        if(sky) sky.visible=false;          // 关掉程序化天空
+        hemi.intensity=0.35; sun.intensity=2.2;
+        renderer.toneMappingExposure=0.72;
+        scene.fog.color.set(0xcfe0f2); scene.fog.density=0.0045;
+        hdriLoaded=true;
+      }catch(e){ console.warn('HDRI 应用失败',e); }
+      res(true);
+    }, undefined, ()=>{ console.warn('HDRI 加载失败，保留程序化天空'); res(false); });
+  });
+}
+// 2) 真实 PBR 地面材质（漫反射+法线+粗糙度）
+function loadGroundTextures(){
+  return new Promise(res=>{
+    const base='https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/aerial_grass_rock/aerial_grass_rock_';
+    const tl=new THREE.TextureLoader(); const maps={}; let done=0,fail=0; const need=3;
+    const rep=WORLD/10;
+    const fin=()=>{ if(++done>=need){ groundMaps=(fail===0)?maps:null; res(true); } };
+    const cfg=(t,srgb)=>{ t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(rep,rep); if(srgb)t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=8; };
+    maps.map=tl.load(base+'diff_2k.jpg', t=>{cfg(t,true);fin();}, undefined, ()=>{fail++;fin();});
+    maps.normalMap=tl.load(base+'nor_gl_2k.jpg', t=>{cfg(t,false);fin();}, undefined, ()=>{fail++;fin();});
+    maps.roughnessMap=tl.load(base+'rough_2k.jpg', t=>{cfg(t,false);fin();}, undefined, ()=>{fail++;fin();});
+  });
+}
+// 3) ez-tree：真实枝干分叉树（程序生成，失败/性能问题自动回退到简易树）
+async function loadTreeLib(){
+  try{
+    const mod=await import('https://cdn.jsdelivr.net/npm/@dgreenheck/ez-tree/+esm');
+    TreeLib=mod||null;
+  }catch(e){ console.warn('ez-tree 加载失败，用简易树',e); TreeLib=null; }
+}
+function buildTreeTemplates(){
+  if(!TreeLib||!TreeLib.Tree) return;
+  const presetKeys = TreeLib.TreePreset ? Object.keys(TreeLib.TreePreset) : [];
+  for(let i=0;i<4;i++){
+    try{
+      const t=new TreeLib.Tree();
+      if(presetKeys.length){ const k=presetKeys[i%presetKeys.length];
+        try{ if(typeof t.loadPreset==='function') t.loadPreset(k);
+             else if(typeof t.loadFromJSON==='function') t.loadFromJSON(TreeLib.TreePreset[k]);
+             else if(t.options) Object.assign(t.options,TreeLib.TreePreset[k]); }catch(_){}
+      }
+      if(typeof t.generate==='function') t.generate();
+      if(t && t.isObject3D && t.children.length){
+        t.traverse(o=>{ if(o.isMesh){ o.castShadow=true; o.receiveShadow=true; } });
+        treeTemplates.push(t);
+      }
+    }catch(e){ /* 忽略，继续 */ }
+  }
+}
+function placeEzTree(x,z,targetH){
+  if(!treeTemplates.length) return false;
+  try{
+    const tpl=treeTemplates[Math.floor(Math.random()*treeTemplates.length)];
+    const box=new THREE.Box3().setFromObject(tpl); const sz=box.getSize(new THREE.Vector3());
+    const t=tpl.clone(true);
+    const s=(targetH/(sz.y||targetH))*(0.8+Math.random()*0.5); t.scale.setScalar(s);
+    t.position.set(x,terrainH(x,z),z); t.rotation.y=Math.random()*6.28;
+    scene.add(t); colliders.push({x,z,r:Math.max(0.7,targetH*0.1)}); return true;
+  }catch(e){ return false; }
+}
+
 // ---------------- 地形 ----------------
 function buildTerrain(){
   const seg=200;
@@ -120,7 +195,14 @@ function buildTerrain(){
     cols.push(c.r,c.g,c.b);
   }
   geo.setAttribute('color',new THREE.Float32BufferAttribute(cols,3)); geo.computeVertexNormals();
-  const mat=new THREE.MeshStandardMaterial({map:grassTexture(),vertexColors:true,roughness:0.95,metalness:0.0});
+  let mat;
+  if(groundMaps){
+    // 真实 PBR 地面：顶点色只做极轻微高度着色，避免盖住照片材质
+    mat=new THREE.MeshStandardMaterial({map:groundMaps.map,normalMap:groundMaps.normalMap,roughnessMap:groundMaps.roughnessMap,roughness:1.0,metalness:0.0});
+    mat.normalScale=new THREE.Vector2(0.8,0.8);
+  } else {
+    mat=new THREE.MeshStandardMaterial({map:grassTexture(),vertexColors:true,roughness:0.95,metalness:0.0});
+  }
   const mesh=new THREE.Mesh(geo,mat); mesh.receiveShadow=true; scene.add(mesh);
 }
 
@@ -216,8 +298,8 @@ function scatterWorld(){
     if(h<WATER_Y+0.5){ if(h<WATER_Y-0.4){ if(Math.random()<0.5)makeLilyPad(x,z); } else makeReeds(x,z); continue; }
     if(h>16)continue;
     const r=Math.random();
-    if(r<0.28){ if(!placeModel('tree',x,z,7)) makeTree(x,z); }
-    else if(r<0.46){ if(!placeModel('pine',x,z,8)&&!placeModel('tree',x,z,8)) makePine(x,z); }
+    if(r<0.28){ if(!placeModel('tree',x,z,7) && !placeEzTree(x,z,7)) makeTree(x,z); }
+    else if(r<0.46){ if(!placeModel('pine',x,z,8)&&!placeModel('tree',x,z,8)&&!placeEzTree(x,z,8.5)) makePine(x,z); }
     else if(r<0.60){ if(!placeModel('rock',x,z,1.8)) makeRock(x,z); }
     else if(r<0.73){ if(!placeModel('bush',x,z,1.4)) makeBush(x,z); }
     else if(r<0.84) makeFern(x,z);
@@ -490,7 +572,15 @@ function updateHUD(){
 //  昼夜
 // ============================================================
 function updateDayNight(dt){
-  gameTime=(gameTime+dt*0.5)%1440; const f=gameTime/1440;
+  gameTime=(gameTime+dt*0.5)%1440;
+  const hh=String(Math.floor(gameTime/60)).padStart(2,'0'),mm=String(Math.floor(gameTime%60)).padStart(2,'0'); $('clock').textContent='🕐 '+hh+':'+mm;
+  if(hdriLoaded){
+    // 真实 HDRI 天空：固定明亮日照，但让阴影相机跟随玩家
+    sun.position.set(player.x+70,150,player.z+45); sun.target.position.set(player.x,0,player.z);
+    stars.material.opacity=0;
+    return;
+  }
+  const f=gameTime/1440;
   const elev=Math.sin((f-0.25)*Math.PI*2), day=clamp(elev*1.6+0.4,0,1);
   const phi=THREE.MathUtils.degToRad(90-elev*90), theta=(f-0.25)*Math.PI*2;
   const sd=new THREE.Vector3().setFromSphericalCoords(1,phi,theta);
@@ -502,7 +592,6 @@ function updateDayNight(dt){
   const fday=new THREE.Color(0xbcd4ee),fnight=new THREE.Color(0x0a0f22),fdusk=new THREE.Color(0xdb8a52);
   scene.fog.color.copy(fnight.clone().lerp(fday,day).lerp(fdusk,dusk*0.45));
   stars.material.opacity=clamp(1-day*1.9,0,1); stars.position.set(player.x,0,player.z);
-  const hh=String(Math.floor(gameTime/60)).padStart(2,'0'),mm=String(Math.floor(gameTime%60)).padStart(2,'0'); $('clock').textContent='🕐 '+hh+':'+mm;
 }
 
 // ============================================================
@@ -525,10 +614,12 @@ function startGame(){ $('start').classList.add('hidden'); $('hud').classList.rem
 async function boot(){
   const bar=$('lbar'),txt=$('ltext');
   try{
-    txt.textContent='初始化渲染引擎...'; bar.style.width='20%'; initRenderer();
-    bar.style.width='30%'; buildTerrain(); buildWater(); buildViewModel(); addControls();
-    txt.textContent='加载环境模型...'; bar.style.width='45%'; await loadEnvModels();
-    txt.textContent='生成世界...'; bar.style.width='58%'; scatterWorld(); buildGrass(); buildFlowers();
+    txt.textContent='初始化渲染引擎...'; bar.style.width='16%'; initRenderer();
+    txt.textContent='加载真实天空与光照(HDRI)...'; bar.style.width='28%'; await loadHDRI();
+    txt.textContent='加载真实地面材质(PBR)...'; bar.style.width='40%'; await loadGroundTextures();
+    bar.style.width='46%'; buildTerrain(); buildWater(); buildViewModel(); addControls();
+    txt.textContent='加载真实树木/模型...'; bar.style.width='56%'; await loadEnvModels(); await loadTreeLib(); buildTreeTemplates();
+    txt.textContent='生成世界...'; bar.style.width='64%'; scatterWorld(); buildGrass(); buildFlowers();
     animate();
     txt.textContent='加载怪物模型...'; bar.style.width='72%';
     await loadMonsterModel();
