@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>水墨江湖 · 单机武侠</title>
+<link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+<div id="game-root">
+  <canvas id="game-canvas"></canvas>
+
+  <!-- 顶部左：人物信息 -->
+  <div id="hud" class="hidden">
+    <div class="hud-top">
+      <div class="portrait">侠</div>
+      <div class="hud-bars">
+        <div class="hud-name"><span id="hud-playername">无名侠客</span> <span class="hud-lv">Lv.<b id="hud-level">1</b></span></div>
+        <div class="bar hp"><div class="bar-fill" id="bar-hp"></div><span class="bar-txt" id="txt-hp">100/100</span></div>
+        <div class="bar mp"><div class="bar-fill" id="bar-mp"></div><span class="bar-txt" id="txt-mp">30/30</span></div>
+        <div class="bar exp"><div class="bar-fill" id="bar-exp"></div><span class="bar-txt" id="txt-exp">0%</span></div>
+      </div>
+    </div>
+    <div class="hud-coins">💰 <span id="hud-coins">0</span> 文</div>
+  </div>
+
+  <!-- 右上：小地图 -->
+  <canvas id="minimap" class="hidden"></canvas>
+
+  <!-- 消息提示 -->
+  <div id="msglog" class="hidden"></div>
+
+  <!-- 底部技能栏 -->
+  <div id="skillbar" class="hidden"></div>
+
+  <!-- 操作提示 -->
+  <div id="hint" class="hidden">WASD/方向键 移动 · 鼠标左键 普攻 · 1 剑气 · 2 掌风 · 3 踏雪(闪) · B 背包 · C 属性</div>
+
+  <!-- 背包 / 装备 / 属性 面板 -->
+  <div id="panel" class="panel hidden">
+    <div class="panel-head">
+      <span id="panel-title">行囊</span>
+      <button id="panel-close">✕</button>
+    </div>
+    <div class="panel-tabs">
+      <button class="ptab active" data-tab="inv">行囊</button>
+      <button class="ptab" data-tab="char">属性</button>
+    </div>
+    <div id="tab-inv" class="tab-body">
+      <div class="equip-row" id="equip-row"></div>
+      <div class="inv-grid" id="inv-grid"></div>
+      <div class="item-detail" id="item-detail">点击物品查看 / 使用 / 装备</div>
+    </div>
+    <div id="tab-char" class="tab-body hidden">
+      <div id="char-stats"></div>
+    </div>
+  </div>
+
+  <!-- 开始界面 -->
+  <div id="start-screen">
+    <div class="ink-title">水墨江湖</div>
+    <div class="ink-sub">— 单机武侠 · 水墨风 —</div>
+    <div class="seal">墨</div>
+    <div class="start-btns">
+      <button id="btn-new" class="ink-btn">开 始 新 江 湖</button>
+      <button id="btn-continue" class="ink-btn secondary hidden">继 续 前 缘</button>
+    </div>
+    <div class="start-hint">WASD 行走 · 左键 出招 · 1/2/3 施展武学 · B 行囊 · C 属性<br>拜师练武、斩妖除魔、行侠仗义 —— 你的江湖由此展开。</div>
+  </div>
+
+  <!-- 死亡界面 -->
+  <div id="death-screen" class="hidden">
+    <div class="death-title">身 受 重 创</div>
+    <div class="death-sub" id="death-sub">你倒在了江湖之中……</div>
+    <button id="btn-revive" class="ink-btn">回 城 疗 伤</button>
+  </div>
+</div>
+<script src="game.js?v=1" type="module"></script>
+</body>
+</html>
