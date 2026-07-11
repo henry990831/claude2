@@ -1,0 +1,123 @@
+/* ===== 水墨江湖 UI —— 宣纸 + 水墨 + 朱砂印 ===== */
+:root{
+  --paper:#efe6d2;
+  --paper-dark:#e2d6bb;
+  --ink:#2b2620;
+  --ink-soft:#5b5346;
+  --seal:#b23b30;      /* 朱砂红 */
+  --jade:#4f7d63;      /* 竹青 */
+  --gold:#b8893f;
+}
+*{ box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+html,body{ width:100%; height:100%; overflow:hidden; background:#1c1813;
+  font-family:"KaiTi","STKaiti","Kaiti SC","Songti SC","SimSun",serif; color:var(--ink); user-select:none; }
+.hidden{ display:none !important; }
+
+#game-root{ position:fixed; inset:0; }
+#game-canvas{ position:absolute; inset:0; width:100%; height:100%; display:block; cursor:crosshair; }
+
+/* ---------- HUD ---------- */
+#hud{ position:absolute; top:14px; left:14px; z-index:20; }
+.hud-top{ display:flex; gap:10px; align-items:flex-start;
+  background:rgba(239,230,210,0.9); border:1px solid var(--ink); border-radius:8px;
+  padding:8px 12px 8px 8px; box-shadow:2px 3px 0 rgba(43,38,32,0.25); }
+.portrait{ width:52px; height:52px; flex:none; border:2px solid var(--ink); border-radius:6px;
+  background:radial-gradient(circle at 40% 35%, #f6f0e0, #cdbf9e); color:var(--ink);
+  display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:700; }
+.hud-bars{ width:210px; }
+.hud-name{ font-size:14px; margin-bottom:3px; color:var(--ink); }
+.hud-lv{ float:right; color:var(--seal); }
+.hud-lv b{ font-size:15px; }
+.bar{ position:relative; height:13px; border:1px solid var(--ink); border-radius:7px; margin-bottom:4px;
+  background:rgba(43,38,32,0.12); overflow:hidden; }
+.bar-fill{ position:absolute; inset:0; width:100%; transition:width .18s ease; }
+.bar.hp .bar-fill{ background:linear-gradient(90deg,#8a2b23,#c94236); }
+.bar.mp .bar-fill{ background:linear-gradient(90deg,#2f5d8a,#4f93c9); }
+.bar.exp{ height:8px; } .bar.exp .bar-fill{ background:linear-gradient(90deg,#8a6a2f,#d6ae55); }
+.bar-txt{ position:absolute; inset:0; text-align:center; font-size:10px; line-height:13px; color:#f4ecd8;
+  text-shadow:0 1px 1px rgba(0,0,0,.5); }
+.hud-coins{ margin-top:6px; font-size:13px; color:var(--ink);
+  background:rgba(239,230,210,0.85); border:1px solid var(--ink); border-radius:6px; padding:2px 8px; display:inline-block; }
+
+/* ---------- 小地图 ---------- */
+#minimap{ position:absolute; top:14px; right:14px; width:150px; height:150px; z-index:20;
+  border:2px solid var(--ink); border-radius:8px; background:rgba(239,230,210,0.85); box-shadow:2px 3px 0 rgba(43,38,32,.25); }
+
+/* ---------- 消息 ---------- */
+#msglog{ position:absolute; left:50%; top:76px; transform:translateX(-50%); z-index:20;
+  display:flex; flex-direction:column; align-items:center; gap:4px; pointer-events:none; }
+.msg{ background:rgba(43,38,32,0.82); color:#f4ecd8; padding:4px 14px; border-radius:14px; font-size:14px;
+  animation:msgIn .3s ease; }
+.msg.good{ color:#ffe9a8; } .msg.warn{ color:#ff9c8c; } .msg.jade{ color:#9fe3c0; }
+@keyframes msgIn{ from{ opacity:0; transform:translateY(-6px);} to{ opacity:1; transform:none;} }
+
+/* ---------- 技能栏 ---------- */
+#skillbar{ position:absolute; bottom:16px; left:50%; transform:translateX(-50%); z-index:20;
+  display:flex; gap:10px; }
+.skill-slot{ width:58px; height:58px; border:2px solid var(--ink); border-radius:10px; position:relative;
+  background:rgba(239,230,210,0.9); box-shadow:2px 3px 0 rgba(43,38,32,.25); text-align:center; cursor:pointer; overflow:hidden; }
+.skill-slot .s-icon{ font-size:24px; margin-top:5px; display:block; }
+.skill-slot .s-name{ font-size:10px; color:var(--ink); line-height:1; }
+.skill-slot .s-key{ position:absolute; top:1px; left:3px; font-size:10px; color:var(--seal); font-weight:700; }
+.skill-slot .s-cd{ position:absolute; inset:0; background:rgba(43,38,32,0.6); color:#fff;
+  display:flex; align-items:center; justify-content:center; font-size:18px; }
+.skill-slot .s-mp{ position:absolute; bottom:1px; right:3px; font-size:9px; color:#2f5d8a; }
+
+/* ---------- 面板 ---------- */
+.panel{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:40; width:min(460px,92vw);
+  max-height:88vh; overflow:hidden; background:var(--paper); border:2px solid var(--ink); border-radius:12px;
+  box-shadow:4px 6px 0 rgba(43,38,32,.3); display:flex; flex-direction:column; }
+.panel-head{ display:flex; justify-content:space-between; align-items:center; padding:10px 14px;
+  border-bottom:1px solid var(--ink); font-size:18px; font-weight:700; letter-spacing:2px; }
+#panel-close{ border:none; background:var(--seal); color:#fff; width:26px; height:26px; border-radius:6px; cursor:pointer; font-size:15px; }
+.panel-tabs{ display:flex; gap:6px; padding:8px 14px 0; }
+.ptab{ flex:1; padding:6px; border:1px solid var(--ink); border-bottom:none; border-radius:8px 8px 0 0;
+  background:var(--paper-dark); color:var(--ink-soft); cursor:pointer; font-family:inherit; font-size:14px; }
+.ptab.active{ background:var(--paper); color:var(--ink); font-weight:700; }
+.tab-body{ padding:12px 14px 16px; overflow-y:auto; }
+.equip-row{ display:flex; gap:8px; margin-bottom:10px; }
+.equip-slot{ flex:1; height:52px; border:1px dashed var(--ink); border-radius:8px; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; font-size:11px; color:var(--ink-soft); cursor:pointer; background:rgba(255,255,255,.2); }
+.equip-slot .es-name{ font-size:12px; }
+.inv-grid{ display:grid; grid-template-columns:repeat(6,1fr); gap:6px; }
+.inv-cell{ aspect-ratio:1; border:1px solid var(--ink); border-radius:6px; background:rgba(255,255,255,.25);
+  display:flex; align-items:center; justify-content:center; font-size:20px; cursor:pointer; position:relative; }
+.inv-cell.empty{ border-style:dashed; opacity:.5; cursor:default; }
+.inv-cell .cnt{ position:absolute; bottom:0; right:2px; font-size:10px; color:var(--ink); }
+.q-fan{ box-shadow:inset 0 0 0 2px #9a9083; }
+.q-fine{ box-shadow:inset 0 0 0 2px var(--jade); }
+.q-rare{ box-shadow:inset 0 0 0 2px #3f6ea8; }
+.q-epic{ box-shadow:inset 0 0 0 2px var(--gold); }
+.item-detail{ margin-top:12px; padding:10px; border:1px solid var(--ink); border-radius:8px; min-height:64px; font-size:13px;
+  background:rgba(255,255,255,.25); line-height:1.7; }
+.item-detail .d-name{ font-size:15px; font-weight:700; }
+.detail-btns{ margin-top:8px; display:flex; gap:8px; }
+.mini-btn{ padding:5px 14px; border:1px solid var(--ink); border-radius:6px; background:var(--jade); color:#fff;
+  cursor:pointer; font-family:inherit; font-size:13px; }
+.mini-btn.sell{ background:var(--gold); } .mini-btn.drop{ background:#8a8078; }
+#char-stats{ font-size:14px; line-height:2; }
+#char-stats .st{ display:flex; justify-content:space-between; border-bottom:1px dotted var(--ink-soft); }
+#char-stats .st b{ color:var(--seal); }
+
+/* ---------- 开始 / 死亡 ---------- */
+#start-screen,#death-screen{ position:absolute; inset:0; z-index:60; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; text-align:center;
+  background:radial-gradient(circle at 50% 40%, #efe6d2 0%, #d8c9a8 70%, #b9a67e 100%); }
+.ink-title{ font-size:72px; font-weight:700; letter-spacing:14px; color:var(--ink); text-shadow:3px 4px 0 rgba(43,38,32,.18); }
+.ink-sub{ font-size:18px; color:var(--ink-soft); margin-top:6px; letter-spacing:3px; }
+.seal{ margin:26px 0; width:76px; height:76px; background:var(--seal); color:#fff; font-size:44px; font-weight:700;
+  display:flex; align-items:center; justify-content:center; border-radius:10px; transform:rotate(-4deg);
+  box-shadow:2px 3px 0 rgba(43,38,32,.3); }
+.start-btns{ display:flex; flex-direction:column; gap:14px; }
+.ink-btn{ padding:14px 40px; font-size:20px; letter-spacing:6px; font-family:inherit; cursor:pointer; color:#f4ecd8;
+  background:var(--ink); border:2px solid var(--ink); border-radius:10px; box-shadow:3px 4px 0 rgba(43,38,32,.35); }
+.ink-btn:active{ transform:translate(2px,2px); box-shadow:1px 2px 0 rgba(43,38,32,.35); }
+.ink-btn.secondary{ background:var(--paper); color:var(--ink); }
+.start-hint{ margin-top:30px; font-size:13px; color:var(--ink-soft); line-height:1.9; }
+.death-title{ font-size:56px; letter-spacing:10px; color:var(--seal); text-shadow:2px 3px 0 rgba(43,38,32,.2); }
+.death-sub{ font-size:16px; color:var(--ink-soft); margin:14px 0 30px; }
+
+@media (max-width:560px){
+  .ink-title{ font-size:48px; } .hud-bars{ width:150px; } #minimap{ width:104px; height:104px; }
+  .skill-slot{ width:50px; height:50px; }
+}
