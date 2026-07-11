@@ -181,6 +181,34 @@ function makeLilyPad(x,z){ const pad=new THREE.Mesh(new THREE.CircleGeometry(0.5
 // 湖水
 function buildWater(){ const geo=new THREE.PlaneGeometry(WORLD,WORLD); geo.rotateX(-Math.PI/2); const mat=new THREE.MeshStandardMaterial({color:0x2f6b9e,metalness:0.5,roughness:0.12,transparent:true,opacity:0.86}); water=new THREE.Mesh(geo,mat); water.position.y=WATER_Y; scene.add(water); }
 
+// ---- 真实模型资产：把 .glb 放进 docs/models/ 就会自动替换程序化树/石/灌木 ----
+// 支持的文件名（存在哪个就用哪个，缺失自动回退到程序化）：
+const ENV_MODELS={
+  tree:['./models/tree1.glb','./models/tree2.glb','./models/tree3.glb','./models/tree.glb'],
+  pine:['./models/pine1.glb','./models/pine2.glb','./models/pine.glb'],
+  rock:['./models/rock1.glb','./models/rock2.glb','./models/rock.glb'],
+  bush:['./models/bush1.glb','./models/bush.glb','./models/plant1.glb','./models/plant.glb'],
+};
+let envAssets={tree:[],pine:[],rock:[],bush:[]};
+function loadEnvModels(){
+  const loader=new GLTFLoader(); const jobs=[];
+  for(const kind in ENV_MODELS){ ENV_MODELS[kind].forEach(url=>{
+    jobs.push(new Promise(res=>{ loader.load(url, g=>{
+      const box=new THREE.Box3().setFromObject(g.scene); const sz=box.getSize(new THREE.Vector3());
+      g.scene.traverse(o=>{ if(o.isMesh){ o.castShadow=true; o.receiveShadow=true; if(o.material)o.material.envMapIntensity=0.7; } });
+      envAssets[kind].push({scene:g.scene,h:sz.y||1}); res(true);
+    }, undefined, ()=>res(false)); })); // 404 静默回退
+  }); }
+  return Promise.all(jobs);
+}
+function placeModel(kind,x,z,targetH){
+  const list=envAssets[kind]; if(!list||!list.length) return false;
+  const a=list[Math.floor(Math.random()*list.length)]; const m=a.scene.clone(true);
+  const s=(targetH/(a.h||1))*(0.85+Math.random()*0.4); m.scale.setScalar(s);
+  m.position.set(x,terrainH(x,z),z); m.rotation.y=Math.random()*6.28; scene.add(m);
+  colliders.push({x,z,r:Math.max(0.6,targetH*0.12)}); return true;
+}
+
 function scatterWorld(){
   for(let i=0;i<480;i++){
     const a=Math.random()*6.28,d=15+Math.random()*(WORLD/2-24); const x=Math.cos(a)*d,z=Math.sin(a)*d;
@@ -188,10 +216,10 @@ function scatterWorld(){
     if(h<WATER_Y+0.5){ if(h<WATER_Y-0.4){ if(Math.random()<0.5)makeLilyPad(x,z); } else makeReeds(x,z); continue; }
     if(h>16)continue;
     const r=Math.random();
-    if(r<0.28) makeTree(x,z);
-    else if(r<0.46) makePine(x,z);
-    else if(r<0.60) makeRock(x,z);
-    else if(r<0.73) makeBush(x,z);
+    if(r<0.28){ if(!placeModel('tree',x,z,7)) makeTree(x,z); }
+    else if(r<0.46){ if(!placeModel('pine',x,z,8)&&!placeModel('tree',x,z,8)) makePine(x,z); }
+    else if(r<0.60){ if(!placeModel('rock',x,z,1.8)) makeRock(x,z); }
+    else if(r<0.73){ if(!placeModel('bush',x,z,1.4)) makeBush(x,z); }
     else if(r<0.84) makeFern(x,z);
     else if(r<0.92) makeMushroom(x,z);
     else makeLog(x,z);
@@ -498,11 +526,13 @@ async function boot(){
   const bar=$('lbar'),txt=$('ltext');
   try{
     txt.textContent='初始化渲染引擎...'; bar.style.width='20%'; initRenderer();
-    txt.textContent='生成地形与植被...'; bar.style.width='40%'; buildTerrain(); buildWater(); scatterWorld(); buildGrass(); buildFlowers(); buildViewModel(); addControls();
+    bar.style.width='30%'; buildTerrain(); buildWater(); buildViewModel(); addControls();
+    txt.textContent='加载环境模型...'; bar.style.width='45%'; await loadEnvModels();
+    txt.textContent='生成世界...'; bar.style.width='58%'; scatterWorld(); buildGrass(); buildFlowers();
     animate();
-    txt.textContent='加载怪物模型...'; bar.style.width='65%';
+    txt.textContent='加载怪物模型...'; bar.style.width='72%';
     await loadMonsterModel();
-    txt.textContent='召唤野生动物...'; bar.style.width='85%';
+    txt.textContent='召唤野生动物...'; bar.style.width='88%';
     await loadWildlife();
     bar.style.width='100%'; txt.textContent='准备就绪！';
     setTimeout(()=>{ $('loading').classList.add('hidden'); $('start').classList.remove('hidden'); },400);
