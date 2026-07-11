@@ -20,117 +20,214 @@ html, body {
   transition: background 0.6s cubic-bezier(0.4, 0, 0.2, 1), filter 0.3s ease;
 }
 
-/* ============ 默认主题变量 ============ */
+/* ============ 默认主题变量 - 护眼配色（深色柔和版）============ */
 :root, body.skin-classic {
-  --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-  --text-main: #ffffff;
-  --text-dim: rgba(255, 255, 255, 0.7);
-  --accent: #00d4ff;
-  --accent-2: #ff6b9d;
-  --glass-bg: rgba(255, 255, 255, 0.08);
-  --glass-border: rgba(255, 255, 255, 0.18);
-  --cell-hidden: linear-gradient(145deg, rgba(255,255,255,0.15), rgba(255,255,255,0.08));
-  --cell-hidden-hover: linear-gradient(145deg, rgba(255,255,255,0.22), rgba(255,255,255,0.12));
-  --cell-revealed: rgba(255, 255, 255, 0.06);
-  --cell-border: rgba(255, 255, 255, 0.15);
-  --danger: #ff4757;
-  --success: #2ed573;
-  --warning: #ffa502;
-  --gold: #ffd700;
+  /* 极度柔和的深蓝灰渐变背景 */
+  --bg-gradient: radial-gradient(circle at 20% 20%, #1c2531 0%, #14171f 60%, #0d0f14 100%);
+  
+  /* 温和的文字颜色 */
+  --text-main: #d4dae6;
+  --text-dim: #8a93a8;
+  
+  /* 极度柔和的强调色 */
+  --accent: #6b9eca;
+  --accent-2: #88b89d;
+  
+  /* 玻璃效果 */
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  
+  /* 格子颜色 */
+  --cell-hidden: linear-gradient(145deg, #252d3a, #1e2530);
+  --cell-hidden-hover: linear-gradient(145deg, #2d3544, #252d3a);
+  --cell-revealed: rgba(255, 255, 255, 0.02);
+  --cell-border: rgba(255, 255, 255, 0.06);
+  
+  /* 状态颜色 - 极度降低饱和度 */
+  --danger: #c87676;
+  --success: #7db87f;
+  --warning: #d4a574;
+  --gold: #d4bc6f;
+  
+  /* 图标 */
   --mine-icon: "💣";
   --flag-icon: "🚩";
 }
 
+/* 像素风 - 柔和版 */
 body.skin-pixel {
-  --bg-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
-  --accent: #ff0a78;
-  --accent-2: #ffdd00;
+  --bg-gradient: linear-gradient(135deg, #2a3d56 0%, #364a64 50%, #5b5579 100%);
+  --accent: #c76a8a;
+  --accent-2: #d4b76f;
+  --text-main: #e8dfe0;
+  --text-dim: #a89fa8;
+  --danger: #c87676;
+  --gold: #d4bc6f;
   --mine-icon: "👾";
   --flag-icon: "🟥";
 }
 
+/* 海洋主题 - 柔和版 */
 body.skin-ocean {
-  --bg-gradient: linear-gradient(135deg, #0a192f 0%, #1e3a5f 50%, #2c5f8f 100%);
-  --accent: #38d9e0;
-  --accent-2: #4fc3f7;
+  --bg-gradient: linear-gradient(135deg, #1a2e3f 0%, #2a4658 50%, #3a5a6f 100%);
+  --accent: #6badb5;
+  --accent-2: #73a9bd;
+  --text-main: #d8e8f0;
+  --text-dim: #8fa8b8;
+  --danger: #c88074;
+  --gold: #d4bc82;
   --mine-icon: "🐡";
   --flag-icon: "⚓";
 }
 
+/* 太空主题 - 柔和版 */
 body.skin-space {
-  --bg-gradient: linear-gradient(135deg, #1a0033 0%, #330066 50%, #4d0099 100%);
-  --accent: #b389ff;
-  --accent-2: #ff9de2;
+  --bg-gradient: linear-gradient(135deg, #2a2447 0%, #3f3a5f 50%, #544d75 100%);
+  --accent: #9d8dbd;
+  --accent-2: #bd96ab;
+  --text-main: #e8e0f0;
+  --text-dim: #a898be;
+  --danger: #c8767f;
+  --gold: #d4ba84;
   --mine-icon: "☄️";
   --flag-icon: "🚀";
 }
 
+/* 万圣夜主题 - 柔和版 */
 body.skin-halloween {
-  --bg-gradient: linear-gradient(135deg, #2d1b4e 0%, #4a2b6b 50%, #6b3a88 100%);
-  --accent: #ff8c2b;
-  --accent-2: #b06bff;
+  --bg-gradient: linear-gradient(135deg, #3d2d52 0%, #52445f 50%, #685870 100%);
+  --accent: #c88a5f;
+  --accent-2: #9d7fb5;
+  --text-main: #f0e4d8;
+  --text-dim: #b8a0bf;
+  --danger: #c87676;
+  --gold: #d4a874;
   --mine-icon: "🎃";
   --flag-icon: "👻";
 }
 
-
+/* 霓虹赛博 - 柔和版 */
 body.skin-neon {
-  --bg-gradient: linear-gradient(135deg, #0a0e27 0%, #1a1a2e 50%, #16213e 100%);
-  --accent: #00f5ff;
-  --accent-2: #ff2fd0;
-  --glass-bg: rgba(0, 245, 255, 0.06);
-  --glass-border: rgba(0, 245, 255, 0.25);
+  --bg-gradient: linear-gradient(135deg, #1a1e2e 0%, #2a2e3f 50%, #353a4f 100%);
+  --accent: #6bb8bd;
+  --accent-2: #bd7fa5;
+  --text-main: #d8e8f0;
+  --text-dim: #7fabc8;
+  --glass-bg: rgba(107, 184, 189, 0.05);
+  --glass-border: rgba(107, 184, 189, 0.15);
+  --danger: #bd7f84;
+  --gold: #d4c87f;
   --mine-icon: "⚡";
   --flag-icon: "🔺";
 }
 
+/* 森林主题 - 柔和版 */
 body.skin-forest {
-  --bg-gradient: linear-gradient(135deg, #2d5016 0%, #4a7c2e 50%, #6ba346 100%);
-  --accent: #6bff95;
-  --accent-2: #ffd76b;
+  --bg-gradient: linear-gradient(135deg, #2d3f2d 0%, #3f5a47 50%, #52705a 100%);
+  --accent: #7fb58d;
+  --accent-2: #d4bc7f;
+  --text-main: #e0f0e8;
+  --text-dim: #98bfa5;
+  --danger: #c87f76;
+  --gold: #d4bc7f;
   --mine-icon: "👹";
   --flag-icon: "🍃";
 }
 
+/* 糖果乐园 - 柔和版 */
 body.skin-candy {
-  --bg-gradient: linear-gradient(135deg, #d5869d 0%, #e8a8bd 50%, #ffc8dd 100%);
-  --accent: #ff6fb1;
-  --accent-2: #7ee8fa;
+  --bg-gradient: linear-gradient(135deg, #523d52 0%, #6f5570 50%, #8a6f8a 100%);
+  --accent: #bd8da5;
+  --accent-2: #7fb5c8;
+  --text-main: #f0e4f0;
+  --text-dim: #c8a5bf;
+  --danger: #c87f8a;
+  --gold: #d4c082;
   --mine-icon: "🍬";
   --flag-icon: "🍭";
 }
 
-/* 段位专属皮肤 */
+/* 段位专属皮肤 - 柔和版 */
 body.skin-gold {
-  --bg-gradient: linear-gradient(135deg, #f5a623 0%, #ffd700 50%, #ffe44d 100%);
-  --accent: #ffed4e;
-  --accent-2: #ffa500;
+  --bg-gradient: linear-gradient(135deg, #705838 0%, #8f6f45 50%, #a88a5a 100%);
+  --accent: #d4c06f;
+  --accent-2: #c89d5f;
+  --text-main: #f0e8d4;
+  --text-dim: #bdaa8a;
+  --danger: #c8887f;
+  --gold: #d4c06f;
   --mine-icon: "⭐";
   --flag-icon: "💫";
 }
 
 body.skin-diamond {
-  --bg-gradient: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #60a5fa 100%);
-  --accent: #93c5fd;
-  --accent-2: #dbeafe;
+  --bg-gradient: linear-gradient(135deg, #2a3d5a 0%, #3f5a7f 50%, #5a73a5 100%);
+  --accent: #8dadc8;
+  --accent-2: #c8daf0;
+  --text-main: #e0ecf8;
+  --text-dim: #9db8d4;
+  --danger: #c8888f;
+  --gold: #d4c882;
   --mine-icon: "💠";
   --flag-icon: "💎";
 }
 
 body.skin-master {
-  --bg-gradient: linear-gradient(135deg, #581c87 0%, #7c3aed 50%, #a78bfa 100%);
-  --accent: #c4b5fd;
-  --accent-2: #ffd700;
+  --bg-gradient: linear-gradient(135deg, #3d2d5a 0%, #5a4775 50%, #7562a5 100%);
+  --accent: #a58dbd;
+  --accent-2: #d4c06f;
+  --text-main: #e8e0f0;
+  --text-dim: #b8a5d4;
+  --danger: #c8768f;
+  --gold: #d4c882;
   --mine-icon: "👑";
   --flag-icon: "⚜️";
 }
 
 body.skin-king {
-  --bg-gradient: linear-gradient(135deg, #7f1d1d 0%, #dc2626 50%, #f97316 100%);
-  --accent: #fbbf24;
-  --accent-2: #fcd34d;
+  --bg-gradient: linear-gradient(135deg, #5a2d2d 0%, #7f4545 50%, #a55f5a 100%);
+  --accent: #d4a87f;
+  --accent-2: #d4c86f;
+  --text-main: #f0e0d8;
+  --text-dim: #bda098;
+  --danger: #c87f76;
+  --gold: #d4c06f;
   --mine-icon: "🔥";
   --flag-icon: "⚡";
+}
+
+/* ============ 设置按钮选中状态 ============ */
+.eye-mode-btn, .remind-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.eye-mode-btn.active, .remind-btn.active {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2)) !important;
+  color: #0a0d1a !important;
+  font-weight: 800;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(91, 156, 202, 0.4);
+}
+
+.eye-mode-btn.active::before, .remind-btn.active::before {
+  content: '✓';
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  font-weight: 900;
+}
+
+/* 切换开关样式 */
+input[type="checkbox"]:checked + span {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2)) !important;
+}
+
+input[type="checkbox"]:checked + span + span {
+  transform: translateX(22px) !important;
+  background: #fff !important;
 }
 
 /* ============ 背景粒子层 ============ */
@@ -686,6 +783,12 @@ body.skin-king {
 .cell.mine-cell.revealed::before {
   content: var(--mine-icon);
   animation: mineExplode 0.4s ease;
+}
+
+/* 开发者模式：偷看未翻开的地雷 */
+.cell.dev-peek {
+  box-shadow: inset 0 0 0 2px rgba(255, 80, 80, 0.7), 0 0 8px rgba(255, 80, 80, 0.4);
+  opacity: 0.72;
 }
 
 @keyframes mineExplode {

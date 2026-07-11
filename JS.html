@@ -14,22 +14,22 @@ const DIFFS = {
 };
 
 const ITEMS = {
-  scan:     { name:'扫描',     icon:'🔍', desc:'随机揭示一个安全格',   price:20 },
-  autoflag: { name:'自动标记', icon:'🚩', desc:'自动标记一个地雷',     price:20 },
-  freeze:   { name:'时间冻结', icon:'⏸️', desc:'暂停计时10秒',        price:15 },
-  defuse:   { name:'拆弹',     icon:'💥', desc:'移除盘面上一个地雷',   price:30 },
-  undo:     { name:'撤销',     icon:'↩️', desc:'踩雷后可撤回上一步',   price:40 }
+  scan:     { name:'扫描',     nameEn:'Scan',      icon:'🔍', desc:'随机揭示一个安全格',   descEn:'Reveal a random safe cell',   price:20 },
+  autoflag: { name:'自动标记', nameEn:'Auto Flag', icon:'🚩', desc:'自动标记一个地雷',     descEn:'Auto-flag one mine',          price:20 },
+  freeze:   { name:'时间冻结', nameEn:'Freeze',    icon:'⏸️', desc:'暂停计时10秒',        descEn:'Pause the timer for 10s',      price:15 },
+  defuse:   { name:'拆弹',     nameEn:'Defuse',    icon:'💥', desc:'移除盘面上一个地雷',   descEn:'Remove one mine from board',  price:30 },
+  undo:     { name:'撤销',     nameEn:'Undo',      icon:'↩️', desc:'踩雷后可撤回上一步',   descEn:'Undo after hitting a mine',   price:40 }
 };
 
 const SKINS = {
-  classic:   { name:'经典渐变', price:0,   icon:'⬜' },
-  pixel:     { name:'复古像素', price:80,  icon:'👾' },
-  ocean:     { name:'深海秘境', price:100, icon:'🐡' },
-  space:     { name:'太空漫游', price:100, icon:'☄️' },
-  halloween: { name:'万圣夜',   price:80,  icon:'🎃' },
-  neon:      { name:'霓虹赛博', price:120, icon:'⚡' },
-  forest:    { name:'萌兽森林', price:150, icon:'👹' },
-  candy:     { name:'糖果乐园', price:80,  icon:'🍬' }
+  classic:   { name:'经典渐变', nameEn:'Classic',    price:0,   icon:'⬜' },
+  pixel:     { name:'复古像素', nameEn:'Retro Pixel',price:80,  icon:'👾' },
+  ocean:     { name:'深海秘境', nameEn:'Deep Ocean', price:100, icon:'🐡' },
+  space:     { name:'太空漫游', nameEn:'Space',      price:100, icon:'☄️' },
+  halloween: { name:'万圣夜',   nameEn:'Halloween',  price:80,  icon:'🎃' },
+  neon:      { name:'霓虹赛博', nameEn:'Neon Cyber', price:120, icon:'⚡' },
+  forest:    { name:'萌兽森林', nameEn:'Forest',     price:150, icon:'👹' },
+  candy:     { name:'糖果乐园', nameEn:'Candy Land', price:80,  icon:'🍬' }
 };
 
 // 段位专属皮肤
@@ -41,50 +41,50 @@ const RANK_SKINS = {
 };
 
 const BACKGROUNDS = {
-  none:      { name:'无背景', price:0, icon:'⚪', desc:'默认背景' },
-  particles: { name:'粒子星空', price:50, icon:'✨', desc:'动态粒子背景' },
-  gradient:  { name:'流动渐变', price:40, icon:'🌈', desc:'动态渐变效果' },
-  matrix:    { name:'黑客矩阵', price:60, icon:'💻', desc:'代码雨效果' },
-  firefly:   { name:'萤火之森', price:70, icon:'🔥', desc:'飘动萤火虫' }
+  none:      { name:'无背景', nameEn:'None',      price:0, icon:'⚪', desc:'默认背景',     descEn:'Default background' },
+  particles: { name:'粒子星空', nameEn:'Particles', price:50, icon:'✨', desc:'动态粒子背景', descEn:'Animated particle background' },
+  gradient:  { name:'流动渐变', nameEn:'Gradient',  price:40, icon:'🌈', desc:'动态渐变效果', descEn:'Animated gradient effect' },
+  matrix:    { name:'黑客矩阵', nameEn:'Matrix',    price:60, icon:'💻', desc:'代码雨效果',   descEn:'Code rain effect' },
+  firefly:   { name:'萤火之森', nameEn:'Fireflies', price:70, icon:'🔥', desc:'飘动萤火虫',   descEn:'Floating fireflies' }
 };
 
 
 const SOUND_PACKS = {
-  classic: { name:'经典', price:0, icon:'🔊', desc:'默认音效' },
-  retro:   { name:'复古', price:50, icon:'🎮', desc:'8-bit游戏音' },
-  nature:  { name:'自然', price:60, icon:'🍃', desc:'大自然声音' },
-  scifi:   { name:'科幻', price:70, icon:'🚀', desc:'未来科技音' }
+  classic: { name:'经典', nameEn:'Classic', price:0, icon:'🔊', desc:'默认音效',   descEn:'Default sounds' },
+  retro:   { name:'复古', nameEn:'Retro',   price:50, icon:'🎮', desc:'8-bit游戏音', descEn:'8-bit game sounds' },
+  nature:  { name:'自然', nameEn:'Nature',  price:60, icon:'🍃', desc:'大自然声音', descEn:'Nature sounds' },
+  scifi:   { name:'科幻', nameEn:'Sci-Fi',  price:70, icon:'🚀', desc:'未来科技音', descEn:'Futuristic tech sounds' }
 };
 
 const EFFECTS = {
-  none:      { name:'无特效', price:0, icon:'⚪', desc:'无额外特效' },
-  confetti:  { name:'彩纸', price:50, icon:'🎊', desc:'胜利彩纸雨' },
-  firework:  { name:'烟花', price:60, icon:'🎆', desc:'烟花绽放' },
-  rainbow:   { name:'彩虹', price:55, icon:'🌈', desc:'彩虹光效' }
+  none:      { name:'无特效', nameEn:'None',     price:0, icon:'⚪', desc:'无额外特效', descEn:'No extra effects' },
+  confetti:  { name:'彩纸',   nameEn:'Confetti', price:50, icon:'🎊', desc:'胜利彩纸雨', descEn:'Victory confetti rain' },
+  firework:  { name:'烟花',   nameEn:'Firework', price:60, icon:'🎆', desc:'烟花绽放',   descEn:'Firework burst' },
+  rainbow:   { name:'彩虹',   nameEn:'Rainbow',  price:55, icon:'🌈', desc:'彩虹光效',   descEn:'Rainbow glow' }
 };
 
 // BGM 音乐列表
 const BGM_TRACKS = {
-  calm:      { name:'宁静旋律', price:0,   icon:'🎹', bpm:60,  style:'钢琴' },
-  electronic:{ name:'电子节拍', price:40,  icon:'🎸', bpm:100, style:'电子' },
-  jazz:      { name:'爵士夜晚', price:50,  icon:'🎺', bpm:80,  style:'爵士' },
-  rock:      { name:'摇滚冲击', price:60,  icon:'🥁', bpm:120, style:'摇滚' },
-  space:     { name:'太空漫游', price:60,  icon:'🌌', bpm:0,   style:'氛围' },
-  classical: { name:'古典华尔兹',price:70,  icon:'🎻', bpm:70,  style:'古典' },
-  pop:       { name:'流行旋律', price:50,  icon:'🎤', bpm:110, style:'流行' },
-  cyber:     { name:'赛博朋克', price:80,  icon:'🎧', bpm:130, style:'合成波' },
-  tribal:    { name:'部落鼓点', price:60,  icon:'🪘', bpm:90,  style:'民族' },
-  epic:      { name:'史诗交响', price:100, icon:'🎼', bpm:140, style:'史诗' }
+  calm:      { name:'宁静旋律', nameEn:'Calm Melody',   price:0,   icon:'🎹', bpm:60,  style:'钢琴',   styleEn:'Piano' },
+  electronic:{ name:'电子节拍', nameEn:'Electro Beat',  price:40,  icon:'🎸', bpm:100, style:'电子',   styleEn:'Electronic' },
+  jazz:      { name:'爵士夜晚', nameEn:'Jazz Night',    price:50,  icon:'🎺', bpm:80,  style:'爵士',   styleEn:'Jazz' },
+  rock:      { name:'摇滚冲击', nameEn:'Rock Impact',   price:60,  icon:'🥁', bpm:120, style:'摇滚',   styleEn:'Rock' },
+  space:     { name:'太空漫游', nameEn:'Space Drift',   price:60,  icon:'🌌', bpm:0,   style:'氛围',   styleEn:'Ambient' },
+  classical: { name:'古典华尔兹',nameEn:'Classic Waltz', price:70,  icon:'🎻', bpm:70,  style:'古典',   styleEn:'Classical' },
+  pop:       { name:'流行旋律', nameEn:'Pop Melody',    price:50,  icon:'🎤', bpm:110, style:'流行',   styleEn:'Pop' },
+  cyber:     { name:'赛博朋克', nameEn:'Cyberpunk',     price:80,  icon:'🎧', bpm:130, style:'合成波', styleEn:'Synthwave' },
+  tribal:    { name:'部落鼓点', nameEn:'Tribal Drums',  price:60,  icon:'🪘', bpm:90,  style:'民族',   styleEn:'Tribal' },
+  epic:      { name:'史诗交响', nameEn:'Epic Symphony', price:100, icon:'🎼', bpm:140, style:'史诗',   styleEn:'Epic' }
 };
 
 // 段位配置
 const RANKS = {
-  bronze:  { name:'青铜', icon:'◆', color:'#8B4513', minScore:0,    skin:null },
-  silver:  { name:'白银', icon:'◇', color:'#C0C0C0', minScore:200,  skin:null },
-  gold:    { name:'黄金', icon:'✦', color:'#FFD700', minScore:500,  skin:'gold' },
-  diamond: { name:'钻石', icon:'❖', color:'#4169E1', minScore:800,  skin:'diamond' },
-  master:  { name:'大师', icon:'✧', color:'#9400D3', minScore:1150, skin:'master' },
-  king:    { name:'王者', icon:'✺', color:'#FF4500', minScore:1550, skin:'king' }
+  bronze:  { name:'青铜', nameEn:'Bronze',  icon:'◆', color:'#8B4513', minScore:0,    skin:null },
+  silver:  { name:'白银', nameEn:'Silver',  icon:'◇', color:'#C0C0C0', minScore:200,  skin:null },
+  gold:    { name:'黄金', nameEn:'Gold',    icon:'✦', color:'#FFD700', minScore:500,  skin:'gold' },
+  diamond: { name:'钻石', nameEn:'Diamond', icon:'❖', color:'#4169E1', minScore:800,  skin:'diamond' },
+  master:  { name:'大师', nameEn:'Master',  icon:'✧', color:'#9400D3', minScore:1150, skin:'master' },
+  king:    { name:'王者', nameEn:'King',    icon:'✺', color:'#FF4500', minScore:1550, skin:'king' }
 };
 
 // 特殊地雷类型
@@ -96,6 +96,394 @@ const SPECIAL_MINE_TYPES = {
 };
 
 const DIFF_LABEL = { easy:'简单', medium:'中等', hard:'困难', custom:'自定义', special:'特殊地雷' };
+const DIFF_LABEL_EN = { easy:'Easy', medium:'Medium', hard:'Hard', custom:'Custom', special:'Special' };
+function dl(k){ return (SAVE.language === 'en' ? DIFF_LABEL_EN[k] : DIFF_LABEL[k]) || k; }
+
+/* =========================================================
+   成就系统
+========================================================= */
+const ACHIEVEMENTS = {
+  // 基础成就
+  firstWin: { 
+    name: { zh: '首次胜利', en: 'First Victory' },
+    desc: { zh: '完成第一局游戏', en: 'Complete your first game' },
+    icon: '🎉',
+    reward: 50,
+    check: (s) => s.rank.wins >= 1
+  },
+  win10: {
+    name: { zh: '小试牛刀', en: 'Getting Started' },
+    desc: { zh: '获得10次胜利', en: 'Win 10 games' },
+    icon: '🏅',
+    reward: 100,
+    check: (s) => s.rank.wins >= 10
+  },
+  win50: {
+    name: { zh: '扫雷达人', en: 'Minesweeper Pro' },
+    desc: { zh: '获得50次胜利', en: 'Win 50 games' },
+    icon: '🏆',
+    reward: 300,
+    check: (s) => s.rank.wins >= 50
+  },
+  win100: {
+    name: { zh: '扫雷大师', en: 'Master Sweeper' },
+    desc: { zh: '获得100次胜利', en: 'Win 100 games' },
+    icon: '👑',
+    reward: 500,
+    check: (s) => s.rank.wins >= 100
+  },
+  
+  // 速度成就
+  speedEasy: {
+    name: { zh: '闪电新手', en: 'Lightning Rookie' },
+    desc: { zh: '简单模式30秒内通关', en: 'Beat Easy in 30 seconds' },
+    icon: '⚡',
+    reward: 100,
+    check: (s) => s.best.easy.time && s.best.easy.time <= 30
+  },
+  speedMedium: {
+    name: { zh: '极速挑战', en: 'Speed Demon' },
+    desc: { zh: '中等模式90秒内通关', en: 'Beat Medium in 90 seconds' },
+    icon: '🚀',
+    reward: 200,
+    check: (s) => s.best.medium.time && s.best.medium.time <= 90
+  },
+  speedHard: {
+    name: { zh: '光速传说', en: 'Light Speed Legend' },
+    desc: { zh: '困难模式240秒内通关', en: 'Beat Hard in 240 seconds' },
+    icon: '💫',
+    reward: 500,
+    check: (s) => s.best.hard.time && s.best.hard.time <= 240
+  },
+  
+  // 完美成就
+  noFlag: {
+    name: { zh: '纯推理大师', en: 'Pure Logic Master' },
+    desc: { zh: '不使用标旗通关一次', en: 'Win without using flags' },
+    icon: '🧠',
+    reward: 200,
+    check: (s) => s.achievements.stats.noFlagWin >= 1
+  },
+  noItem: {
+    name: { zh: '公平竞技', en: 'Fair Play' },
+    desc: { zh: '不使用道具通关10次', en: 'Win 10 times without items' },
+    icon: '⚖️',
+    reward: 300,
+    check: (s) => s.achievements.stats.noItemWin >= 10
+  },
+  
+  // 金币成就
+  rich: {
+    name: { zh: '腰缠万贯', en: 'Wealthy' },
+    desc: { zh: '累计获得1000金币', en: 'Earn 1000 coins total' },
+    icon: '💰',
+    reward: 200,
+    check: (s) => s.statistics.totalCoinsEarned >= 1000
+  },
+  bigWin: {
+    name: { zh: '一夜暴富', en: 'Jackpot' },
+    desc: { zh: '单局获得50金币', en: 'Earn 50 coins in one game' },
+    icon: '💎',
+    reward: 150,
+    check: (s) => s.statistics.maxSingleEarn >= 50
+  },
+  
+  // 勤奋成就
+  play100: {
+    name: { zh: '热爱扫雷', en: 'Minesweeper Enthusiast' },
+    desc: { zh: '游戏总局数达到100', en: 'Play 100 games total' },
+    icon: '🎮',
+    reward: 200,
+    check: (s) => s.statistics.totalGames >= 100
+  },
+  dailyStreak7: {
+    name: { zh: '每日必扫', en: 'Daily Habit' },
+    desc: { zh: '连续签到7天', en: 'Check in for 7 days straight' },
+    icon: '📅',
+    reward: 300,
+    check: (s) => s.daily.consecutiveDays >= 7
+  },
+  
+  // 生存模式成就
+  survival5: {
+    name: { zh: '生存专家', en: 'Survival Expert' },
+    desc: { zh: '生存模式连胜5次', en: '5 win streak in Survival' },
+    icon: '🔥',
+    reward: 250,
+    check: (s) => s.survival.maxStreak >= 5
+  },
+  survival10: {
+    name: { zh: '不死战神', en: 'Unstoppable' },
+    desc: { zh: '生存模式连胜10次', en: '10 win streak in Survival' },
+    icon: '🌟',
+    reward: 500,
+    check: (s) => s.survival.maxStreak >= 10
+  },
+  
+  // 段位成就
+  rankGold: {
+    name: { zh: '晋升黄金', en: 'Golden Promotion' },
+    desc: { zh: '达到黄金段位', en: 'Reach Gold rank' },
+    icon: '✦',
+    reward: 300,
+    check: (s) => (s.rank.score || 0) >= 500
+  },
+  rankDiamond: {
+    name: { zh: '钻石荣耀', en: 'Diamond Glory' },
+    desc: { zh: '达到钻石段位', en: 'Reach Diamond rank' },
+    icon: '❖',
+    reward: 500,
+    check: (s) => (s.rank.score || 0) >= 800
+  },
+  rankKing: {
+    name: { zh: '王者降临', en: 'King Ascension' },
+    desc: { zh: '达到王者段位', en: 'Reach King rank' },
+    icon: '✺',
+    reward: 1000,
+    check: (s) => (s.rank.score || 0) >= 1550
+  },
+  
+  // 特殊成就
+  luckyDay: {
+    name: { zh: '幸运女神', en: 'Lucky Day' },
+    desc: { zh: '触发5次宝藏地雷', en: 'Trigger 5 treasure mines' },
+    icon: '🍀',
+    reward: 200,
+    check: (s) => s.achievements.stats.treasureMines >= 5
+  },
+  explorer: {
+    name: { zh: '全模式探索者', en: 'Mode Explorer' },
+    desc: { zh: '体验所有4种游戏模式', en: 'Try all 4 game modes' },
+    icon: '🗺️',
+    reward: 150,
+    check: (s) => {
+      const modes = s.achievements.stats.modesPlayed || [];
+      return modes.includes('classic') && modes.includes('survival') && 
+             modes.includes('zen') && modes.includes('special');
+    }
+  }
+};
+
+/* =========================================================
+   多语言支持
+========================================================= */
+const LANG = {
+  zh: {
+    // 游戏模式
+    classicMode: '经典模式',
+    survivalMode: '生存模式',
+    zenMode: '禅模式',
+    specialMode: '特殊地雷',
+    
+    // 难度
+    easy: '简单',
+    medium: '中等',
+    hard: '困难',
+    custom: '自定义',
+    
+    // 通用
+    coins: '金币',
+    time: '用时',
+    operations: '总操作',
+    mistakes: '发现失误',
+    position: '位置',
+    row: '行',
+    col: '列',
+    
+    // 按钮
+    start: '开始',
+    playAgain: '再玩一次',
+    backToHome: '返回首页',
+    close: '关闭',
+    confirm: '确定',
+    cancel: '取消',
+    viewReview: '查看失误分析',
+    highlight: '高亮显示',
+    highlightArea: '高亮显示区域',
+    backToGame: '返回游戏画面',
+    
+    // 失误类型
+    fatalMistake: '致命失误',
+    shouldFlag: '漏标地雷',
+    wrongFlag: '错误标旗',
+    missedSafe: '漏掉的安全格',
+    lastMove: '最后一步',
+    
+    // 描述
+    fatalDesc: '踩到地雷导致游戏失败',
+    shouldFlagDesc: '周围的隐藏格子都应该先标旗',
+    wrongFlagDesc: '标记了非地雷位置，可能干扰判断',
+    missedSafeDesc: '周围已标够旗，其他格子是安全的',
+    
+    // 统计
+    gameStats: '游戏统计',
+    totalGames: '总局数',
+    wins: '胜场',
+    winRate: '胜率',
+    perfectWins: '完美通关',
+    coinStats: '金币统计',
+    currentCoins: '当前金币',
+    totalEarned: '累计获得',
+    totalSpent: '累计消费',
+    maxEarn: '单局最高',
+    timeStats: '时间统计',
+    totalTime: '总游戏时长',
+    easyBest: '简单最快',
+    mediumBest: '中等最快',
+    hardBest: '困难最快',
+    operationStats: '操作统计',
+    totalClicks: '总点击次数',
+    totalFlags: '插旗次数',
+    itemsUsed: '使用道具次数',
+    
+    // 设置
+    settings: '设置',
+    eyeProtection: '护眼模式',
+    eyeProtectionDesc: '减少蓝光和屏幕亮度，保护眼睛健康',
+    off: '关闭',
+    light: '轻度',
+    medium: '中度',
+    strong: '强力',
+    gameReminder: '游戏时长提醒',
+    reminderDesc: '长时间游戏会提醒休息',
+    vibrationFeedback: '震动反馈',
+    vibrationDesc: '触碰时提供触觉反馈',
+    particleEffects: '粒子特效',
+    particleDesc: '背景动态粒子效果',
+    dataManagement: '数据管理',
+    exportData: '导出存档数据',
+    importData: '导入存档数据',
+    resetData: '清空所有数据',
+    language: '语言',
+    
+    // 消息
+    devModeOn: '开发者模式已开启',
+    devModeOff: '开发者模式已关闭',
+    wrongPassword: '密码错误',
+    checkinSuccess: '签到成功！获得',
+    noMistakes: '没有发现明显失误',
+    dataExported: '数据已导出到剪贴板',
+    dataImported: '数据导入成功',
+    dataReset: '所有数据已清空',
+    confirmReset: '确定要清空所有数据吗？此操作不可恢复！',
+    times: '次',
+    places: '处',
+    got: '获得',
+    gameFailed: '游戏失败',
+    reminderOff: '已关闭时长提醒',
+    achievementUnlocked: '成就解锁'
+  },
+  en: {
+    // Game modes
+    classicMode: 'Classic',
+    survivalMode: 'Survival',
+    zenMode: 'Zen',
+    specialMode: 'Special Mines',
+    
+    // Difficulty
+    easy: 'Easy',
+    medium: 'Medium',
+    hard: 'Hard',
+    custom: 'Custom',
+    
+    // Common
+    coins: 'Coins',
+    time: 'Time',
+    operations: 'Total Moves',
+    mistakes: 'Mistakes Found',
+    position: 'Position',
+    row: 'Row',
+    col: 'Col',
+    
+    // Buttons
+    start: 'Start',
+    playAgain: 'Play Again',
+    backToHome: 'Back to Home',
+    close: 'Close',
+    confirm: 'Confirm',
+    cancel: 'Cancel',
+    viewReview: 'View Mistake Analysis',
+    highlight: 'Highlight',
+    highlightArea: 'Highlight Area',
+    backToGame: 'Back to Game',
+    
+    // Mistake types
+    fatalMistake: 'Fatal Mistake',
+    shouldFlag: 'Missed Mine Flag',
+    wrongFlag: 'Wrong Flag',
+    missedSafe: 'Missed Safe Cell',
+    lastMove: 'Last Move',
+    
+    // Descriptions
+    fatalDesc: 'Hit mine and caused game over',
+    shouldFlagDesc: 'All hidden cells around should be flagged first',
+    wrongFlagDesc: 'Flagged non-mine positions, may interfere with judgment',
+    missedSafeDesc: 'Enough flags around, other cells are safe',
+    
+    // Statistics
+    gameStats: 'Game Statistics',
+    totalGames: 'Total Games',
+    wins: 'Wins',
+    winRate: 'Win Rate',
+    perfectWins: 'Perfect Wins',
+    coinStats: 'Coin Statistics',
+    currentCoins: 'Current Coins',
+    totalEarned: 'Total Earned',
+    totalSpent: 'Total Spent',
+    maxEarn: 'Max Single Earn',
+    timeStats: 'Time Statistics',
+    totalTime: 'Total Play Time',
+    easyBest: 'Easy Best',
+    mediumBest: 'Medium Best',
+    hardBest: 'Hard Best',
+    operationStats: 'Operation Statistics',
+    totalClicks: 'Total Clicks',
+    totalFlags: 'Total Flags',
+    itemsUsed: 'Items Used',
+    
+    // Settings
+    settings: 'Settings',
+    eyeProtection: 'Eye Protection',
+    eyeProtectionDesc: 'Reduce blue light and screen brightness to protect eye health',
+    off: 'Off',
+    light: 'Light',
+    medium: 'Medium',
+    strong: 'Strong',
+    gameReminder: 'Play Time Reminder',
+    reminderDesc: 'Reminder to rest after long play time',
+    vibrationFeedback: 'Vibration Feedback',
+    vibrationDesc: 'Provide haptic feedback on touch',
+    particleEffects: 'Particle Effects',
+    particleDesc: 'Dynamic particle background effects',
+    dataManagement: 'Data Management',
+    exportData: 'Export Save Data',
+    importData: 'Import Save Data',
+    resetData: 'Clear All Data',
+    language: 'Language',
+    
+    // Messages
+    devModeOn: 'Developer mode enabled',
+    devModeOff: 'Developer mode disabled',
+    wrongPassword: 'Wrong password',
+    checkinSuccess: 'Check-in successful! Got',
+    noMistakes: 'No obvious mistakes found',
+    dataExported: 'Data exported to clipboard',
+    dataImported: 'Data imported successfully',
+    dataReset: 'All data has been cleared',
+    confirmReset: 'Are you sure you want to clear all data? This cannot be undone!',
+    times: 'times',
+    places: 'places',
+    got: 'Got',
+    gameFailed: 'Game Failed',
+    reminderOff: 'Play time reminder disabled',
+    achievementUnlocked: 'Achievement Unlocked'
+  }
+};
+
+function t(key) {
+  const lang = SAVE.language || 'zh';
+  return LANG[lang][key] || key;
+}
 
 
 /* =========================================================
@@ -106,6 +494,7 @@ const SAVE_KEY = 'ms_save_v3';
 function createDefaultSave() {
   return {
     coins: 0,
+    language: 'zh', // 'zh' or 'en'
     ownedItems: { scan:0, autoflag:0, freeze:0, defuse:0, undo:0 },
     ownedSkins: ['classic'],
     activeSkin: 'classic',
@@ -127,12 +516,13 @@ function createDefaultSave() {
     achievements: { unlocked:[], stats:{} },
     rank: { wins:0, losses:0, score:0, currentRank:'bronze' },
     statistics: {
-      totalGames:0, totalWins:0, totalLosses:0, totalPlayTime:0,
-      byDifficulty: {}, totalCoinsEarned:0, totalCoinsSpent:0,
+      totalGames:0, totalWins:0, totalLosses:0, totalPlayTime:0, totalClicks:0, totalFlags:0, totalItemsUsed:0,
+      byDifficulty: {}, totalCoinsEarned:0, totalCoinsSpent:0, maxSingleEarn:0,
       firstPlayDate:null, lastPlayDate:null, activeDays:0
     },
-    eyeProtection: { enabled:false, mode:'auto', intensity:'medium', reminderInterval:30 },
+    eyeProtection: { enabled:false, intensity:'off', reminderInterval:0 },
     musicPlayer: { volume:0.7, bgmVolume:0.8, sfxVolume:0.6, playing:false, mode:'loop' },
+    settings: { vibration:false, particles:true, noGuess:true },
     devMode: false,
     devModeBackupCoins: null
   };
@@ -155,6 +545,8 @@ function loadState() {
     if (!s.musicPlayer) s.musicPlayer = defaults.musicPlayer;
     if (!s.ownedBGM) s.ownedBGM = ['calm'];
     if (!s.activeBGM) s.activeBGM = 'calm';
+    if (!s.settings) s.settings = defaults.settings;
+    if (typeof s.settings.noGuess === 'undefined') s.settings.noGuess = true;
   }
   return s;
 }
@@ -170,7 +562,9 @@ let SAVE = loadState();
    振动反馈
 ========================================================= */
 function vibrate(pattern) {
-  if (navigator.vibrate) navigator.vibrate(pattern);
+  if (SAVE.settings && SAVE.settings.vibration && navigator.vibrate) {
+    navigator.vibrate(pattern);
+  }
 }
 
 const Vibration = {
@@ -197,26 +591,41 @@ function beep(freq, dur, type, gain, pack) {
     const osc = ctx.createOscillator();
     const g = ctx.createGain();
     
-    // 根据音效包调整参数
+    // 根据音效包调整参数（让各音效包差异明显）
+    let sweep = 0;           // 频率滑音（scifi 用）
+    let detuneVal = 0;
     if (pack === 'retro') {
+      // 8-bit 芯片音：方波、偏低、短促清脆
       type = 'square';
-      freq *= 0.8;
-      gain *= 1.2;
+      freq *= 0.75;
+      gain *= 1.4;
+      dur *= 0.7;
     } else if (pack === 'nature') {
-      type = 'sine';
-      gain *= 0.6;
-      dur *= 1.5;
+      // 自然：柔和三角波、更轻更长、略低
+      type = 'triangle';
+      freq *= 0.9;
+      gain *= 0.75;
+      dur *= 1.7;
     } else if (pack === 'scifi') {
+      // 科幻：锯齿波、偏高、带上扬滑音和失谐
       type = 'sawtooth';
-      freq *= 1.3;
+      freq *= 1.4;
+      dur *= 1.2;
+      sweep = freq * 0.5;
+      detuneVal = 12;
     }
     
     osc.type = type || 'sine';
     osc.frequency.value = freq;
-    g.gain.value = (gain || 0.08) * (SAVE.musicPlayer.sfxVolume || 0.6);
+    if (detuneVal) osc.detune.value = detuneVal;
+    g.gain.value = (gain || 0.08) * (SAVE.musicPlayer.sfxVolume != null ? SAVE.musicPlayer.sfxVolume : 0.6);
     osc.connect(g);
     g.connect(ctx.destination);
     osc.start();
+    if (sweep) {
+      // 科幻上扬滑音
+      osc.frequency.exponentialRampToValueAtTime(Math.max(20, freq + sweep), ctx.currentTime + dur);
+    }
     g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + dur);
     osc.stop(ctx.currentTime + dur);
   } catch(e) {}
@@ -280,6 +689,9 @@ function getUserDate() {
 function fmtTime(sec) {
   sec = Math.round(sec);
   const m = Math.floor(sec / 60), s = sec % 60;
+  if (SAVE.language === 'en') {
+    return (m > 0 ? m + 'm ' : '') + s + 's';
+  }
   return (m > 0 ? m + '分' : '') + s + '秒';
 }
 
@@ -295,36 +707,90 @@ function refreshCoinDisplays() {
   const display = SAVE.devMode ? '∞' : SAVE.coins;
   $('#coin-count-home').textContent = display;
   if ($('#coin-count-shop')) $('#coin-count-shop').textContent = display;
+  
+  // 更新玩家卡片信息
+  updatePlayerCard();
+}
+
+function updatePlayerCard() {
+  // 更新段位信息
+  const score = calculateRankScore();
+  let currentRank = 'bronze';
+  for (const [key, rank] of Object.entries(RANKS)) {
+    if (score >= rank.minScore) currentRank = key;
+  }
+  
+  const rankData = RANKS[currentRank];
+  const rankIcon = $('#player-rank-icon');
+  const rankName = $('#player-rank-name');
+  const rankScore = $('#player-rank-score');
+  
+  if (rankIcon) {
+    rankIcon.className = `rank-icon rank-${currentRank}`;
+    rankIcon.textContent = rankData.icon;
+  }
+  
+  if (rankName) rankName.textContent = L(rankData, 'name');
+  if (rankScore) rankScore.textContent = Math.round(score) + t('score_unit');
+  
+  // 更新胜率
+  const winrate = SAVE.statistics.totalGames > 0 
+    ? Math.round((SAVE.statistics.totalWins / SAVE.statistics.totalGames) * 100) 
+    : 0;
+  const winrateEl = $('#player-winrate');
+  if (winrateEl) winrateEl.textContent = winrate + '%';
+
+  updateRankedPanel();
+}
+
+// 更新首页段位赛面板上的段位分显示
+function updateRankedPanel() {
+  const score = calculateRankScore();
+  const key = rankKeyForScore(score);
+  const rd = RANKS[key];
+  if (!rd) return;
+  const icon = $('#ranked-rank-icon');
+  if (icon) { icon.className = 'rank-icon rank-' + key; icon.textContent = rd.icon; }
+  if ($('#ranked-rank-name')) $('#ranked-rank-name').textContent = L(rd, 'name');
+  if ($('#ranked-score')) $('#ranked-score').textContent = Math.round(score);
 }
 
 /* =========================================================
-   背景特效系统（实时渲染）
+   背景特效系统（实时渲染 - 增强版）
 ========================================================= */
 function applyBackground() {
   const bg = $('#particles-bg');
   if (!bg) return;
   bg.innerHTML = '';
+  bg.style.cssText = ''; // 清除之前的样式
   
-  if (SAVE.activeBackground === 'particles') {
+  const activeBg = SAVE.activeBackground || 'none';
+  
+  if (activeBg === 'particles') {
     createParticles(bg);
-  } else if (SAVE.activeBackground === 'gradient') {
+  } else if (activeBg === 'gradient') {
     createGradientAnimation(bg);
-  } else if (SAVE.activeBackground === 'matrix') {
+  } else if (activeBg === 'matrix') {
     createMatrixRain(bg);
-  } else if (SAVE.activeBackground === 'firefly') {
+  } else if (activeBg === 'firefly') {
     createFireflies(bg);
   }
 }
 
 function createParticles(container) {
-  for (let i = 0; i < 30; i++) {
+  // 增加数量和可见度
+  for (let i = 0; i < 50; i++) {
     const particle = document.createElement('div');
-    const size = Math.random() * 4 + 2;
+    const size = Math.random() * 6 + 3;
+    const duration = Math.random() * 15 + 10;
     particle.style.cssText = `
       position:absolute;width:${size}px;height:${size}px;
-      background:rgba(255,255,255,${Math.random()*0.8+0.2});border-radius:50%;
-      left:${Math.random()*100}%;top:${Math.random()*100}%;
-      animation:float ${Math.random()*10+10}s infinite ease-in-out;
+      background:rgba(255,255,255,${Math.random()*0.6+0.4});
+      border-radius:50%;
+      left:${Math.random()*100}%;
+      top:${Math.random()*100}%;
+      animation:float ${duration}s infinite ease-in-out;
+      box-shadow:0 0 ${size*2}px rgba(255,255,255,0.5);
     `;
     container.appendChild(particle);
   }
@@ -332,21 +798,42 @@ function createParticles(container) {
   if (!document.getElementById('particle-style')) {
     const style = document.createElement('style');
     style.id = 'particle-style';
-    style.textContent = `@keyframes float{0%,100%{transform:translateY(0)translateX(0);opacity:0}50%{opacity:1}100%{transform:translateY(-100vh)translateX(${Math.random()*100-50}px)}}`;
+    style.textContent = `
+      @keyframes float{
+        0%{transform:translateY(100vh) translateX(0) scale(0);opacity:0}
+        10%{opacity:1}
+        90%{opacity:1}
+        100%{transform:translateY(-20vh) translateX(${Math.random()*200-100}px) scale(1.5);opacity:0}
+      }
+    `;
     document.head.appendChild(style);
   }
 }
 
-
 function createGradientAnimation(container) {
   container.style.cssText = `
-    background:linear-gradient(45deg,#ff6b9d,#c06c84,#6c5b7b,#355c7d);
-    background-size:400% 400%;animation:gradientMove 15s ease infinite;
+    position:fixed;inset:0;z-index:-1;
+    background:linear-gradient(45deg,
+      rgba(107,158,202,0.3),
+      rgba(136,184,157,0.3),
+      rgba(202,141,166,0.3),
+      rgba(157,136,189,0.3)
+    );
+    background-size:400% 400%;
+    animation:gradientMove 20s ease infinite;
   `;
   if (!document.getElementById('gradient-style')) {
     const style = document.createElement('style');
     style.id = 'gradient-style';
-    style.textContent = `@keyframes gradientMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}`;
+    style.textContent = `
+      @keyframes gradientMove{
+        0%{background-position:0% 50%}
+        25%{background-position:100% 50%}
+        50%{background-position:100% 100%}
+        75%{background-position:0% 100%}
+        100%{background-position:0% 50%}
+      }
+    `;
     document.head.appendChild(style);
   }
 }
@@ -355,19 +842,19 @@ function createMatrixRain(container) {
   const canvas = document.createElement('canvas');
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-  canvas.style.cssText = 'width:100%;height:100%;';
+  canvas.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;';
   container.appendChild(canvas);
   
   const ctx = canvas.getContext('2d');
-  const chars = '01アイウエオカキクケコ';
-  const fontSize = 14;
+  const chars = '01アイウエオカキクケコサシスセソタチツテト';
+  const fontSize = 16;
   const columns = Math.floor(canvas.width / fontSize);
   const drops = Array(columns).fill(1);
   
   function draw() {
-    ctx.fillStyle = 'rgba(0,0,0,0.05)';
+    ctx.fillStyle = 'rgba(0,0,0,0.08)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#0F0';
+    ctx.fillStyle = '#0F8';
     ctx.font = fontSize + 'px monospace';
     
     for (let i = 0; i < drops.length; i++) {
@@ -381,14 +868,23 @@ function createMatrixRain(container) {
 }
 
 function createFireflies(container) {
-  for (let i = 0; i < 20; i++) {
+  // 增加数量和亮度
+  for (let i = 0; i < 40; i++) {
     const fly = document.createElement('div');
     const left = Math.random() * 100;
     const top = Math.random() * 100;
+    const size = Math.random() * 3 + 2;
+    const duration = Math.random() * 8 + 5;
     fly.style.cssText = `
-      position:absolute;width:3px;height:3px;background:#ffd700;border-radius:50%;
-      box-shadow:0 0 10px #ffd700;left:${left}%;top:${top}%;
-      animation:firefly ${Math.random()*5+3}s infinite ease-in-out;
+      position:absolute;
+      width:${size}px;
+      height:${size}px;
+      background:radial-gradient(circle, #ffd700, #ff8c00);
+      border-radius:50%;
+      box-shadow:0 0 ${size*8}px #ffd700, 0 0 ${size*15}px rgba(255,215,0,0.5);
+      left:${left}%;
+      top:${top}%;
+      animation:firefly ${duration}s infinite ease-in-out;
     `;
     container.appendChild(fly);
   }
@@ -396,7 +892,14 @@ function createFireflies(container) {
   if (!document.getElementById('firefly-style')) {
     const style = document.createElement('style');
     style.id = 'firefly-style';
-    style.textContent = `@keyframes firefly{0%,100%{transform:translate(0,0);opacity:0.3}50%{transform:translate(${Math.random()*100-50}px,${Math.random()*100-50}px);opacity:1}}`;
+    style.textContent = `
+      @keyframes firefly{
+        0%,100%{transform:translate(0,0) scale(0.8);opacity:0.3}
+        25%{transform:translate(${Math.random()*100-50}px,${Math.random()*100-50}px) scale(1.2);opacity:1}
+        50%{transform:translate(${Math.random()*100-50}px,${Math.random()*100-50}px) scale(0.9);opacity:0.7}
+        75%{transform:translate(${Math.random()*100-50}px,${Math.random()*100-50}px) scale(1.1);opacity:1}
+      }
+    `;
     document.head.appendChild(style);
   }
 }
@@ -404,35 +907,59 @@ function createFireflies(container) {
 /* =========================================================
    段位系统
 ========================================================= */
+// 段位分现在是"累加分"：只有段位赛(ranked)才会改变它
 function calculateRankScore() {
-  return (SAVE.rank.wins * 5) + (SAVE.rank.wins / (SAVE.rank.wins + SAVE.rank.losses || 1) * 1000);
+  return SAVE.rank.score || 0;
 }
 
-function updateRank() {
-  const score = calculateRankScore();
-  SAVE.rank.score = Math.round(score);
-  
-  let newRank = 'bronze';
-  for (const [key, rank] of Object.entries(RANKS)) {
-    if (score >= rank.minScore) newRank = key;
+function rankKeyForScore(score) {
+  let key = 'bronze';
+  for (const [k, rank] of Object.entries(RANKS)) {
+    if (score >= rank.minScore) key = k;
   }
-  
-  if (newRank !== SAVE.rank.currentRank) {
-    const oldRank = RANKS[SAVE.rank.currentRank];
-    const newRankData = RANKS[newRank];
-    SAVE.rank.currentRank = newRank;
-    
-    // 解锁段位皮肤
-    if (newRankData.skin && !SAVE.ownedSkins.includes(newRankData.skin)) {
-      SAVE.ownedSkins.push(newRankData.skin);
-      toast(`🎉 恭喜晋级 ${newRankData.icon} ${newRankData.name}！解锁专属皮肤！`);
-      Sound.achievement();
+  return key;
+}
+
+// 段位赛结算：胜利加分（越快越多），失败扣分
+function computeRankDelta(won) {
+  const gainBase = { easy: 12, medium: 22, hard: 36 };
+  const lossBase = { easy: 8, medium: 14, hard: 22 };
+  const dkey = (G.diffKey === 'easy' || G.diffKey === 'medium' || G.diffKey === 'hard') ? G.diffKey : 'medium';
+  if (won) {
+    const ratio = G.timer / G.par;
+    let f = ratio <= 0.5 ? 2.0 : ratio <= 1 ? 1.5 : ratio <= 1.5 ? 1.0 : ratio <= 2 ? 0.6 : 0.3;
+    return Math.max(2, Math.round(gainBase[dkey] * f));
+  }
+  return -lossBase[dkey];
+}
+
+// 应用段位分变化并处理升/降段
+function applyRankDelta(delta) {
+  const before = SAVE.rank.score || 0;
+  const after = Math.max(0, before + delta);
+  SAVE.rank.score = after;
+
+  const oldKey = SAVE.rank.currentRank || 'bronze';
+  const newKey = rankKeyForScore(after);
+  if (newKey !== oldKey) {
+    const oldMin = RANKS[oldKey] ? RANKS[oldKey].minScore : 0;
+    const newRankData = RANKS[newKey];
+    const promoted = newRankData.minScore > oldMin;
+    SAVE.rank.currentRank = newKey;
+    if (promoted) {
+      if (newRankData.skin && !SAVE.ownedSkins.includes(newRankData.skin)) {
+        SAVE.ownedSkins.push(newRankData.skin);
+        toast(`${t('rankUpCongrats')} ${newRankData.icon} ${L(newRankData,'name')}! ${t('rankUpSkin')}`);
+        Sound.achievement();
+      } else {
+        toast(`${t('rankUpPromote')}${newRankData.icon} ${L(newRankData,'name')}`);
+      }
     } else {
-      toast(`🎉 段位提升：${newRankData.icon} ${newRankData.name}`);
+      toast(`${t('rankDown')}${newRankData.icon} ${L(newRankData,'name')}`);
     }
   }
-  
   saveState(SAVE);
+  return { before, after, delta };
 }
 
 
@@ -488,31 +1015,32 @@ const DEV_PASSWORD = 'TWH0831';
 const DEV_INFINITE_COINS = 999999999;
 
 function toggleDevMode() {
-  const pwd = window.prompt('请输入开发者密码：');
+  const pwd = window.prompt(t('devPwdPrompt'));
   if (pwd === null) return;
-  if (pwd !== DEV_PASSWORD) { toast('❌ 密码错误'); return; }
+  if (pwd !== DEV_PASSWORD) { toast(t('devWrongPwd')); return; }
 
   if (!SAVE.devMode) {
     SAVE.devModeBackupCoins = SAVE.coins;
     SAVE.devMode = true;
     SAVE.coins = DEV_INFINITE_COINS;
-    toast('🛠️ 开发者模式已开启');
+    toast(t('devOnToast'));
   } else {
     SAVE.coins = (SAVE.devModeBackupCoins !== null) ? SAVE.devModeBackupCoins : SAVE.coins;
     SAVE.devMode = false;
     SAVE.devModeBackupCoins = null;
-    toast('🔒 开发者模式已关闭');
+    toast(t('devOffToast'));
   }
   saveState(SAVE);
   refreshCoinDisplays();
   updateDevModeUI();
+  refreshDevPeek(); // 立即在当前棋盘上显示/隐藏地雷
 }
 
 function updateDevModeUI() {
   const btn = $('#btn-dev-mode');
   if (!btn) return;
   btn.classList.toggle('active', !!SAVE.devMode);
-  btn.textContent = SAVE.devMode ? '🛠️ 开发者模式（已开启）' : '🛠️ 开发者模式';
+  btn.textContent = SAVE.devMode ? t('devModeOn') : t('devMode');
 }
 
 /* =========================================================
@@ -522,12 +1050,12 @@ let G = null;
 
 function densityInfo(rows, cols, mines) {
   const density = mines / (rows * cols);
-  let label = '过于简单';
-  if (density >= 0.25) label = '地狱';
-  else if (density >= 0.20) label = '困难';
-  else if (density >= 0.15) label = '中等';
-  else if (density >= 0.10) label = '简单';
-  return { pct: Math.round(density * 100), label };
+  let labelKey = 'dens_tooeasy';
+  if (density >= 0.25) labelKey = 'dens_hell';
+  else if (density >= 0.20) labelKey = 'dens_hard';
+  else if (density >= 0.15) labelKey = 'dens_medium';
+  else if (density >= 0.10) labelKey = 'dens_easy';
+  return { pct: Math.round(density * 100), labelKey, label: t(labelKey) };
 }
 
 function customBaseAndPar(rows, cols, mines) {
@@ -606,7 +1134,168 @@ function placeMines(board, rows, cols, mines, safeR, safeC, isSpecialMode) {
   return m;
 }
 
-function startGame(diffKey, customCfg, isZen = false, isSurvival = false, isSpecial = false) {
+/* =========================================================
+   无猜模式（No-Guess）：布雷 + 逻辑求解器
+   目标：保证每一局都能纯靠推理通关，不需要赌雷。
+   做法：随机布雷 -> 用求解器模拟 -> 若能全解则采用，
+        否则重新布雷；在时间预算内取"可推理覆盖最多"的盘面。
+========================================================= */
+function clearBoardMines(board, rows, cols) {
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      board[r][c].mine = false;
+      board[r][c].adj = 0;
+      board[r][c].specialType = null;
+    }
+  }
+}
+
+function computeAdjacency(board, rows, cols) {
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      if (board[r][c].mine) { board[r][c].adj = 0; continue; }
+      let n = 0;
+      neighborsOf(r, c, rows, cols).forEach(([nr, nc]) => { if (board[nr][nc].mine) n++; });
+      board[r][c].adj = n;
+    }
+  }
+}
+
+function snapshotMines(board, rows, cols) {
+  const arr = [];
+  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) if (board[r][c].mine) arr.push(r * cols + c);
+  return arr;
+}
+
+function applyMineSnapshot(board, rows, cols, mineIdxs) {
+  clearBoardMines(board, rows, cols);
+  for (const idx of mineIdxs) board[Math.floor(idx / cols)][idx % cols].mine = true;
+  computeAdjacency(board, rows, cols);
+}
+
+// 逻辑求解器：返回纯推理能揭开的安全格数量
+function boardSolveCoverage(board, rows, cols, sr, sc) {
+  // state: 0 未知, 1 已揭开(安全), 2 已确定为雷
+  const state = [];
+  for (let r = 0; r < rows; r++) state.push(new Array(cols).fill(0));
+
+  const revealFlood = (r, c) => {
+    const st = [[r, c]];
+    while (st.length) {
+      const [cr, cc] = st.pop();
+      if (state[cr][cc] !== 0) continue;
+      if (board[cr][cc].mine) continue;
+      state[cr][cc] = 1;
+      if (board[cr][cc].adj === 0) {
+        neighborsOf(cr, cc, rows, cols).forEach(([nr, nc]) => { if (state[nr][nc] === 0) st.push([nr, nc]); });
+      }
+    }
+  };
+
+  revealFlood(sr, sc);
+
+  let changed = true;
+  while (changed) {
+    changed = false;
+    // 基础规则：满足数字则周围安全 / 剩余全是雷
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        if (state[r][c] !== 1) continue;
+        const adj = board[r][c].adj;
+        if (adj === 0) continue;
+        const nbrs = neighborsOf(r, c, rows, cols);
+        const hidden = [];
+        let flagged = 0;
+        for (const [nr, nc] of nbrs) {
+          if (state[nr][nc] === 0) hidden.push([nr, nc]);
+          else if (state[nr][nc] === 2) flagged++;
+        }
+        if (hidden.length === 0) continue;
+        const remaining = adj - flagged;
+        if (remaining === 0) {
+          for (const [nr, nc] of hidden) revealFlood(nr, nc);
+          changed = true;
+        } else if (remaining === hidden.length) {
+          for (const [nr, nc] of hidden) state[nr][nc] = 2;
+          changed = true;
+        }
+      }
+    }
+    if (changed) continue;
+
+    // 子集规则（能解 1-2-1 等更复杂图案）
+    const cons = [];
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        if (state[r][c] !== 1) continue;
+        const adj = board[r][c].adj;
+        if (adj === 0) continue;
+        const nbrs = neighborsOf(r, c, rows, cols);
+        const hidden = [];
+        let flagged = 0;
+        for (const [nr, nc] of nbrs) {
+          if (state[nr][nc] === 0) hidden.push(nr * cols + nc);
+          else if (state[nr][nc] === 2) flagged++;
+        }
+        if (hidden.length > 0) cons.push({ cells: hidden, set: new Set(hidden), rem: adj - flagged });
+      }
+    }
+    for (let i = 0; i < cons.length && !changed; i++) {
+      for (let j = 0; j < cons.length; j++) {
+        if (i === j) continue;
+        const A = cons[i], B = cons[j];
+        if (A.cells.length >= B.cells.length) continue;
+        let subset = true;
+        for (const x of A.cells) { if (!B.set.has(x)) { subset = false; break; } }
+        if (!subset) continue;
+        const diffRem = B.rem - A.rem;
+        const diffCount = B.cells.length - A.cells.length;
+        if (diffRem === 0) {
+          for (const x of B.cells) if (!A.set.has(x)) { const rr = Math.floor(x / cols), cc = x % cols; if (state[rr][cc] === 0) { revealFlood(rr, cc); changed = true; } }
+        } else if (diffRem === diffCount) {
+          for (const x of B.cells) if (!A.set.has(x)) { const rr = Math.floor(x / cols), cc = x % cols; if (state[rr][cc] === 0) { state[rr][cc] = 2; changed = true; } }
+        }
+        if (changed) break;
+      }
+    }
+  }
+
+  let revealed = 0;
+  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) if (state[r][c] === 1) revealed++;
+  return revealed;
+}
+
+function generateSolvableBoard(board, rows, cols, mines, sr, sc, isSpecial) {
+  // 特殊地雷模式本身就是"混沌玩法"，不强制无猜；段位赛强制无猜(公平)
+  const wantNoGuess = !isSpecial && ((G && G.isRanked) || !(SAVE.settings && SAVE.settings.noGuess === false));
+  let placed = placeMines(board, rows, cols, mines, sr, sc, isSpecial);
+  if (!wantNoGuess) return placed;
+
+  const total = rows * cols;
+  const safeTotal = total - placed;
+  let cov = boardSolveCoverage(board, rows, cols, sr, sc);
+  if (cov >= safeTotal) return placed; // 首次就完全可解
+
+  let best = { coverage: cov, mines: snapshotMines(board, rows, cols) };
+  const deadline = Date.now() + 500; // 时间预算，避免第一下卡死
+  let attempts = 0;
+  const maxAttempts = 600;
+
+  while (Date.now() < deadline && attempts < maxAttempts) {
+    attempts++;
+    clearBoardMines(board, rows, cols);
+    placeMines(board, rows, cols, mines, sr, sc, isSpecial);
+    cov = boardSolveCoverage(board, rows, cols, sr, sc);
+    if (cov >= safeTotal) return placed; // 找到完全可解盘面
+    if (cov > best.coverage) best = { coverage: cov, mines: snapshotMines(board, rows, cols) };
+  }
+
+  // 时间/次数用尽：采用"可推理覆盖最多"的盘面（把要赌的地方降到最少）
+  applyMineSnapshot(board, rows, cols, best.mines);
+  return best.mines.length;
+}
+
+function startGame(diffKey, customCfg, isZen = false, isSurvival = false, isSpecial = false, isRanked = false) {
   let rows, cols, mines, base, par;
 
   if (isSurvival) {
@@ -641,7 +1330,10 @@ function startGame(diffKey, customCfg, isZen = false, isSurvival = false, isSpec
     started: false, over: false, firstClick: true,
     timer: 0, timerInt: null, frozen: false, flagMode: false,
     itemsUsed: 0, flagCount: 0, revealedSafe: 0, undoSnapshot: null,
-    isZen, isSurvival, isSpecial, noFlagUsed: true
+    isZen, isSurvival, isSpecial, isRanked, noFlagUsed: true,
+    rankDelta: 0,
+    moveHistory: [], // 记录所有操作
+    mistakes: []     // 记录失误
   };
 
   renderGame();
@@ -757,6 +1449,17 @@ function handlePrimaryAction(r, c) {
       const nbrs = neighborsOf(r, c, G.rows, G.cols);
       const flagged = nbrs.filter(([nr, nc]) => G.board[nr][nc].flagged).length;
       if (flagged === cell.adj) {
+        // 记录和弦操作
+        G.moveHistory.push({
+          type: 'chord',
+          r, c,
+          time: G.timer,
+          timestamp: Date.now()
+        });
+        
+        // 统计点击
+        SAVE.statistics.totalClicks++;
+        
         nbrs.forEach(([nr, nc]) => {
           if (!G.board[nr][nc].flagged && !G.board[nr][nc].revealed) revealCell(nr, nc);
         });
@@ -768,7 +1471,7 @@ function handlePrimaryAction(r, c) {
 
   if (G.firstClick) {
     snapshotBoard();
-    const placed = placeMines(G.board, G.rows, G.cols, G.mines, r, c, G.isSpecial);
+    const placed = generateSolvableBoard(G.board, G.rows, G.cols, G.mines, r, c, G.isSpecial);
     G.mines = placed;
     $('#mine-count').textContent = Math.max(0, G.mines - G.flagCount);
     G.firstClick = false;
@@ -778,8 +1481,20 @@ function handlePrimaryAction(r, c) {
     snapshotBoard();
   }
 
+  // 记录点击操作
+  G.moveHistory.push({
+    type: 'reveal',
+    r, c,
+    time: G.timer,
+    timestamp: Date.now()
+  });
+  
+  // 统计点击
+  SAVE.statistics.totalClicks++;
+
   revealCell(r, c);
   if (!G.over) checkWin();
+  if (SAVE.devMode) refreshDevPeek();
 }
 
 function snapshotBoard() {
@@ -825,18 +1540,18 @@ function handleSpecialMine(r, c, type) {
     SAVE.coins += coins;
     saveState(SAVE);
     refreshCoinDisplays();
-    toast(`💰 发现宝藏！获得 ${coins} 金币`);
+    toast(`${t('treasureFound')} ${coins} ${t('coins')}`);
     Sound.coin();
     G.board[r][c].mine = false;
     checkWin();
   } else if (type === 'freeze') {
-    toast('❄️ 冰冻雷！时间暂停 5 秒');
+    toast(t('freezeMine'));
     G.frozen = true;
     setTimeout(() => { G.frozen = false; }, 5000);
     G.board[r][c].mine = false;
     checkWin();
   } else if (type === 'chain') {
-    toast('🔥 连锁雷！引爆周围地雷');
+    toast(t('chainMine'));
     Vibration.error();
     const nbrs = neighborsOf(r, c, G.rows, G.cols);
     nbrs.forEach(([nr, nc]) => {
@@ -853,12 +1568,12 @@ function handleSpecialMine(r, c, type) {
       SAVE.coins += coins;
       saveState(SAVE);
       refreshCoinDisplays();
-      toast(`🎲 随机雷：获得 ${coins} 金币！`);
+      toast(`${t('mysteryCoins')} ${coins} ${t('coins')}!`);
       Sound.coin();
       G.board[r][c].mine = false;
       checkWin();
     } else if (rand < 0.55) {
-      toast('🎲 随机雷：揭示 3×3 区域');
+      toast(t('mysteryReveal'));
       const nbrs = neighborsOf(r, c, G.rows, G.cols).concat([[r, c]]);
       nbrs.forEach(([nr, nc]) => {
         if (!G.board[nr][nc].mine && !G.board[nr][nc].revealed) {
@@ -870,7 +1585,7 @@ function handleSpecialMine(r, c, type) {
       G.board[r][c].mine = false;
       checkWin();
     } else if (rand < 0.75) {
-      toast('🎲 随机雷：自动标记 3 个地雷');
+      toast(t('mysteryFlag'));
       let marked = 0;
       for (let rr = 0; rr < G.rows && marked < 3; rr++) {
         for (let cc = 0; cc < G.cols && marked < 3; cc++) {
@@ -886,12 +1601,12 @@ function handleSpecialMine(r, c, type) {
       if (G.timer >= 10) {
         G.timer -= 10;
         $('#timer').textContent = G.timer;
-        toast('🎲 随机雷：时间 -10 秒');
+        toast(t('mysteryTime'));
       }
       G.board[r][c].mine = false;
       checkWin();
     } else {
-      toast('🎲 随机雷：爆炸！');
+      toast(t('mysteryBoom'));
       triggerLose(r, c);
     }
   }
@@ -900,12 +1615,36 @@ function handleSpecialMine(r, c, type) {
 
 function toggleFlag(r, c) {
   const cell = G.board[r][c];
+  const wasFlagged = cell.flagged;
   cell.flagged = !cell.flagged;
   G.flagCount += cell.flagged ? 1 : -1;
   $('#mine-count').textContent = G.mines - G.flagCount;
   renderCell(r, c);
   Sound.flag();
-  if (cell.flagged) G.noFlagUsed = false;
+  if (cell.flagged) {
+    G.noFlagUsed = false;
+    // 统计标旗
+    SAVE.statistics.totalFlags++;
+  }
+  
+  // 记录标旗操作
+  G.moveHistory.push({
+    type: cell.flagged ? 'flag' : 'unflag',
+    r, c,
+    time: G.timer,
+    timestamp: Date.now(),
+    isMine: cell.mine // 记录是否是真雷
+  });
+  
+  // 检测错误标旗
+  if (cell.flagged && !cell.mine) {
+    G.mistakes.push({
+      type: 'wrong_flag',
+      r, c,
+      time: G.timer,
+      description: t('wrongFlagDesc')
+    });
+  }
 }
 
 function renderCell(r, c) {
@@ -940,13 +1679,57 @@ function renderCell(r, c) {
     el.classList.add('pop');
   } else if (cell.flagged) {
     el.classList.add('flagged');
+  } else if (SAVE.devMode && cell.mine) {
+    // 开发者模式：偷看未翻开的地雷位置
+    el.classList.add('dev-peek');
+    el.textContent = '💣';
+  }
+}
+
+// 开发者模式：刷新所有未翻开地雷的"偷看"标记（不触发动画）
+function refreshDevPeek() {
+  if (!G || !G.cellEls) return;
+  for (let r = 0; r < G.rows; r++) {
+    for (let c = 0; c < G.cols; c++) {
+      const cell = G.board[r][c];
+      if (cell.revealed) continue;
+      const el = G.cellEls[r][c];
+      if (!el) continue;
+      if (SAVE.devMode && cell.mine && !cell.flagged) {
+        el.classList.add('dev-peek');
+        el.textContent = '💣';
+      } else if (!cell.flagged) {
+        el.classList.remove('dev-peek');
+        if (el.textContent === '💣') el.textContent = '';
+      }
+    }
   }
 }
 
 function triggerLose(r, c) {
   G.over = true;
   stopTimer();
+  
+  // 记录游戏时长
+  SAVE.statistics.totalPlayTime += G.timer;
+  SAVE.statistics.lastPlayDate = todayStr();
+  if (!SAVE.statistics.firstPlayDate) {
+    SAVE.statistics.firstPlayDate = todayStr();
+  }
+  
   G.cellEls[r][c].classList.add('exploded');
+  
+  // 记录致命失误 - 标记为最后一步
+  G.mistakes.push({
+    type: 'fatal',
+    r, c,
+    time: G.timer,
+    description: t('fatalDesc'),
+    isLastMove: true  // 标记为最后一步
+  });
+  
+  // 分析失误：找出本可以避免的错误
+  analyzeMistakes();
 
   for (let rr = 0; rr < G.rows; rr++) {
     for (let cc = 0; cc < G.cols; cc++) {
@@ -968,10 +1751,71 @@ function triggerLose(r, c) {
   SAVE.rank.losses++;
   SAVE.statistics.totalLosses++;
   SAVE.statistics.totalGames++;
-  updateRank();
+  if (G.isRanked) { G.rankDelta = computeRankDelta(false); applyRankDelta(G.rankDelta); }
   saveState(SAVE);
 
   setTimeout(() => showResult(false), 600);
+}
+
+// 分析失误
+function analyzeMistakes() {
+  const fatalCell = G.mistakes.find(m => m.type === 'fatal');
+  if (!fatalCell) return;
+  
+  const fr = fatalCell.r, fc = fatalCell.c;
+  
+  // 检查周围已揭示的数字格子
+  const nbrs = neighborsOf(fr, fc, G.rows, G.cols);
+  for (const [nr, nc] of nbrs) {
+    const cell = G.board[nr][nc];
+    if (cell.revealed && cell.adj > 0) {
+      // 检查这个数字周围的情况
+      const cellNbrs = neighborsOf(nr, nc, G.rows, G.cols);
+      const hiddenCount = cellNbrs.filter(([r,c]) => !G.board[r][c].revealed && !G.board[r][c].flagged).length;
+      const flaggedCount = cellNbrs.filter(([r,c]) => G.board[r][c].flagged).length;
+      const mineCount = cellNbrs.filter(([r,c]) => G.board[r][c].mine).length;
+      
+      // 如果隐藏格子数等于剩余雷数，说明这些都是雷，应该先标记
+      if (cell.adj - flaggedCount === hiddenCount && hiddenCount > 0) {
+        G.mistakes.push({
+          type: 'should_flag',
+          r: nr,
+          c: nc,
+          time: fatalCell.time - 1,
+          description: `数字 ${cell.adj} 周围的隐藏格子都应该先标旗`,
+          relatedCells: cellNbrs.filter(([r,c]) => !G.board[r][c].revealed)
+        });
+        break;
+      }
+    }
+  }
+  
+  // 检查是否有明显可以推理的安全格子没有点击
+  for (let r = 0; r < G.rows; r++) {
+    for (let c = 0; c < G.cols; c++) {
+      const cell = G.board[r][c];
+      if (cell.revealed && cell.adj > 0) {
+        const cellNbrs = neighborsOf(r, c, G.rows, G.cols);
+        const flaggedCount = cellNbrs.filter(([nr,nc]) => G.board[nr][nc].flagged).length;
+        
+        // 如果旗子数已经等于数字，周围其他格子都是安全的
+        if (flaggedCount === cell.adj) {
+          const safeUnrevealed = cellNbrs.filter(([nr,nc]) => 
+            !G.board[nr][nc].revealed && !G.board[nr][nc].flagged
+          );
+          if (safeUnrevealed.length > 0) {
+            G.mistakes.push({
+              type: 'missed_safe',
+              r, c,
+              time: fatalCell.time - 2,
+              description: `数字 ${cell.adj} 周围已标够旗，其他格子是安全的`,
+              relatedCells: safeUnrevealed
+            });
+          }
+        }
+      }
+    }
+  }
 }
 
 function checkWin() {
@@ -979,6 +1823,14 @@ function checkWin() {
   if (G.revealedSafe >= total) {
     G.over = true;
     stopTimer();
+    
+    // 记录游戏时长
+    SAVE.statistics.totalPlayTime += G.timer;
+    SAVE.statistics.lastPlayDate = todayStr();
+    if (!SAVE.statistics.firstPlayDate) {
+      SAVE.statistics.firstPlayDate = todayStr();
+    }
+    
     Sound.win();
     
     if (G.isSurvival) {
@@ -992,7 +1844,7 @@ function checkWin() {
     SAVE.rank.wins++;
     SAVE.statistics.totalWins++;
     SAVE.statistics.totalGames++;
-    updateRank();
+    if (G.isRanked) { G.rankDelta = computeRankDelta(true); applyRankDelta(G.rankDelta); }
     
     setTimeout(() => showResult(true), 400);
   }
@@ -1002,12 +1854,20 @@ function renderItemsBar() {
   const bar = $('#items-bar');
   if (!bar) return;
   bar.innerHTML = '';
+  if (G && G.isRanked) {
+    // 段位赛禁用道具
+    const note = document.createElement('div');
+    note.textContent = t('rankedNoItems');
+    note.style.cssText = 'flex:1;text-align:center;font-size:12px;font-weight:700;color:var(--gold);padding:8px 12px;border:1px dashed var(--glass-border);border-radius:12px;background:var(--glass-bg);';
+    bar.appendChild(note);
+    return;
+  }
   Object.keys(ITEMS).forEach(key => {
     if (key === 'undo') return;
     const owned = SAVE.ownedItems[key] || 0;
     const chip = document.createElement('div');
     chip.className = 'item-chip' + (owned <= 0 ? ' disabled' : '');
-    chip.innerHTML = `<span>${ITEMS[key].icon} ${ITEMS[key].name}</span><span class="count">${owned}</span>`;
+    chip.innerHTML = `<span>${ITEMS[key].icon} ${L(ITEMS[key],'name')}</span><span class="count">${owned}</span>`;
     chip.onclick = () => useItem(key);
     bar.appendChild(chip);
   });
@@ -1015,7 +1875,8 @@ function renderItemsBar() {
 
 function useItem(key) {
   if (!G || G.over) return;
-  if ((SAVE.ownedItems[key] || 0) <= 0) { toast('道具不足'); return; }
+  if (G.isRanked) { toast(t('rankedNoItems')); return; }
+  if ((SAVE.ownedItems[key] || 0) <= 0) { toast(t('itemInsufficient')); return; }
 
   if (key === 'scan') {
     const hiddenSafe = [];
@@ -1025,10 +1886,10 @@ function useItem(key) {
         if (!cell.revealed && !cell.flagged && !cell.mine) hiddenSafe.push([r, c]);
       }
     }
-    if (!hiddenSafe.length) { toast('没有可揭示的安全格'); return; }
+    if (!hiddenSafe.length) { toast(t('noSafeCell')); return; }
     const [r, c] = hiddenSafe[Math.floor(Math.random() * hiddenSafe.length)];
     if (G.firstClick) {
-      placeMines(G.board, G.rows, G.cols, G.mines, r, c, G.isSpecial);
+      G.mines = generateSolvableBoard(G.board, G.rows, G.cols, G.mines, r, c, G.isSpecial);
       G.firstClick = false;
       G.started = true;
       startTimer();
@@ -1043,13 +1904,13 @@ function useItem(key) {
         if (!cell.revealed && !cell.flagged && cell.mine) hiddenMines.push([r, c]);
       }
     }
-    if (!hiddenMines.length) { toast('没有可标记的地雷'); return; }
+    if (!hiddenMines.length) { toast(t('noMineToFlag')); return; }
     const [r, c] = hiddenMines[Math.floor(Math.random() * hiddenMines.length)];
     toggleFlag(r, c);
   } else if (key === 'freeze') {
     if (G.frozen) return;
     G.frozen = true;
-    toast('⏸️ 计时暂停 10 秒');
+    toast(t('freezePaused'));
     setTimeout(() => { G.frozen = false; }, 10000);
   } else if (key === 'defuse') {
     const hiddenMines = [];
@@ -1059,20 +1920,22 @@ function useItem(key) {
         if (!cell.revealed && cell.mine) hiddenMines.push([r, c]);
       }
     }
-    if (!hiddenMines.length) { toast('没有地雷可拆除'); return; }
+    if (!hiddenMines.length) { toast(t('noMineToDefuse')); return; }
     const [r, c] = hiddenMines[Math.floor(Math.random() * hiddenMines.length)];
     G.board[r][c].mine = false;
     if (G.board[r][c].flagged) { G.board[r][c].flagged = false; G.flagCount--; }
     G.mines--;
     $('#mine-count').textContent = Math.max(0, G.mines - G.flagCount);
-    toast('💥 已拆除一个地雷');
+    toast(t('defused'));
     checkWin();
   }
 
   SAVE.ownedItems[key]--;
   G.itemsUsed++;
+  SAVE.statistics.totalItemsUsed++;
   saveState(SAVE);
   renderItemsBar();
+  if (SAVE.devMode) refreshDevPeek();
 }
 
 function showResult(won) {
@@ -1082,27 +1945,69 @@ function showResult(won) {
   const earnEl = $('#coin-earn');
 
   if (won) {
-    title.textContent = G.isSurvival ? '🔥 生存 +1' : (G.isZen ? '🧘 禅心通达' : '🎉 通关！');
+    title.textContent = G.isSurvival ? t('resultSurvivalTitle') : (G.isZen ? t('resultZenTitle') : t('resultWinTitle'));
     const coins = computeCoins();
     SAVE.coins += coins;
     SAVE.statistics.totalCoinsEarned += coins;
     
+    // 记录单局最高
+    if (coins > SAVE.statistics.maxSingleEarn) {
+      SAVE.statistics.maxSingleEarn = coins;
+    }
+    
+    const rankLine = G.isRanked
+      ? `<div>${t('rankScoreChange')} <b style="color:var(--accent-2);">+${G.rankDelta}</b> → ${SAVE.rank.score}</div>` : '';
     stats.innerHTML = `
-      <div>用时 <b>${fmtTime(G.timer)}</b></div>
-      <div>金币 <b>+${coins}</b></div>
+      <div>${t('resultTime')} <b>${fmtTime(G.timer)}</b></div>
+      <div>${t('resultOps')} <b>${G.moveHistory.length}</b></div>
+      <div>${t('resultCoins')} <b>+${coins}</b></div>
+      ${rankLine}
     `;
-    earnEl.textContent = `🪙 获得 ${coins} 金币`;
+    earnEl.textContent = `🪙 ${t('resultGot')} ${coins} ${t('coins')}`;
     Sound.coin();
     
     triggerVictoryEffect();
   } else {
-    title.textContent = '💥 失败';
-    stats.innerHTML = `<div>用时 <b>${fmtTime(G.timer)}</b></div>`;
-    earnEl.textContent = '';
+    title.textContent = t('resultFail');
+    const mistakeCount = G.mistakes.length;
+    const rankLineL = G.isRanked
+      ? `<div>${t('rankScoreChange')} <b style="color:var(--danger);">${G.rankDelta}</b> → ${SAVE.rank.score}</div>` : '';
+    stats.innerHTML = `
+      <div>${t('resultTime')} <b>${fmtTime(G.timer)}</b></div>
+      <div>${t('resultOps')} <b>${G.moveHistory.length}</b></div>
+      <div>${t('resultMistakes')} <b>${mistakeCount}</b></div>
+      ${rankLineL}
+    `;
+    
+    // 添加"查看复盘"按钮
+    if (mistakeCount > 0) {
+      earnEl.innerHTML = `
+        <button class="secondary-btn" id="btn-review" style="margin-top:10px;background:var(--accent);color:#fff;border:none;">
+          ${t('viewReview')} (${mistakeCount})
+        </button>
+      `;
+      
+      // 延迟绑定事件，等待按钮渲染
+      setTimeout(() => {
+        const reviewBtn = $('#btn-review');
+        if (reviewBtn) {
+          reviewBtn.onclick = () => {
+            modal.classList.add('hidden');
+            showReviewScreen();
+          };
+        }
+      }, 100);
+    } else {
+      earnEl.textContent = t('noMistakes');
+    }
   }
 
   saveState(SAVE);
   refreshCoinDisplays();
+  
+  // 检查成就
+  checkAchievements();
+  
   modal.classList.remove('hidden');
 }
 
@@ -1126,35 +2031,76 @@ function computeCoins() {
 }
 
 function triggerVictoryEffect() {
-  const effect = SAVE.activeEffect;
-  if (effect === 'confetti') createConfetti();
-  else if (effect === 'firework') createFirework();
-  else if (effect === 'rainbow') createRainbow();
+  playEffect(SAVE.activeEffect);
+}
+
+// 按 key 播放指定特效（胜利时和商城预览时都用它）
+function playEffect(key) {
+  if (key === 'confetti') createConfetti();
+  else if (key === 'firework') createFirework();
+  else if (key === 'rainbow') createRainbow();
 }
 
 function createConfetti() {
-  for (let i = 0; i < 50; i++) {
+  const colors = ['#ff5277','#ffd23f','#38d9e0','#b389ff','#6bff95','#ff8c2b','#ffffff'];
+  for (let i = 0; i < 90; i++) {
     const confetti = document.createElement('div');
-    confetti.style.cssText = `position:fixed;width:10px;height:10px;background:hsl(${Math.random()*360},100%,50%);
-      left:${Math.random()*100}%;top:-20px;animation:confettiFall ${Math.random()*2+2}s ease-out forwards;z-index:9999;`;
+    const size = 6 + Math.random() * 8;
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const round = Math.random() > 0.5 ? '50%' : '2px';
+    confetti.style.cssText = `position:fixed;width:${size}px;height:${size}px;background:${color};border-radius:${round};
+      left:${Math.random()*100}%;top:-24px;z-index:99999;pointer-events:none;`;
     document.body.appendChild(confetti);
-    setTimeout(() => confetti.remove(), 4000);
-  }
-  
-  if (!document.getElementById('confetti-style')) {
-    const style = document.createElement('style');
-    style.id = 'confetti-style';
-    style.textContent = '@keyframes confettiFall{to{top:100vh;transform:rotate(720deg)}}';
-    document.head.appendChild(style);
+    const dx = (Math.random() * 2 - 1) * 160;
+    const rot = (Math.random() * 2 - 1) * 900;
+    confetti.animate(
+      [{ transform: 'translate(0,0) rotate(0deg)', opacity: 1 },
+       { transform: `translate(${dx}px, ${window.innerHeight + 60}px) rotate(${rot}deg)`, opacity: 0.9 }],
+      { duration: 1800 + Math.random() * 1400, easing: 'cubic-bezier(.25,.6,.4,1)' }
+    );
+    setTimeout(() => confetti.remove(), 3400);
   }
 }
 
 function createFirework() {
-  toast('🎆 烟花特效');
+  const colors = ['#ff5277','#ffd23f','#38d9e0','#b389ff','#6bff95','#ff8c2b','#00f5ff'];
+  for (let b = 0; b < 5; b++) {
+    setTimeout(() => {
+      const cx = 15 + Math.random() * 70; // vw
+      const cy = 15 + Math.random() * 45; // vh
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      const n = 26;
+      for (let i = 0; i < n; i++) {
+        const ang = (Math.PI * 2 * i) / n;
+        const dist = 70 + Math.random() * 70;
+        const p = document.createElement('div');
+        p.style.cssText = `position:fixed;left:${cx}vw;top:${cy}vh;width:6px;height:6px;border-radius:50%;
+          background:${color};box-shadow:0 0 10px ${color},0 0 18px ${color};z-index:99999;pointer-events:none;`;
+        document.body.appendChild(p);
+        p.animate(
+          [{ transform: 'translate(-50%,-50%) scale(1)', opacity: 1 },
+           { transform: `translate(calc(-50% + ${Math.cos(ang)*dist}px), calc(-50% + ${Math.sin(ang)*dist}px)) scale(0.3)`, opacity: 0 }],
+          { duration: 900 + Math.random() * 400, easing: 'cubic-bezier(.15,.7,.35,1)' }
+        );
+        setTimeout(() => p.remove(), 1400);
+      }
+    }, b * 260);
+  }
 }
 
 function createRainbow() {
-  toast('🌈 彩虹特效');
+  const ov = document.createElement('div');
+  ov.style.cssText = `position:fixed;inset:0;z-index:99998;pointer-events:none;mix-blend-mode:screen;
+    background:linear-gradient(120deg,#ff004c,#ff8c2b,#ffd23f,#6bff95,#38d9e0,#6ea8fe,#b389ff);
+    background-size:300% 300%;opacity:0;`;
+  document.body.appendChild(ov);
+  ov.animate(
+    [{ opacity: 0, backgroundPosition: '0% 50%' },
+     { opacity: 0.55, backgroundPosition: '100% 50%' },
+     { opacity: 0, backgroundPosition: '0% 50%' }],
+    { duration: 1700, easing: 'ease-in-out' }
+  );
+  setTimeout(() => ov.remove(), 1800);
 }
 
 function showScreen(id) {
@@ -1163,48 +2109,1542 @@ function showScreen(id) {
   if (screen) screen.classList.add('active');
 }
 
-// 初始化
-document.addEventListener('DOMContentLoaded', () => {
+// 初始化函数
+function initGame() {
   applySkin();
   applyBackground();
   applyEyeProtection();
   refreshCoinDisplays();
   updateDevModeUI();
+  updatePlayerCard();  // 初始化玩家信息卡片
   
   // 事件监听器
-  $('#btn-back')?.addEventListener('click', () => {
-    if (G) stopTimer();
-    showScreen('screen-home');
+  const btnBack = $('#btn-back');
+  if (btnBack) {
+    btnBack.addEventListener('click', () => {
+      if (G) stopTimer();
+      showScreen('screen-home');
+    });
+  }
+  
+  const btnRestart = $('#btn-restart');
+  if (btnRestart) {
+    btnRestart.addEventListener('click', () => {
+      if (!G) return;
+      stopTimer();
+      startGame(G.diffKey, null, G.isZen, G.isSurvival, G.isSpecial);
+    });
+  }
+  
+  const btnFlagMode = $('#btn-flag-mode');
+  if (btnFlagMode) {
+    btnFlagMode.addEventListener('click', (e) => {
+      if (!G) return;
+      G.flagMode = !G.flagMode;
+      e.currentTarget.classList.toggle('active-mode', G.flagMode);
+    });
+  }
+  
+  const btnPlayAgain = $('#btn-play-again');
+  if (btnPlayAgain) {
+    btnPlayAgain.addEventListener('click', () => {
+      $('#modal-result').classList.add('hidden');
+      startGame(G.diffKey, null, G.isZen, G.isSurvival, G.isSpecial);
+    });
+  }
+  
+  const btnToHome = $('#btn-to-home');
+  if (btnToHome) {
+    btnToHome.addEventListener('click', () => {
+      $('#modal-result').classList.add('hidden');
+      showScreen('screen-home');
+    });
+  }
+  
+  const btnDevMode = $('#btn-dev-mode');
+  if (btnDevMode) {
+    btnDevMode.addEventListener('click', toggleDevMode);
+  }
+  
+  // 难度卡片点击事件
+  $all('.diff-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const diff = card.dataset.diff;
+      if (!diff) return;
+      
+      // 判断是哪个模式
+      const isClassic = card.closest('#classic-mode-panel');
+      const isSurvival = card.closest('#survival-mode-panel');
+      const isZen = card.closest('#zen-mode-panel');
+      const isSpecial = card.closest('#special-mode-panel');
+      
+      if (diff.startsWith('survival-')) {
+        const actualDiff = diff.replace('survival-', '');
+        startGame(actualDiff, null, false, true, false);
+      } else if (diff.startsWith('zen-')) {
+        let actualDiff, customCfg = null;
+        if (diff === 'zen-easy') {
+          actualDiff = 'easy';
+        } else if (diff === 'zen-normal') {
+          actualDiff = 'medium';
+        } else {
+          actualDiff = 'custom';
+          customCfg = {rows:24, cols:24, mines:120};
+        }
+        startGame(actualDiff, customCfg, true, false, false);
+      } else if (diff.startsWith('special-')) {
+        const actualDiff = diff.replace('special-', '');
+        startGame(actualDiff, null, false, false, true);
+      } else if (diff.startsWith('ranked-')) {
+        const actualDiff = diff.replace('ranked-', '');
+        startGame(actualDiff, null, false, false, false, true);
+      } else {
+        startGame(diff, null, false, false, false);
+      }
+    });
   });
   
-  $('#btn-restart')?.addEventListener('click', () => {
-    if (!G) return;
-    stopTimer();
-    startGame(G.diffKey, null, G.isZen, G.isSurvival, G.isSpecial);
+  // 模式切换标签
+  $all('.mode-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      $all('.mode-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const mode = tab.dataset.mode;
+      
+      $all('.mode-panel').forEach(p => p.classList.add('hidden'));
+      const panel = $('#' + mode + '-mode-panel');
+      if (panel) panel.classList.remove('hidden');
+      if (mode === 'ranked') updateRankedPanel();
+    });
   });
   
-  $('#btn-flag-mode')?.addEventListener('click', (e) => {
-    if (!G) return;
-    G.flagMode = !G.flagMode;
-    e.currentTarget.classList.toggle('active-mode', G.flagMode);
+  // 商城按钮
+  const btnShopOpen = $('#btn-shop-open');
+  if (btnShopOpen) {
+    btnShopOpen.addEventListener('click', () => {
+      showScreen('screen-shop');
+      setTimeout(() => renderShop(), 0);
+    });
+  }
+  
+  const btnShopBack = $('#btn-shop-back');
+  if (btnShopBack) {
+    btnShopBack.addEventListener('click', () => showScreen('screen-home'));
+  }
+  
+  // 商城标签切换
+  $all('.shop-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      $all('.shop-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const which = tab.dataset.tab;
+      
+      const shopItems = $('#shop-items');
+      const shopSkins = $('#shop-skins');
+      const shopBg = $('#shop-backgrounds');
+      const shopSounds = $('#shop-sounds');
+      const shopEffects = $('#shop-effects');
+      
+      if (shopItems) shopItems.classList.toggle('hidden', which !== 'items');
+      if (shopSkins) shopSkins.classList.toggle('hidden', which !== 'skins');
+      if (shopBg) shopBg.classList.toggle('hidden', which !== 'backgrounds');
+      if (shopSounds) shopSounds.classList.toggle('hidden', which !== 'sounds');
+      if (shopEffects) shopEffects.classList.toggle('hidden', which !== 'effects');
+    });
   });
   
-  $('#btn-play-again')?.addEventListener('click', () => {
-    $('#modal-result').classList.add('hidden');
-    startGame(G.diffKey, null, G.isZen, G.isSurvival, G.isSpecial);
-  });
+  // 其他屏幕导航
+  const btnStats = $('#btn-stats');
+  if (btnStats) {
+    btnStats.addEventListener('click', () => {
+      renderStats();
+      showScreen('screen-stats');
+    });
+  }
   
-  $('#btn-to-home')?.addEventListener('click', () => {
-    $('#modal-result').classList.add('hidden');
-    showScreen('screen-home');
-  });
+  const btnStatsBack = $('#btn-stats-back');
+  if (btnStatsBack) {
+    btnStatsBack.addEventListener('click', () => showScreen('screen-home'));
+  }
   
-  $('#btn-dev-mode')?.addEventListener('click', toggleDevMode);
+  const btnMusic = $('#btn-music');
+  if (btnMusic) {
+    btnMusic.addEventListener('click', () => {
+      showScreen('screen-music');
+      setTimeout(() => renderMusicPlayer(), 0);
+    });
+  }
+  
+  const btnMusicBack = $('#btn-music-back');
+  if (btnMusicBack) {
+    btnMusicBack.addEventListener('click', () => showScreen('screen-home'));
+  }
+  
+  const btnSettings = $('#btn-settings');
+  if (btnSettings) {
+    btnSettings.addEventListener('click', () => showScreen('screen-settings'));
+  }
+  
+  const btnSettingsBack = $('#btn-settings-back');
+  if (btnSettingsBack) {
+    btnSettingsBack.addEventListener('click', () => showScreen('screen-home'));
+  }
+  
+  const btnRank = $('#btn-rank');
+  if (btnRank) {
+    btnRank.addEventListener('click', () => {
+      renderRank();
+      showScreen('screen-rank');
+    });
+  }
+  
+  const btnRankBack = $('#btn-rank-back');
+  if (btnRankBack) {
+    btnRankBack.addEventListener('click', () => showScreen('screen-home'));
+  }
+  
+  const btnAchievements = $('#btn-achievements');
+  if (btnAchievements) {
+    btnAchievements.addEventListener('click', () => {
+      showScreen('screen-achievements');
+      setTimeout(() => renderAchievements(), 0);
+    });
+  }
+  
+  const btnAchievementsBack = $('#btn-achievements-back');
+  if (btnAchievementsBack) {
+    btnAchievementsBack.addEventListener('click', () => showScreen('screen-home'));
+  }
+  
+  const btnDailyCheckin = $('#btn-daily-checkin');
+  if (btnDailyCheckin) {
+    btnDailyCheckin.addEventListener('click', () => {
+      renderDailyCheckin();
+      showScreen('screen-daily-checkin');
+    });
+  }
+  
+  const btnCheckinBack = $('#btn-checkin-back');
+  if (btnCheckinBack) {
+    btnCheckinBack.addEventListener('click', () => showScreen('screen-home'));
+  }
+  
+  // 语言切换按钮
+  const btnLanguage = $('#btn-language');
+  if (btnLanguage) {
+    btnLanguage.addEventListener('click', () => {
+      const currentLang = SAVE.language || 'zh';
+      const newLang = currentLang === 'zh' ? 'en' : 'zh';
+      if (confirm(currentLang === 'zh' ? '切换到英文？\nSwitch to English?' : 'Switch to Chinese?\n切换到中文？')) {
+        switchLanguage(newLang);
+      }
+    });
+  }
+  
+  // 自定义难度滑块
+  const btnCustomStart = $('#btn-custom-start');
+  if (btnCustomStart) {
+    btnCustomStart.addEventListener('click', () => {
+      const rows = +$('#slider-rows').value;
+      const cols = +$('#slider-cols').value;
+      const mines = +$('#slider-mines').value;
+      startGame('custom', { rows, cols, mines });
+    });
+  }
+  
+  // 自定义滑块监听
+  const sliderRows = $('#slider-rows');
+  const sliderCols = $('#slider-cols');
+  const sliderMines = $('#slider-mines');
+  if (sliderRows) sliderRows.addEventListener('input', updateDensityTag);
+  if (sliderCols) sliderCols.addEventListener('input', updateDensityTag);
+  if (sliderMines) sliderMines.addEventListener('input', updateDensityTag);
+  
+  // 设置相关事件
+  setupSettings();
+
+  // 应用已保存的语言（若为英文，则把所有静态文本切换过来）
+  updateAllTexts();
   
   console.log('💎 Minesweeper Pro Complete Edition loaded');
-});
+}
+
+// 自定义难度密度更新
+function updateDensityTag(){
+  const rows = +$('#slider-rows').value;
+  const cols = +$('#slider-cols').value;
+  let mineSlider = $('#slider-mines');
+  const maxMines = Math.max(1, (rows-1)*(cols-1));
+  mineSlider.max = maxMines;
+  if (+mineSlider.value > maxMines) mineSlider.value = maxMines;
+  const mines = +mineSlider.value;
+
+  $('#val-rows').textContent = rows;
+  $('#val-cols').textContent = cols;
+  $('#val-mines').textContent = mines;
+
+  const info = densityInfo(rows, cols, mines);
+  $('#density-tag').textContent = `${t('density')} ${info.pct}% · ${t(info.labelKey)}`;
+}
+
+// 渲染首页记录
+function renderRecordsBox(){
+  const box = $('#records-box');
+  if (!box) return;
+  const rows = ['easy','medium','hard'].map(k=>{
+    const b = SAVE.best[k];
+    return `<div style="display:flex;justify-content:space-between;padding:4px 0;"><span style="color:var(--text-dim);">${dl(k)}${t('best_suffix')}</span><b>${b.time!==null? fmtTime(b.time) : '--'} · ${b.score}${t('score_unit')}</b></div>`;
+  }).join('');
+  box.innerHTML = `<div style="margin-bottom:6px;font-weight:700;">${t('records_title')}</div>` + rows;
+}
+
+// 页面加载完成后初始化
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initGame);
+} else {
+  initGame();
+}
 
 function applySkin() {
   document.body.className = 'skin-' + SAVE.activeSkin;
+}
+
+// 设置功能
+function setupSettings() {
+  // 护眼模式按钮 - 设置初始状态
+  $all('.eye-mode-btn').forEach(btn => {
+    const currentMode = SAVE.eyeProtection?.intensity || 'off';
+    if (btn.dataset.mode === currentMode) {
+      btn.classList.add('active');
+    }
+    
+    btn.addEventListener('click', () => {
+      $all('.eye-mode-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      SAVE.eyeProtection.intensity = btn.dataset.mode;
+      applyEyeProtection();
+      saveState(SAVE);
+      $('#current-eye-mode').textContent = btn.textContent;
+      toast(`${t('eyeModeToast')}${btn.textContent}`);
+    });
+  });
+  
+  // 时长提醒按钮 - 设置初始状态
+  $all('.remind-btn').forEach(btn => {
+    const currentInterval = SAVE.eyeProtection?.reminderInterval || 0;
+    const btnTime = btn.dataset.time === 'off' ? 0 : parseInt(btn.dataset.time);
+    if (btnTime === currentInterval) {
+      btn.classList.add('active');
+    }
+    
+    btn.addEventListener('click', () => {
+      $all('.remind-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const time = btn.dataset.time;
+      SAVE.eyeProtection.reminderInterval = time === 'off' ? 0 : parseInt(time);
+      saveState(SAVE);
+      toast(time === 'off' ? t('remindOff') : `${t('remindSetPre')}${time}${t('remindSetPost')}`);
+    });
+  });
+  
+  // 震动反馈开关
+  const vibToggle = $('#vibration-toggle');
+  if (vibToggle) {
+    vibToggle.checked = SAVE.settings.vibration;
+    vibToggle.addEventListener('change', (e) => {
+      SAVE.settings.vibration = e.target.checked;
+      saveState(SAVE);
+      if (e.target.checked) {
+        toast(t('vibrationOn'));
+        Vibration.medium();
+      } else {
+        toast(t('vibrationOff'));
+      }
+    });
+  }
+  
+  // 粒子特效开关
+  const particlesToggle = $('#particles-toggle');
+  if (particlesToggle) {
+    particlesToggle.checked = SAVE.settings.particles;
+    particlesToggle.addEventListener('change', (e) => {
+      SAVE.settings.particles = e.target.checked;
+      saveState(SAVE);
+      if (e.target.checked) {
+        toast(t('particlesOn'));
+        applyBackground();
+      } else {
+        toast(t('particlesOff'));
+        const bg = $('#particles-bg');
+        if (bg) bg.innerHTML = '';
+      }
+    });
+  }
+
+  // 无猜模式开关
+  const noguessToggle = $('#noguess-toggle');
+  if (noguessToggle) {
+    noguessToggle.checked = SAVE.settings.noGuess !== false;
+    noguessToggle.addEventListener('change', (e) => {
+      SAVE.settings.noGuess = e.target.checked;
+      saveState(SAVE);
+      toast(e.target.checked ? t('noGuessOn') : t('noGuessOff'));
+    });
+  }
+  
+  // 导出数据
+  $('#btn-export-data')?.addEventListener('click', () => {
+    try {
+      const dataStr = JSON.stringify(SAVE, null, 2);
+      navigator.clipboard.writeText(dataStr);
+      toast(t('dataExported'));
+    } catch (e) {
+      // 备用方法
+      const textarea = document.createElement('textarea');
+      textarea.value = JSON.stringify(SAVE);
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      toast(t('dataExported'));
+    }
+  });
+  
+  // 导入数据
+  $('#btn-import-data')?.addEventListener('click', () => {
+    const dataStr = prompt(t('importPrompt'));
+    if (!dataStr) return;
+    try {
+      const data = JSON.parse(dataStr);
+      SAVE = data;
+      saveState(SAVE);
+      location.reload();
+    } catch (e) {
+      toast(t('dataFormatError'));
+    }
+  });
+  
+  // 清空数据
+  $('#btn-reset-data')?.addEventListener('click', () => {
+    if (!confirm(t('confirmReset'))) return;
+    try {
+      localStorage.removeItem(SAVE_KEY);
+      location.reload();
+    } catch (e) {
+      toast(t('resetFailed'));
+    }
+  });
+}
+
+// 护眼模式应用
+function applyEyeProtection() {
+  const intensity = SAVE.eyeProtection.intensity;
+  
+  const filters = {
+    off: 'none',
+    light: 'sepia(10%) saturate(95%)',
+    medium: 'sepia(15%) saturate(90%) contrast(95%)',
+    strong: 'sepia(20%) saturate(85%) contrast(90%) brightness(90%)'
+  };
+  
+  document.body.style.filter = filters[intensity] || 'none';
+}
+
+/* =========================================================
+   翻译系统
+========================================================= */
+const TRANSLATIONS = {
+  // 首页 / Home
+  selectMode: { zh: '选择游戏模式开始', en: 'Select a game mode to start' },
+  tab_classic: { zh: '经典模式', en: 'Classic' },
+  tab_survival: { zh: '生存模式', en: 'Survival' },
+  tab_zen: { zh: '禅模式', en: 'Zen' },
+  tab_special: { zh: '特殊地雷', en: 'Special' },
+  winrate: { zh: '胜率', en: 'Win Rate' },
+  coins: { zh: '金币', en: 'Coins' },
+  devMode: { zh: '🛠️ 开发者模式', en: '🛠️ Developer Mode' },
+  devModeOn: { zh: '🛠️ 开发者模式（已开启）', en: '🛠️ Developer Mode (ON)' },
+
+  // 难度 / Difficulty names
+  diff_easy: { zh: '简单', en: 'Easy' },
+  diff_medium: { zh: '中等', en: 'Medium' },
+  diff_hard: { zh: '困难', en: 'Hard' },
+  diff_custom: { zh: '自定义', en: 'Custom' },
+  diff_zen_easy: { zh: '初心禅', en: 'Beginner Zen' },
+  diff_zen_normal: { zh: '标准禅', en: 'Standard Zen' },
+  diff_zen_hard: { zh: '大师禅', en: 'Master Zen' },
+
+  // 难度描述 meta
+  meta_9x9: { zh: '9×9 · 10 雷', en: '9×9 · 10 mines' },
+  meta_16x16: { zh: '16×16 · 40 雷', en: '16×16 · 40 mines' },
+  meta_30x16: { zh: '30×16 · 99 雷', en: '30×16 · 99 mines' },
+  meta_selfadjust: { zh: '自己调', en: 'Adjustable' },
+  meta_24x24: { zh: '24×24 · 120 雷', en: '24×24 · 120 mines' },
+
+  // 难度奖励 reward
+  reward_base5: { zh: '🪙 基础 5 金币', en: '🪙 Base 5 coins' },
+  reward_base15: { zh: '🪙 基础 15 金币', en: '🪙 Base 15 coins' },
+  reward_base30: { zh: '🪙 基础 30 金币', en: '🪙 Base 30 coins' },
+  reward_dynamic: { zh: '🪙 动态奖励', en: '🪙 Dynamic reward' },
+  reward_5: { zh: '🪙 5 金币', en: '🪙 5 coins' },
+  reward_15: { zh: '🪙 15 金币', en: '🪙 15 coins' },
+  reward_30: { zh: '🪙 30 金币', en: '🪙 30 coins' },
+  reward_fixed8: { zh: '🪙 固定 8 金币', en: '🪙 Fixed 8 coins' },
+  reward_fixed12: { zh: '🪙 固定 12 金币', en: '🪙 Fixed 12 coins' },
+  reward_fixed25: { zh: '🪙 固定 25 金币', en: '🪙 Fixed 25 coins' },
+  reward_base8: { zh: '🪙 基础 8 金币', en: '🪙 Base 8 coins' },
+  reward_base20: { zh: '🪙 基础 20 金币', en: '🪙 Base 20 coins' },
+  reward_base40: { zh: '🪙 基础 40 金币', en: '🪙 Base 40 coins' },
+
+  // 自定义面板
+  custom_rows: { zh: '行数 (高)', en: 'Rows (H)' },
+  custom_cols: { zh: '列数 (宽)', en: 'Cols (W)' },
+  custom_mines: { zh: '地雷数', en: 'Mines' },
+  custom_start: { zh: '开始自定义游戏', en: 'Start Custom Game' },
+  density: { zh: '密度', en: 'Density' },
+
+  // 密度标签
+  dens_tooeasy: { zh: '过于简单', en: 'Too Easy' },
+  dens_easy: { zh: '简单', en: 'Easy' },
+  dens_medium: { zh: '中等', en: 'Medium' },
+  dens_hard: { zh: '困难', en: 'Hard' },
+  dens_hell: { zh: '地狱', en: 'Hell' },
+
+  // 生存模式面板
+  survival_title: { zh: '生存挑战', en: 'Survival Challenge' },
+  survival_desc: { zh: '连续通关获得连胜加成！<br>每次胜利：基础奖励 × (1 + 连胜数 × 0.2)<br>失败后连胜清零，重新开始', en: 'Win streaks give bonus rewards!<br>Each win: base reward × (1 + streak × 0.2)<br>Losing resets your streak' },
+  survival_current: { zh: '当前连胜', en: 'Current Streak' },
+  survival_best: { zh: '历史最高连胜', en: 'Best Streak' },
+
+  // 禅模式面板
+  zen_title: { zh: '禅意扫雷', en: 'Zen Minesweeper' },
+  zen_desc: { zh: '无计时器、无压力<br>专注于逻辑推理，享受纯粹的扫雷乐趣<br>完成后获得固定金币奖励', en: 'No timer, no pressure<br>Focus on logic and enjoy pure minesweeping<br>Get a fixed coin reward on completion' },
+
+  // 特殊地雷面板
+  special_title: { zh: '特殊地雷狂欢', en: 'Special Mine Party' },
+  special_desc: { zh: '地雷不再单调！4种特殊地雷带来全新体验', en: 'Mines are no longer boring! 4 special mine types for a fresh experience' },
+  mine_treasure_name: { zh: '宝藏地雷 (5%)', en: 'Treasure Mine (5%)' },
+  mine_treasure_desc: { zh: '踩到获得 5-15 金币奖励，不会爆炸', en: 'Step on it for 5-15 coins, no explosion' },
+  mine_chain_name: { zh: '连锁地雷 (10%)', en: 'Chain Mine (10%)' },
+  mine_chain_desc: { zh: '触发后自动揭示周围8格安全区域', en: 'Reveals the 8 surrounding safe cells' },
+  mine_freeze_name: { zh: '冰冻地雷 (5%)', en: 'Freeze Mine (5%)' },
+  mine_freeze_desc: { zh: '触发后暂停计时10秒', en: 'Pauses the timer for 10 seconds' },
+  mine_mystery_name: { zh: '神秘地雷 (5%)', en: 'Mystery Mine (5%)' },
+  mine_mystery_desc: { zh: '随机触发以上任意效果', en: 'Randomly triggers any of the above' },
+
+  // 记录
+  records_title: { zh: '🏆 个人记录', en: '🏆 Personal Records' },
+  best_suffix: { zh: '最佳', en: ' Best' },
+  score_unit: { zh: '分', en: ' pts' },
+
+  // 底部按钮标题
+  shop: { zh: '商城', en: 'Shop' },
+  settings: { zh: '设置', en: 'Settings' },
+  achievements: { zh: '成就', en: 'Achievements' },
+  statistics: { zh: '统计中心', en: 'Statistics' },
+  music: { zh: '音乐播放器', en: 'Music Player' },
+  dailyCheckIn: { zh: '每日签到', en: 'Daily Check-in' },
+  rankTitleBtn: { zh: '段位', en: 'Rank' },
+
+  // 游戏界面
+  flagMode: { zh: '标雷模式', en: 'Flag Mode' },
+  streakLabel: { zh: '🔥 连胜：', en: '🔥 Streak: ' },
+  bonusLabel: { zh: '奖励加成：', en: 'Bonus: ' },
+
+  // 商城
+  items: { zh: '道具', en: 'Items' },
+  skins: { zh: '皮肤', en: 'Skins' },
+  backgrounds: { zh: '背景', en: 'Backgrounds' },
+  sounds: { zh: '音效', en: 'Sounds' },
+  effects: { zh: '特效', en: 'Effects' },
+  owned: { zh: '已持有', en: 'Owned' },
+  buy: { zh: '购买', en: 'Buy' },
+  equip: { zh: '装备', en: 'Equip' },
+  equipped: { zh: '✅ 使用中', en: '✅ Equipped' },
+  skinDefaultDesc: { zh: '默认皮肤', en: 'Default skin' },
+  skinThemeDesc: { zh: '整套界面主题皮肤', en: 'Full UI theme skin' },
+  notEnoughCoins: { zh: '金币不够啦', en: 'Not enough coins' },
+
+  // 成就
+  achTitle: { zh: '🏆 成就', en: '🏆 Achievements' },
+  achProgress: { zh: '成就进度', en: 'Achievement Progress' },
+  achUnlocked: { zh: '已解锁', en: 'Unlocked' },
+  achTotal: { zh: '总计', en: 'Total' },
+  achUnlockToast: { zh: '成就解锁', en: 'Achievement Unlocked' },
+
+  // 每日签到
+  checkinTitle: { zh: '📅 每日签到', en: '📅 Daily Check-in' },
+  checkinHead: { zh: '连续签到领金币', en: 'Check in daily for coins' },
+  checkinSub: { zh: '每日首次签到获得奖励', en: 'Get a reward on your first check-in each day' },
+  checkinConsecutive: { zh: '连续签到天数', en: 'Consecutive Days' },
+  checkinTotal: { zh: '累计签到天数', en: 'Total Check-in Days' },
+  checkinNow: { zh: '立即签到', en: 'Check In Now' },
+  checkinDone: { zh: '今日已签到', en: 'Checked in today' },
+  checkinComeback: { zh: '✅ 明天再来吧', en: '✅ Come back tomorrow' },
+  checkinRules: { zh: '签到奖励规则', en: 'Check-in Reward Rules' },
+  checkinDay12: { zh: '第 1-2 天', en: 'Day 1-2' },
+  checkinDay36: { zh: '第 3-6 天', en: 'Day 3-6' },
+  checkinDay7: { zh: '第 7 天及以上', en: 'Day 7+' },
+  checkinReset: { zh: '💎 断签后重新计算', en: '💎 Resets after a missed day' },
+
+  // 段位
+  rankTitle: { zh: '🎖️ 段位', en: '🎖️ Rank' },
+  rankScoreLabel: { zh: '段位分：', en: 'Rank Score: ' },
+  rankNext: { zh: '距离下一段位', en: 'To Next Rank' },
+  rankFormulaTitle: { zh: '段位计算公式', en: 'Rank Formula' },
+  rankFormula: { zh: '段位分 = (胜场 × 5) + (胜率 × 1000)', en: 'Rank Score = (Wins × 5) + (Win Rate × 1000)' },
+  rankCurWins: { zh: '当前胜场', en: 'Current Wins' },
+  rankCurWinrate: { zh: '当前胜率', en: 'Current Win Rate' },
+  rankLevels: { zh: '段位等级', en: 'Rank Tiers' },
+  rankBronzeRange: { zh: '0 - 199 分', en: '0 - 199 pts' },
+  rankSilverRange: { zh: '200 - 499 分', en: '200 - 499 pts' },
+  rankGoldRange: { zh: '500 - 799 分 · 解锁专属皮肤', en: '500 - 799 pts · Unlock exclusive skin' },
+  rankDiamondRange: { zh: '800 - 1149 分 · 更强特效', en: '800 - 1149 pts · Stronger effects' },
+  rankMasterRange: { zh: '1150 - 1549 分 · 华丽特效', en: '1150 - 1549 pts · Gorgeous effects' },
+  rankKingRange: { zh: '1550+ 分 · 终极特效', en: '1550+ pts · Ultimate effects' },
+  rankUpSkin: { zh: '解锁专属皮肤！', en: 'Exclusive skin unlocked!' },
+  rankUpCongrats: { zh: '🎉 恭喜晋级', en: '🎉 Promoted to' },
+  rankUpPromote: { zh: '🎉 段位提升：', en: '🎉 Rank up: ' },
+  rankDown: { zh: '📉 段位下降：', en: '📉 Demoted to: ' },
+  rankScoreChange: { zh: '段位分', en: 'Rank Points' },
+  tab_ranked: { zh: '段位赛', en: 'Ranked' },
+  ranked_title: { zh: '🏆 段位赛', en: '🏆 Ranked Match' },
+  ranked_desc: { zh: '禁用道具，凭实力上分！<br>胜利按速度加分（越快越多）<br>失败会扣分，只有稳定又快才能晋级', en: 'No items — climb by skill!<br>Win: points scale with speed (faster = more)<br>Lose: you drop points. Only fast & consistent play ranks up' },
+  rankedNoItems: { zh: '🏆 段位赛 · 禁用道具', en: '🏆 Ranked · Items disabled' },
+  ranked_curScore: { zh: '当前段位分', en: 'Current Rank Points' },
+  reward_rankedEasy: { zh: '⚡ 快速通关得分更高', en: '⚡ Faster = more points' },
+  reward_rankedMedium: { zh: '⚡ 快速通关得分更高', en: '⚡ Faster = more points' },
+  reward_rankedHard: { zh: '⚡ 高风险高回报', en: '⚡ High risk, high reward' },
+
+  // 统计中心
+  statsTitle: { zh: '📊 统计中心', en: '📊 Statistics' },
+  statsGame: { zh: '游戏统计', en: 'Game Stats' },
+  statTotalGames: { zh: '总局数', en: 'Total Games' },
+  statWins: { zh: '胜场', en: 'Wins' },
+  statWinrate: { zh: '胜率', en: 'Win Rate' },
+  statPerfect: { zh: '完美通关', en: 'Perfect Wins' },
+  statsCoin: { zh: '金币统计', en: 'Coin Stats' },
+  statCurCoins: { zh: '当前金币', en: 'Current Coins' },
+  statTotalEarned: { zh: '累计获得', en: 'Total Earned' },
+  statTotalSpent: { zh: '累计消费', en: 'Total Spent' },
+  statMaxEarn: { zh: '单局最高', en: 'Max Single' },
+  statsTime: { zh: '时间统计', en: 'Time Stats' },
+  statTotalTime: { zh: '总游戏时长', en: 'Total Play Time' },
+  statEasyBest: { zh: '简单最快', en: 'Easy Best' },
+  statMedBest: { zh: '中等最快', en: 'Medium Best' },
+  statHardBest: { zh: '困难最快', en: 'Hard Best' },
+  statsOp: { zh: '操作统计', en: 'Operation Stats' },
+  statClicks: { zh: '总点击次数', en: 'Total Clicks' },
+  statFlags: { zh: '插旗次数', en: 'Flags Placed' },
+  statItems: { zh: '使用道具次数', en: 'Items Used' },
+  minutes: { zh: '分钟', en: ' min' },
+
+  // 音乐播放器
+  musicTitle: { zh: '🎵 音乐播放器', en: '🎵 Music Player' },
+  musicNoTrack: { zh: '未选择曲目', en: 'No track selected' },
+  musicVolume: { zh: '音量控制', en: 'Volume Control' },
+  musicBgm: { zh: '背景音乐', en: 'Background Music' },
+  musicSfx: { zh: '音效', en: 'Sound Effects' },
+  musicMaster: { zh: '主音量', en: 'Master Volume' },
+  musicMuteAll: { zh: '🔇 全部静音', en: '🔇 Mute All' },
+  musicPlaylist: { zh: '曲目列表', en: 'Track List' },
+  musicPlaying: { zh: '播放中', en: 'Playing' },
+  musicAmbient: { zh: '氛围音乐', en: 'Ambient' },
+  musicNowPlaying: { zh: '正在播放：', en: 'Now playing: ' },
+  musicNotEnough: { zh: '金币不足', en: 'Not enough coins' },
+  musicUnmuted: { zh: '已取消静音', en: 'Unmuted' },
+  musicMuted: { zh: '已全部静音', en: 'All muted' },
+
+  // 设置
+  settingsTitle: { zh: '⚙️ 设置', en: '⚙️ Settings' },
+  setEye: { zh: '护眼模式', en: 'Eye Protection' },
+  setEyeDesc: { zh: '减少蓝光和屏幕亮度，保护眼睛健康', en: 'Reduce blue light and brightness to protect your eyes' },
+  setOff: { zh: '关闭', en: 'Off' },
+  setLight: { zh: '轻度', en: 'Light' },
+  setMedium: { zh: '中度', en: 'Medium' },
+  setStrong: { zh: '强力', en: 'Strong' },
+  setEyeCur: { zh: '当前模式：', en: 'Current: ' },
+  setRemind: { zh: '游戏时长提醒', en: 'Play Time Reminder' },
+  setRemindDesc: { zh: '长时间游戏会提醒休息', en: 'Reminds you to rest after long play' },
+  set30min: { zh: '30分钟', en: '30 min' },
+  set60min: { zh: '60分钟', en: '60 min' },
+  setVibration: { zh: '📳 震动反馈', en: '📳 Vibration Feedback' },
+  setVibrationDesc: { zh: '触碰时提供触觉反馈', en: 'Haptic feedback on touch' },
+  setParticles: { zh: '✨ 粒子特效', en: '✨ Particle Effects' },
+  setParticlesDesc: { zh: '背景动态粒子效果', en: 'Dynamic background particles' },
+  setNoGuess: { zh: '🧠 无猜模式', en: '🧠 No-Guess Mode' },
+  setNoGuessDesc: { zh: '保证每局都能纯靠推理通关，不用赌雷', en: 'Guarantees every board is solvable by logic — no guessing' },
+  noGuessOn: { zh: '无猜模式已开启', en: 'No-guess mode on' },
+  noGuessOff: { zh: '无猜模式已关闭', en: 'No-guess mode off' },
+  setData: { zh: '数据管理', en: 'Data Management' },
+  setExport: { zh: '导出存档数据', en: 'Export Save Data' },
+  setImport: { zh: '导入存档数据', en: 'Import Save Data' },
+  setReset: { zh: '⚠️ 清空所有数据', en: '⚠️ Clear All Data' },
+
+  // 结算弹窗
+  resultWinTitle: { zh: '🎉 通关！', en: '🎉 Cleared!' },
+  resultSurvivalTitle: { zh: '🔥 生存 +1', en: '🔥 Survival +1' },
+  resultZenTitle: { zh: '🧘 禅心通达', en: '🧘 Zen Achieved' },
+  resultFail: { zh: '💥 踩到地雷了', en: '💥 Game Over' },
+  resultTime: { zh: '用时', en: 'Time' },
+  resultOps: { zh: '总操作', en: 'Total Moves' },
+  resultCoins: { zh: '金币', en: 'Coins' },
+  resultGot: { zh: '获得', en: 'Got' },
+  resultMistakes: { zh: '发现失误', en: 'Mistakes Found' },
+  viewReview: { zh: '🔍 查看失误分析', en: '🔍 View Mistake Analysis' },
+  noMistakes: { zh: '没有发现明显失误', en: 'No obvious mistakes found' },
+  playAgain: { zh: '再玩一次', en: 'Play Again' },
+  backHome: { zh: '返回首页', en: 'Back to Home' },
+
+  // 复盘画面
+  reviewTitle: { zh: '🔍 失误分析', en: '🔍 Mistake Analysis' },
+  reviewStats: { zh: '本局统计', en: 'This Game' },
+  reviewTotalOps: { zh: '总操作', en: 'Total Moves' },
+  reviewMistakeCount: { zh: '失误数', en: 'Mistakes' },
+  reviewTimeUsed: { zh: '用时', en: 'Time' },
+  reviewListTitle: { zh: '失误列表', en: 'Mistake List' },
+  reviewBackGame: { zh: '返回游戏画面', en: 'Back to Game' },
+  reviewClose: { zh: '关闭复盘', en: 'Close Review' },
+  noMistakeRecord: { zh: '没有失误记录', en: 'No mistake records' },
+  fatalMistake: { zh: '致命失误', en: 'Fatal Mistake' },
+  lastMove: { zh: '最后一步', en: 'Last Move' },
+  fatalDesc: { zh: '踩到地雷导致游戏失败', en: 'Stepped on a mine and lost the game' },
+  shouldFlagTitle: { zh: '漏标地雷', en: 'Missed Mine Flag' },
+  shouldFlagDesc: { zh: '周围的隐藏格子都应该先标旗', en: 'The hidden cells around should have been flagged first' },
+  wrongFlagTitle: { zh: '错误标旗', en: 'Wrong Flag' },
+  wrongFlagCount: { zh: '共', en: '' },
+  wrongFlagCountUnit: { zh: '处', en: ' total' },
+  wrongFlagDesc: { zh: '标记了非地雷位置，可能干扰判断', en: 'Flagged non-mine cells, may mislead you' },
+  missedSafeTitle: { zh: '漏掉的安全格', en: 'Missed Safe Cell' },
+  missedSafeDesc: { zh: '周围已标够旗，其他格子是安全的', en: 'Enough flags nearby, other cells are safe' },
+  highlight: { zh: '📍 高亮显示', en: '📍 Highlight' },
+  highlightArea: { zh: '📍 高亮显示区域', en: '📍 Highlight Area' },
+  position: { zh: '位置', en: 'Position' },
+  row: { zh: '行', en: 'Row ' },
+  col: { zh: '列', en: 'Col ' },
+  reviewAreaToast: { zh: '查看周围区域', en: 'Viewing surrounding area' },
+
+  // 设置/提示 toast
+  eyeModeToast: { zh: '护眼模式：', en: 'Eye protection: ' },
+  remindOff: { zh: '提醒已关闭', en: 'Reminder off' },
+  remindSetPre: { zh: '已设置 ', en: 'Reminder set: ' },
+  remindSetPost: { zh: ' 分钟提醒', en: ' min' },
+  vibrationOn: { zh: '震动反馈已开启', en: 'Vibration on' },
+  vibrationOff: { zh: '震动反馈已关闭', en: 'Vibration off' },
+  particlesOn: { zh: '粒子特效已开启', en: 'Particle effects on' },
+  particlesOff: { zh: '粒子特效已关闭', en: 'Particle effects off' },
+  dataExported: { zh: '数据已导出到剪贴板', en: 'Data exported to clipboard' },
+  dataFormatError: { zh: '数据格式错误', en: 'Invalid data format' },
+  resetFailed: { zh: '清空失败', en: 'Reset failed' },
+  confirmReset: { zh: '确定要清空所有数据吗？此操作不可恢复！', en: 'Clear all data? This cannot be undone!' },
+  importPrompt: { zh: '请粘贴存档数据：', en: 'Paste your save data:' },
+  devPwdPrompt: { zh: '请输入开发者密码：', en: 'Enter developer password:' },
+  devWrongPwd: { zh: '❌ 密码错误', en: '❌ Wrong password' },
+  devOnToast: { zh: '🛠️ 开发者模式已开启', en: '🛠️ Developer mode enabled' },
+  devOffToast: { zh: '🔒 开发者模式已关闭', en: '🔒 Developer mode disabled' },
+
+  // 游戏内 toast
+  itemInsufficient: { zh: '道具不足', en: 'Not enough items' },
+  noSafeCell: { zh: '没有可揭示的安全格', en: 'No safe cell to reveal' },
+  noMineToFlag: { zh: '没有可标记的地雷', en: 'No mine to flag' },
+  noMineToDefuse: { zh: '没有地雷可拆除', en: 'No mine to defuse' },
+  defused: { zh: '💥 已拆除一个地雷', en: '💥 Defused one mine' },
+  freezePaused: { zh: '⏸️ 计时暂停 10 秒', en: '⏸️ Timer paused for 10s' },
+  treasureFound: { zh: '💰 发现宝藏！获得', en: '💰 Treasure found! Got' },
+  freezeMine: { zh: '❄️ 冰冻雷！时间暂停 5 秒', en: '❄️ Freeze mine! Timer paused 5s' },
+  chainMine: { zh: '🔥 连锁雷！引爆周围地雷', en: '🔥 Chain mine! Nearby mines triggered' },
+  mysteryCoins: { zh: '🎲 随机雷：获得', en: '🎲 Mystery mine: got' },
+  mysteryReveal: { zh: '🎲 随机雷：揭示 3×3 区域', en: '🎲 Mystery mine: revealed 3×3 area' },
+  mysteryFlag: { zh: '🎲 随机雷：自动标记 3 个地雷', en: '🎲 Mystery mine: auto-flagged 3 mines' },
+  mysteryTime: { zh: '🎲 随机雷：时间 -10 秒', en: '🎲 Mystery mine: -10 seconds' },
+  mysteryBoom: { zh: '🎲 随机雷：爆炸！', en: '🎲 Mystery mine: boom!' },
+  undoDone: { zh: '已撤销，继续加油！', en: 'Undone, keep going!' },
+
+  // 其他
+  back: { zh: '返回', en: 'Back' },
+  confirm: { zh: '确定', en: 'Confirm' },
+  cancel: { zh: '取消', en: 'Cancel' }
+};
+
+function t(key) {
+  const lang = SAVE.language || 'zh';
+  return TRANSLATIONS[key] ? (TRANSLATIONS[key][lang] != null ? TRANSLATIONS[key][lang] : TRANSLATIONS[key].zh) : key;
+}
+
+// 读取数据常量的本地化字段（如 name/nameEn, desc/descEn, style/styleEn）
+function L(obj, field) {
+  if (!obj) return '';
+  const lang = SAVE.language || 'zh';
+  if (lang === 'en' && obj[field + 'En'] != null) return obj[field + 'En'];
+  return obj[field];
+}
+
+// 语言切换
+function switchLanguage(lang) {
+  SAVE.language = lang;
+  saveState(SAVE);
+  updateAllTexts();
+  toast(lang === 'zh' ? '✓ 已切换到中文' : '✓ Switched to English');
+}
+
+// 更新所有界面文字（通用 data-i18n 遍历 + 动态屏幕重渲染）
+function updateAllTexts() {
+  // 1) 所有带 data-i18n 的静态元素
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const val = t(key);
+    if (val != null) el.innerHTML = val;
+  });
+  // 2) 所有带 data-i18n-title 的元素（更新 title 属性）
+  document.querySelectorAll('[data-i18n-title]').forEach(el => {
+    el.setAttribute('title', t(el.getAttribute('data-i18n-title')));
+  });
+
+  // 3) 开发者模式按钮文字
+  updateDevModeUI();
+
+  // 4) 自定义难度密度标签
+  if ($('#density-tag')) updateDensityTag();
+
+  // 5) 重新渲染当前动态屏幕
+  const activeScreen = document.querySelector('.screen.active');
+  if (activeScreen) {
+    const screenId = activeScreen.id;
+    if (screenId === 'screen-shop') renderShop();
+    else if (screenId === 'screen-music') renderMusicPlayer();
+    else if (screenId === 'screen-achievements') renderAchievements();
+    else if (screenId === 'screen-stats') renderStats();
+    else if (screenId === 'screen-daily-checkin') renderDailyCheckin();
+    else if (screenId === 'screen-rank') renderRank();
+  }
+
+  // 6) 玩家卡片与首页记录
+  updatePlayerCard();
+  renderRecordsBox();
+}
+
+
+// 商城渲染
+function shopBtnLabel(equipped, owned, price){
+  return equipped ? t('equipped') : (owned ? t('equip') : '🪙 ' + price + ' ' + t('buy'));
+}
+function shopBtnStyle(equipped, owned){
+  return equipped ? 'background:var(--gold);color:#1a1300;'
+    : (owned ? 'background:rgba(255,255,255,0.08);color:var(--text-dim);'
+             : 'background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#0a0d1a;');
+}
+
+function renderShop() {
+  refreshCoinDisplays();
+  const itemsGrid = $('#shop-items');
+  itemsGrid.innerHTML = '';
+  Object.keys(ITEMS).forEach(key=>{
+    const it = ITEMS[key];
+    const owned = SAVE.ownedItems[key] || 0;
+    const card = document.createElement('div');
+    card.className = 'shop-card glass-card';
+    card.style.cssText = 'padding:14px;text-align:center;';
+    card.innerHTML = `
+      <div style="font-size:28px;margin-bottom:6px;">${it.icon}</div>
+      <div style="font-weight:700;font-size:13px;margin-bottom:2px;">${L(it,'name')}</div>
+      <div style="font-size:10.5px;color:var(--text-dim);min-height:28px;margin-bottom:8px;">${L(it,'desc')}</div>
+      <div style="font-size:11px;color:var(--text-dim);margin-bottom:6px;">${t('owned')} ${owned}</div>
+      <button style="width:100%;padding:8px;border:none;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#0a0d1a;">🪙 ${it.price} ${t('buy')}</button>
+    `;
+    card.querySelector('button').onclick = ()=>{
+      if (SAVE.coins < it.price){ toast(t('notEnoughCoins')); return; }
+      SAVE.coins -= it.price;
+      SAVE.ownedItems[key] = (SAVE.ownedItems[key]||0) + 1;
+      SAVE.statistics.totalCoinsSpent += it.price;
+      saveState(SAVE);
+      Sound.buy();
+      renderShop();
+      if (G && !G.over) renderItemsBar();
+    };
+    itemsGrid.appendChild(card);
+  });
+
+  const skinsGrid = $('#shop-skins');
+  skinsGrid.innerHTML = '';
+  Object.keys(SKINS).forEach(key=>{
+    const sk = SKINS[key];
+    const owned = SAVE.ownedSkins.includes(key);
+    const equipped = SAVE.activeSkin === key;
+    const card = document.createElement('div');
+    card.className = 'shop-card glass-card';
+    card.style.cssText = 'padding:14px;text-align:center;';
+    card.innerHTML = `
+      <div style="font-size:28px;margin-bottom:6px;">${sk.icon}</div>
+      <div style="font-weight:700;font-size:13px;margin-bottom:2px;">${L(sk,'name')}</div>
+      <div style="font-size:10.5px;color:var(--text-dim);min-height:28px;margin-bottom:8px;">${key==='classic'?t('skinDefaultDesc'):t('skinThemeDesc')}</div>
+      <button style="width:100%;padding:8px;border:none;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer;${shopBtnStyle(equipped,owned)}">
+        ${shopBtnLabel(equipped,owned,sk.price)}
+      </button>
+    `;
+    card.querySelector('button').onclick = ()=>{
+      if (equipped) return;
+      if (!owned){
+        if (SAVE.coins < sk.price){ toast(t('notEnoughCoins')); return; }
+        SAVE.coins -= sk.price;
+        SAVE.ownedSkins.push(key);
+        SAVE.statistics.totalCoinsSpent += sk.price;
+        Sound.buy();
+      }
+      SAVE.activeSkin = key;
+      applySkin();
+      saveState(SAVE);
+      renderShop();
+      refreshCoinDisplays();
+    };
+    skinsGrid.appendChild(card);
+  });
+  
+  // 背景商城
+  const bgGrid = $('#shop-backgrounds');
+  bgGrid.innerHTML = '';
+  Object.keys(BACKGROUNDS).forEach(key=>{
+    const bg = BACKGROUNDS[key];
+    const owned = SAVE.ownedBackgrounds.includes(key);
+    const equipped = SAVE.activeBackground === key;
+    const card = document.createElement('div');
+    card.className = 'shop-card glass-card';
+    card.style.cssText = 'padding:14px;text-align:center;';
+    card.innerHTML = `
+      <div style="font-size:28px;margin-bottom:6px;">${bg.icon}</div>
+      <div style="font-weight:700;font-size:13px;margin-bottom:2px;">${L(bg,'name')}</div>
+      <div style="font-size:10.5px;color:var(--text-dim);min-height:28px;margin-bottom:8px;">${L(bg,'desc')}</div>
+      <button style="width:100%;padding:8px;border:none;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer;${shopBtnStyle(equipped,owned)}">
+        ${shopBtnLabel(equipped,owned,bg.price)}
+      </button>
+    `;
+    card.querySelector('button').onclick = ()=>{
+      if (equipped) return;
+      if (!owned){
+        if (SAVE.coins < bg.price){ toast(t('notEnoughCoins')); return; }
+        SAVE.coins -= bg.price;
+        SAVE.ownedBackgrounds.push(key);
+        SAVE.statistics.totalCoinsSpent += bg.price;
+        Sound.buy();
+      }
+      SAVE.activeBackground = key;
+      applyBackground();
+      saveState(SAVE);
+      renderShop();
+      refreshCoinDisplays();
+    };
+    bgGrid.appendChild(card);
+  });
+  
+  // 音效和特效同理
+  const soundsGrid = $('#shop-sounds');
+  soundsGrid.innerHTML = '';
+  Object.keys(SOUND_PACKS).forEach(key=>{
+    const snd = SOUND_PACKS[key];
+    const owned = SAVE.ownedSounds.includes(key);
+    const equipped = SAVE.activeSound === key;
+    const card = document.createElement('div');
+    card.className = 'shop-card glass-card';
+    card.style.cssText = 'padding:14px;text-align:center;';
+    card.innerHTML = `
+      <div style="font-size:28px;margin-bottom:6px;">${snd.icon}</div>
+      <div style="font-weight:700;font-size:13px;margin-bottom:2px;">${L(snd,'name')}</div>
+      <div style="font-size:10.5px;color:var(--text-dim);min-height:28px;margin-bottom:8px;">${L(snd,'desc')}</div>
+      <button style="width:100%;padding:8px;border:none;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer;${shopBtnStyle(equipped,owned)}">
+        ${shopBtnLabel(equipped,owned,snd.price)}
+      </button>
+    `;
+    card.querySelector('button').onclick = ()=>{
+      if (equipped) return;
+      if (!owned){
+        if (SAVE.coins < snd.price){ toast(t('notEnoughCoins')); return; }
+        SAVE.coins -= snd.price;
+        SAVE.ownedSounds.push(key);
+        SAVE.statistics.totalCoinsSpent += snd.price;
+        Sound.buy();
+      }
+      SAVE.activeSound = key;
+      saveState(SAVE);
+      renderShop();
+      refreshCoinDisplays();
+      Sound.win(); // 立即试听新音效
+    };
+    soundsGrid.appendChild(card);
+  });
+  
+  const effectsGrid = $('#shop-effects');
+  effectsGrid.innerHTML = '';
+  Object.keys(EFFECTS).forEach(key=>{
+    const eff = EFFECTS[key];
+    const owned = SAVE.ownedEffects.includes(key);
+    const equipped = SAVE.activeEffect === key;
+    const card = document.createElement('div');
+    card.className = 'shop-card glass-card';
+    card.style.cssText = 'padding:14px;text-align:center;';
+    card.innerHTML = `
+      <div style="font-size:28px;margin-bottom:6px;">${eff.icon}</div>
+      <div style="font-weight:700;font-size:13px;margin-bottom:2px;">${L(eff,'name')}</div>
+      <div style="font-size:10.5px;color:var(--text-dim);min-height:28px;margin-bottom:8px;">${L(eff,'desc')}</div>
+      <button style="width:100%;padding:8px;border:none;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer;${shopBtnStyle(equipped,owned)}">
+        ${shopBtnLabel(equipped,owned,eff.price)}
+      </button>
+    `;
+    card.querySelector('button').onclick = ()=>{
+      if (equipped) return;
+      if (!owned){
+        if (SAVE.coins < eff.price){ toast(t('notEnoughCoins')); return; }
+        SAVE.coins -= eff.price;
+        SAVE.ownedEffects.push(key);
+        SAVE.statistics.totalCoinsSpent += eff.price;
+        Sound.buy();
+      }
+      SAVE.activeEffect = key;
+      saveState(SAVE);
+      renderShop();
+      refreshCoinDisplays();
+      playEffect(key); // 立即预览特效
+    };
+    effectsGrid.appendChild(card);
+  });
+}
+
+// 统计中心渲染
+function renderStats() {
+  const stats = SAVE.statistics;
+  const winRate = stats.totalGames > 0 ? Math.round((stats.totalWins / stats.totalGames) * 100) : 0;
+  const totalTimeMin = Math.floor(stats.totalPlayTime / 60);
+  
+  $('#stat-total-games').textContent = stats.totalGames;
+  $('#stat-wins').textContent = stats.totalWins;
+  $('#stat-winrate').textContent = winRate + '%';
+  $('#stat-perfect-wins').textContent = '0'; // TODO: 实现完美通关计数
+  
+  $('#stat-current-coins').textContent = SAVE.coins;
+  $('#stat-total-earned').textContent = stats.totalCoinsEarned;
+  $('#stat-total-spent').textContent = stats.totalCoinsSpent;
+  $('#stat-max-earn').textContent = stats.maxSingleEarn || 0;
+  
+  $('#stat-total-time').textContent = totalTimeMin + t('minutes');
+  $('#stat-easy-best').textContent = SAVE.best.easy.time ? fmtTime(SAVE.best.easy.time) : '--';
+  $('#stat-medium-best').textContent = SAVE.best.medium.time ? fmtTime(SAVE.best.medium.time) : '--';
+  $('#stat-hard-best').textContent = SAVE.best.hard.time ? fmtTime(SAVE.best.hard.time) : '--';
+  
+  $('#stat-total-clicks').textContent = stats.totalClicks || 0;
+  $('#stat-total-flags').textContent = stats.totalFlags || 0;
+  $('#stat-items-used').textContent = stats.totalItemsUsed || 0;
+}
+
+// 音乐播放器渲染
+function renderMusicPlayer() {
+  const activeBGM = SAVE.activeBGM || 'calm';
+  const ownedBGM = SAVE.ownedBGM || ['calm'];
+  
+  // 更新当前曲目显示
+  if (BGM_TRACKS[activeBGM]) {
+    const track = BGM_TRACKS[activeBGM];
+    $('#music-cover').textContent = track.icon;
+    $('#music-title').textContent = L(track,'name');
+    $('#music-artist').textContent = `${L(track,'style')} · ${track.bpm > 0 ? track.bpm + ' BPM' : t('musicAmbient')}`;
+  }
+  
+  // 更新音量显示
+  $('#bgm-vol-display').textContent = Math.round(SAVE.musicPlayer.bgmVolume * 100) + '%';
+  $('#sfx-vol-display').textContent = Math.round(SAVE.musicPlayer.sfxVolume * 100) + '%';
+  $('#master-vol-display').textContent = Math.round(SAVE.musicPlayer.volume * 100) + '%';
+  
+  // 更新音量滑块
+  $('#bgm-volume').value = Math.round(SAVE.musicPlayer.bgmVolume * 100);
+  $('#sfx-volume').value = Math.round(SAVE.musicPlayer.sfxVolume * 100);
+  $('#master-volume').value = Math.round(SAVE.musicPlayer.volume * 100);
+  
+  // 渲染曲目列表
+  const playlist = $('#music-playlist');
+  playlist.innerHTML = '';
+  
+  Object.keys(BGM_TRACKS).forEach(key => {
+    const track = BGM_TRACKS[key];
+    const isOwned = ownedBGM.includes(key);
+    const isActive = activeBGM === key;
+    
+    const item = document.createElement('div');
+    item.className = 'glass-card';
+    item.style.cssText = `
+      padding:12px;display:flex;align-items:center;gap:12px;margin-bottom:8px;
+      cursor:${isOwned ? 'pointer' : 'default'};
+      ${isActive ? 'border:2px solid var(--accent);background:rgba(91,155,213,0.1);' : ''}
+      ${!isOwned ? 'opacity:0.5;' : ''}
+    `;
+    
+    item.innerHTML = `
+      <div style="font-size:24px;">${track.icon}</div>
+      <div style="flex:1;">
+        <div style="font-weight:700;display:flex;align-items:center;gap:8px;">
+          ${L(track,'name')}
+          ${isActive ? `<span style="font-size:11px;background:var(--accent);color:#fff;padding:2px 6px;border-radius:8px;">${t('musicPlaying')}</span>` : ''}
+        </div>
+        <div style="font-size:11px;color:var(--text-dim);">${L(track,'style')} ${track.bpm > 0 ? '· ' + track.bpm + ' BPM' : ''}</div>
+      </div>
+      <div style="font-weight:800;color:var(--gold);">
+        ${isOwned ? (isActive ? '♪' : '▶') : '🪙 ' + track.price}
+      </div>
+    `;
+    
+    if (isOwned && !isActive) {
+      item.onclick = () => {
+        SAVE.activeBGM = key;
+        saveState(SAVE);
+        renderMusicPlayer();
+        toast(`${t('musicNowPlaying')}${L(track,'name')}`);
+      };
+    } else if (!isOwned) {
+      item.onclick = () => {
+        if (SAVE.coins >= track.price) {
+          const msg = (SAVE.language === 'en')
+            ? `Buy "${L(track,'name')}" for ${track.price} coins?`
+            : `购买《${L(track,'name')}》需要 ${track.price} 金币，确定购买？`;
+          if (confirm(msg)) {
+            SAVE.coins -= track.price;
+            SAVE.ownedBGM.push(key);
+            SAVE.statistics.totalCoinsSpent += track.price;
+            saveState(SAVE);
+            refreshCoinDisplays();
+            renderMusicPlayer();
+            Sound.buy();
+          }
+        } else {
+          toast(t('musicNotEnough'));
+        }
+      };
+    }
+    
+    playlist.appendChild(item);
+  });
+  
+  // 绑定音量滑块事件
+  $('#bgm-volume').oninput = (e) => {
+    SAVE.musicPlayer.bgmVolume = e.target.value / 100;
+    $('#bgm-vol-display').textContent = e.target.value + '%';
+    saveState(SAVE);
+  };
+  
+  $('#sfx-volume').oninput = (e) => {
+    SAVE.musicPlayer.sfxVolume = e.target.value / 100;
+    $('#sfx-vol-display').textContent = e.target.value + '%';
+    saveState(SAVE);
+  };
+  
+  $('#master-volume').oninput = (e) => {
+    SAVE.musicPlayer.volume = e.target.value / 100;
+    $('#master-vol-display').textContent = e.target.value + '%';
+    saveState(SAVE);
+  };
+  
+  // 全部静音按钮
+  $('#btn-mute-all').onclick = () => {
+    const isMuted = SAVE.musicPlayer.volume === 0;
+    if (isMuted) {
+      SAVE.musicPlayer.volume = 1;
+      SAVE.musicPlayer.bgmVolume = 0.8;
+      SAVE.musicPlayer.sfxVolume = 0.6;
+    } else {
+      SAVE.musicPlayer.volume = 0;
+      SAVE.musicPlayer.bgmVolume = 0;
+      SAVE.musicPlayer.sfxVolume = 0;
+    }
+    saveState(SAVE);
+    renderMusicPlayer();
+    toast(isMuted ? t('musicUnmuted') : t('musicMuted'));
+  };
+}
+
+// 段位渲染
+function renderRank() {
+  const score = calculateRankScore();
+  let curKey = 'bronze';
+  const keys = Object.keys(RANKS);
+  for (const k of keys) { if (score >= RANKS[k].minScore) curKey = k; }
+  const cur = RANKS[curKey];
+
+  const iconEl = $('#current-rank-icon');
+  if (iconEl) { iconEl.className = 'rank-icon rank-' + curKey; iconEl.textContent = cur.icon; }
+  if ($('#current-rank-name')) $('#current-rank-name').textContent = L(cur, 'name');
+  if ($('#current-rank-score')) $('#current-rank-score').textContent = t('rankScoreLabel') + Math.round(score);
+
+  // 下一段位进度
+  const idx = keys.indexOf(curKey);
+  const nextKey = keys[idx + 1];
+  const bar = $('#rank-progress-bar');
+  const progText = $('#rank-progress-text');
+  if (nextKey) {
+    const nextMin = RANKS[nextKey].minScore;
+    const curMin = cur.minScore;
+    const pct = Math.min(100, Math.round(((score - curMin) / (nextMin - curMin)) * 100));
+    if (bar) bar.style.width = pct + '%';
+    if (progText) progText.textContent = `${Math.round(score)} / ${nextMin}`;
+  } else {
+    if (bar) bar.style.width = '100%';
+    if (progText) progText.textContent = `${Math.round(score)} (MAX)`;
+  }
+
+  if ($('#rank-wins')) $('#rank-wins').textContent = SAVE.rank.wins;
+  const winrate = SAVE.statistics.totalGames > 0
+    ? Math.round((SAVE.statistics.totalWins / SAVE.statistics.totalGames) * 100) : 0;
+  if ($('#rank-winrate')) $('#rank-winrate').textContent = winrate + '%';
+
+  // 段位等级列表里的名称（保证语言正确）
+  const tierNames = document.querySelectorAll('#screen-rank .rank-tier-name');
+  tierNames.forEach(el => {
+    const k = el.getAttribute('data-rank');
+    if (k && RANKS[k]) el.textContent = L(RANKS[k], 'name');
+  });
+}
+
+// 成就渲染
+function renderAchievements() {
+  const unlockedIds = SAVE.achievements.unlocked || [];
+  const achievementKeys = Object.keys(ACHIEVEMENTS);
+  
+  $('#unlocked-count').textContent = unlockedIds.length;
+  $('#total-achievements').textContent = achievementKeys.length;
+  
+  const list = $('#achievements-list');
+  list.innerHTML = '';
+  
+  achievementKeys.forEach(key => {
+    const ach = ACHIEVEMENTS[key];
+    const isUnlocked = unlockedIds.includes(key);
+    const lang = SAVE.language || 'zh';
+    
+    const card = document.createElement('div');
+    card.className = 'glass-card';
+    card.style.cssText = `
+      padding:16px;margin-bottom:12px;display:flex;align-items:center;gap:12px;
+      ${isUnlocked ? '' : 'opacity:0.5;filter:grayscale(0.8);'}
+    `;
+    
+    card.innerHTML = `
+      <div style="font-size:32px;">${isUnlocked ? ach.icon : '🔒'}</div>
+      <div style="flex:1;">
+        <div style="font-weight:800;margin-bottom:2px;">${ach.name[lang]}</div>
+        <div style="font-size:12px;color:var(--text-dim);">${ach.desc[lang]}</div>
+        <div style="font-size:11px;margin-top:4px;color:var(--gold);">🪙 ${ach.reward} ${t('coins')}</div>
+      </div>
+      ${isUnlocked ? '<div style="color:var(--success);font-size:20px;">✓</div>' : ''}
+    `;
+    
+    list.appendChild(card);
+  });
+}
+
+// 检查并解锁成就
+function checkAchievements() {
+  let newUnlocked = [];
+  const unlockedIds = SAVE.achievements.unlocked || [];
+  
+  Object.keys(ACHIEVEMENTS).forEach(key => {
+    if (!unlockedIds.includes(key)) {
+      const ach = ACHIEVEMENTS[key];
+      if (ach.check(SAVE)) {
+        unlockedIds.push(key);
+        newUnlocked.push(key);
+        
+        // 奖励金币
+        SAVE.coins += ach.reward;
+        
+        // 显示通知
+        const lang = SAVE.language || 'zh';
+        toast(`🎉 ${t('achUnlockToast')}: ${ach.name[lang]} (+${ach.reward} 🪙)`);
+        Sound.achievement();
+      }
+    }
+  });
+  
+  SAVE.achievements.unlocked = unlockedIds;
+  if (newUnlocked.length > 0) {
+    saveState(SAVE);
+    refreshCoinDisplays();
+  }
+}
+
+// 每日签到渲染
+function renderDailyCheckin() {
+  const today = todayStr();
+  const lastCheckin = SAVE.daily.lastCheckIn;
+  const canCheckin = lastCheckin !== today;
+  
+  $('#consecutive-days').textContent = SAVE.daily.consecutiveDays;
+  $('#total-checkin-days').textContent = SAVE.daily.totalCheckIns;
+  
+  const btn = $('#btn-do-checkin');
+  const status = $('#checkin-status');
+  
+  if (canCheckin) {
+    btn.disabled = false;
+    btn.textContent = t('checkinNow');
+    btn.onclick = () => {
+      SAVE.daily.lastCheckIn = today;
+      SAVE.daily.consecutiveDays++;
+      SAVE.daily.totalCheckIns++;
+      
+      let reward = 10;
+      if (SAVE.daily.consecutiveDays >= 7) reward = 30;
+      else if (SAVE.daily.consecutiveDays >= 3) reward = 20;
+      
+      SAVE.coins += reward;
+      saveState(SAVE);
+      refreshCoinDisplays();
+      toast(SAVE.language === 'en' ? `✅ Check-in successful! Got ${reward} coins` : `✅ 签到成功！获得 ${reward} 金币`);
+      Sound.coin();
+      renderDailyCheckin();
+    };
+    status.textContent = '';
+  } else {
+    btn.disabled = true;
+    btn.textContent = t('checkinDone');
+    status.textContent = t('checkinComeback');
+  }
+}
+
+// 显示复盘分析界面
+function posText(r, c) {
+  return `${t('position')}: ${t('row')}${r + 1} ${t('col')}${c + 1}`;
+}
+
+function showReviewScreen() {
+  if (!G || !G.mistakes || G.mistakes.length === 0) {
+    toast(t('noMistakeRecord'));
+    return;
+  }
+  
+  // 创建复盘弹窗
+  let reviewModal = $('#review-modal');
+  if (!reviewModal) {
+    reviewModal = document.createElement('div');
+    reviewModal.id = 'review-modal';
+    reviewModal.className = 'modal';
+    document.body.appendChild(reviewModal);
+  }
+  
+  const mistakes = G.mistakes;
+  const fatalMistake = mistakes.find(m => m.type === 'fatal');
+  const wrongFlags = mistakes.filter(m => m.type === 'wrong_flag');
+  const shouldFlags = mistakes.filter(m => m.type === 'should_flag');
+  const missedSafe = mistakes.filter(m => m.type === 'missed_safe');
+  
+  let mistakesList = '';
+  
+  // 致命失误
+  if (fatalMistake) {
+    mistakesList += `
+      <div class="mistake-item fatal" style="background:rgba(255,107,107,0.1);border-left:4px solid var(--danger);padding:12px;margin-bottom:12px;border-radius:8px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <span style="font-size:24px;">💥</span>
+          <div style="flex:1;">
+            <div style="font-weight:800;color:var(--danger);display:flex;align-items:center;gap:8px;">
+              ${t('fatalMistake')}
+              ${fatalMistake.isLastMove ? `<span style="background:linear-gradient(135deg,#ff6b6b,#ff8787);color:#fff;padding:2px 8px;border-radius:12px;font-size:10px;animation:pulse 1.5s infinite;">⚡ ${t('lastMove')}</span>` : ''}
+            </div>
+            <div style="font-size:12px;color:var(--text-dim);">${fmtTime(fatalMistake.time)}</div>
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--text-main);">${t('fatalDesc')}</div>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:4px;">${posText(fatalMistake.r, fatalMistake.c)}</div>
+        <button class="secondary-btn" onclick="highlightCell(${fatalMistake.r}, ${fatalMistake.c}, true)" style="margin-top:8px;padding:6px 12px;font-size:12px;">${t('highlight')}</button>
+      </div>
+    `;
+  }
+  
+  // 应该标旗的地方
+  if (shouldFlags.length > 0) {
+    shouldFlags.forEach((mistake, idx) => {
+      mistakesList += `
+        <div class="mistake-item should-flag" style="background:rgba(255,193,7,0.1);border-left:4px solid var(--warning);padding:12px;margin-bottom:12px;border-radius:8px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <span style="font-size:24px;">⚠️</span>
+            <div>
+              <div style="font-weight:800;color:var(--warning);">${t('shouldFlagTitle')}</div>
+              <div style="font-size:12px;color:var(--text-dim);">${fmtTime(mistake.time)}</div>
+            </div>
+          </div>
+          <div style="font-size:13px;color:var(--text-main);">${t('shouldFlagDesc')}</div>
+          <div style="font-size:12px;color:var(--text-dim);margin-top:4px;">${posText(mistake.r, mistake.c)}</div>
+          <button class="secondary-btn" onclick="highlightMistakeArea(${mistake.r}, ${mistake.c}, 'should-flag')" style="margin-top:8px;padding:6px 12px;font-size:12px;">${t('highlightArea')}</button>
+        </div>
+      `;
+    });
+  }
+  
+  // 错误标旗
+  if (wrongFlags.length > 0) {
+    mistakesList += `
+      <div class="mistake-item wrong-flag" style="background:rgba(255,152,0,0.1);border-left:4px solid #FF9800;padding:12px;margin-bottom:12px;border-radius:8px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <span style="font-size:24px;">🚩</span>
+          <div>
+            <div style="font-weight:800;color:#FF9800;">${t('wrongFlagTitle')}</div>
+            <div style="font-size:12px;color:var(--text-dim);">${t('wrongFlagCount')} ${wrongFlags.length}${t('wrongFlagCountUnit')}</div>
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--text-main);">${t('wrongFlagDesc')}</div>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:6px;">
+          ${wrongFlags.map(m => `${t('row')}${m.r+1} ${t('col')}${m.c+1}`).join('  ')}
+        </div>
+      </div>
+    `;
+  }
+  
+  // 漏掉的安全格子
+  if (missedSafe.length > 0) {
+    missedSafe.slice(0, 2).forEach(mistake => {
+      mistakesList += `
+        <div class="mistake-item missed-safe" style="background:rgba(76,175,80,0.1);border-left:4px solid var(--success);padding:12px;margin-bottom:12px;border-radius:8px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <span style="font-size:24px;">💡</span>
+            <div>
+              <div style="font-weight:800;color:var(--success);">${t('missedSafeTitle')}</div>
+              <div style="font-size:12px;color:var(--text-dim);">${fmtTime(mistake.time)}</div>
+            </div>
+          </div>
+          <div style="font-size:13px;color:var(--text-main);">${t('missedSafeDesc')}</div>
+          <div style="font-size:12px;color:var(--text-dim);margin-top:4px;">${posText(mistake.r, mistake.c)}</div>
+          <button class="secondary-btn" onclick="highlightMistakeArea(${mistake.r}, ${mistake.c}, 'missed-safe')" style="margin-top:8px;padding:6px 12px;font-size:12px;">${t('highlightArea')}</button>
+        </div>
+      `;
+    });
+  }
+  
+  if (!mistakesList) {
+    mistakesList = `<div style="text-align:center;color:var(--text-dim);padding:20px;">${t('noMistakes')}</div>`;
+  }
+  
+  reviewModal.innerHTML = `
+    <div class="modal-card glass-modal" style="max-width:500px;max-height:80vh;overflow-y:auto;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div style="font-size:20px;font-weight:900;">${t('reviewTitle')}</div>
+        <button class="icon-btn" id="btn-close-review" style="width:36px;height:36px;">✕</button>
+      </div>
+      
+      <div class="glass-card" style="padding:12px;margin-bottom:16px;text-align:center;">
+        <div style="font-size:13px;color:var(--text-dim);margin-bottom:6px;">${t('reviewStats')}</div>
+        <div style="display:flex;justify-content:space-around;">
+          <div>
+            <div style="font-size:20px;font-weight:900;color:var(--accent);">${G.moveHistory.length}</div>
+            <div style="font-size:11px;color:var(--text-dim);">${t('reviewTotalOps')}</div>
+          </div>
+          <div>
+            <div style="font-size:20px;font-weight:900;color:var(--danger);">${mistakes.length}</div>
+            <div style="font-size:11px;color:var(--text-dim);">${t('reviewMistakeCount')}</div>
+          </div>
+          <div>
+            <div style="font-size:20px;font-weight:900;color:var(--warning);">${fmtTime(G.timer)}</div>
+            <div style="font-size:11px;color:var(--text-dim);">${t('reviewTimeUsed')}</div>
+          </div>
+        </div>
+      </div>
+      
+      <div style="font-weight:800;margin-bottom:12px;font-size:15px;">${t('reviewListTitle')}</div>
+      <div id="mistakes-list">
+        ${mistakesList}
+      </div>
+      
+      <div class="modal-btns" style="margin-top:16px;">
+        <button class="primary-btn" id="btn-back-to-game">${t('reviewBackGame')}</button>
+        <button class="secondary-btn" id="btn-close-review2">${t('reviewClose')}</button>
+      </div>
+    </div>
+  `;
+  
+  reviewModal.classList.remove('hidden');
+  
+  // 绑定事件
+  $('#btn-close-review').onclick = () => {
+    reviewModal.classList.add('hidden');
+    $('#modal-result').classList.remove('hidden');
+  };
+  
+  $('#btn-close-review2').onclick = () => {
+    reviewModal.classList.add('hidden');
+    $('#modal-result').classList.remove('hidden');
+  };
+  
+  $('#btn-back-to-game').onclick = () => {
+    reviewModal.classList.add('hidden');
+    // 游戏界面已经显示，只需关闭弹窗
+  };
+}
+
+// 高亮单个格子
+function highlightCell(r, c, isLastMove = false) {
+  if (!G || !G.cellEls || !G.cellEls[r] || !G.cellEls[r][c]) return;
+  
+  const cell = G.cellEls[r][c];
+  
+  // 最后一步用特殊的紫红色高亮
+  const color = isLastMove ? '#ff0066' : 'var(--danger)';
+  const glowColor = isLastMove ? 'rgba(255,0,102,0.6)' : 'rgba(255,107,107,0.6)';
+  
+  cell.style.boxShadow = `0 0 0 4px ${color}, 0 0 30px ${glowColor}`;
+  cell.style.transform = 'scale(1.3)';
+  cell.style.zIndex = '100';
+  cell.style.animation = 'pulse 1.5s infinite';
+  
+  // 添加脉冲动画样式
+  if (!document.getElementById('pulse-style')) {
+    const style = document.createElement('style');
+    style.id = 'pulse-style';
+    style.textContent = `
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+  
+  // 滚动到该格子
+  cell.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  
+  setTimeout(() => {
+    cell.style.boxShadow = '';
+    cell.style.transform = '';
+    cell.style.zIndex = '';
+    cell.style.animation = '';
+  }, 4000);
+  
+  const moveLabel = isLastMove ? ` (${t('lastMove')})` : '';
+  toast(`${posText(r, c)}${moveLabel}`);
+}
+
+// 高亮区域
+function highlightMistakeArea(r, c, type) {
+  if (!G || !G.cellEls) return;
+  
+  const mainCell = G.cellEls[r][c];
+  const color = type === 'should-flag' ? 'var(--warning)' : 'var(--success)';
+  
+  // 高亮中心格子
+  mainCell.style.boxShadow = `0 0 0 3px ${color}, 0 0 20px ${color}`;
+  mainCell.style.transform = 'scale(1.15)';
+  mainCell.style.zIndex = '100';
+  mainCell.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  
+  // 高亮周围格子
+  const nbrs = neighborsOf(r, c, G.rows, G.cols);
+  nbrs.forEach(([nr, nc]) => {
+    const cell = G.cellEls[nr][nc];
+    cell.style.boxShadow = `0 0 0 2px ${color}`;
+    cell.style.opacity = '0.8';
+  });
+  
+  setTimeout(() => {
+    mainCell.style.boxShadow = '';
+    mainCell.style.transform = '';
+    mainCell.style.zIndex = '';
+    nbrs.forEach(([nr, nc]) => {
+      G.cellEls[nr][nc].style.boxShadow = '';
+      G.cellEls[nr][nc].style.opacity = '';
+    });
+  }, 3000);
+  
+  toast(`${t('reviewAreaToast')}: ${t('row')}${r+1} ${t('col')}${c+1}`);
 }
 </script>
